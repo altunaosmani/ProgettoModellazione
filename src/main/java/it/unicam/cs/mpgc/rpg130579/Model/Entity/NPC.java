@@ -20,4 +20,8 @@ public class NPC extends Character {
         if (dialogue == null) throw new IllegalArgumentException("Il dialogo non può essere nullo");
         this.dialogue = dialogue;
     }
+
+    public Dialogue interact(Player player) {
+        return this.dialogue;
+    }
 }
