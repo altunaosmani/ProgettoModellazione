@@ -1,4 +1,9 @@
-package it.unicam.cs.mpgc.rpg130579;
+package it.unicam.cs.mpgc.rpg130579.Controller;
+
+import it.unicam.cs.mpgc.rpg130579.Model.Interaction.Dialogue;
+import it.unicam.cs.mpgc.rpg130579.Model.Interaction.Enigma;
+import it.unicam.cs.mpgc.rpg130579.Model.World.Level;
+import it.unicam.cs.mpgc.rpg130579.Model.World.Location;
 
 public class GameManager {
     private final GameState gameState;
@@ -22,23 +27,23 @@ public class GameManager {
     }
 
     public Dialogue interactWithNPC(String locationId, String npcId) {
-        if (gameState.isPartitaTerminata()) throw new IllegalStateException("La partita è già terminata");
+        if (gameState.isGameEnd()) throw new IllegalStateException("La partita è già terminata");
         if (locationId == null || locationId.isBlank()) throw new IllegalArgumentException("L'ID del luogo non opuò essere vuoto");
         if (npcId == null || npcId.isBlank()) throw new IllegalArgumentException("L'ID del NPC non può essere vuoto");
-        return gameState.getCurrentLevel().getPlaceById(locationId).getNPCById(npcId).getDialogo();
+        return gameState.getCurrentLevel().getPlaceById(locationId).getNPCById(npcId).getDialogue();
     }
 
     public boolean solveEnigma(String enigmaId, String answer) {
         if (enigmaId == null || enigmaId.isBlank()) throw new IllegalArgumentException();
         if (answer == null || answer.isBlank()) throw new IllegalArgumentException();
-        if (gameState.isPartitaTerminata()) throw new IllegalStateException("La partita è già terminata");
+        if (gameState.isGameEnd()) throw new IllegalStateException("La partita è già terminata");
         Enigma enigma = getCurrentLevel().getEnigmaById(enigmaId);
         if (enigma == null) return false;
         return enigma.checkAnswer(answer);
     }
 
     public boolean completeCurrentQuest() {
-        if (gameState.isPartitaTerminata()) return false;
+        if (gameState.isGameEnd()) return false;
         if (getCurrentLevel().getQuest().isCompleted()) return false;
         for (int i = 0; i < getCurrentLevel().getSizeEnigmas(); i++) {
             Enigma enigma = getCurrentLevel().getEnigmaAt(i);
@@ -50,15 +55,15 @@ public class GameManager {
     }
 
     public void advanceToNextLevel() {
-        if (gameState.isPartitaTerminata()) throw new IllegalStateException("Il gioco è già terminato");
+        if (gameState.isGameEnd()) throw new IllegalStateException("Il gioco è già terminato");
         gameState.nextLevel();
     }
 
     public boolean isGameOver() {
-        return gameState.isPartitaTerminata();
+        return gameState.isGameEnd();
     }
 
     public boolean hasWon() {
-        return gameState.isVittoria();
+        return gameState.isWin();
     }
 }

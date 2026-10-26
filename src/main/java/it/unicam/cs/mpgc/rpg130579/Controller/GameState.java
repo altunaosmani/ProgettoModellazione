@@ -1,25 +1,29 @@
-package it.unicam.cs.mpgc.rpg130579;
+package it.unicam.cs.mpgc.rpg130579.Controller;
+
+import it.unicam.cs.mpgc.rpg130579.Model.Entity.Player;
+import it.unicam.cs.mpgc.rpg130579.Model.World.LevelManager;
+import it.unicam.cs.mpgc.rpg130579.Model.World.Level;
 
 public class GameState {
     private final Player player;
-    private final GestoreLivelli gameLevel;
-    private boolean partitaTerminata;
-    private boolean vittoria;
+    private final LevelManager gameLevel;
+    private boolean gameEnd;
+    private boolean win;
 
-    public GameState(Player player, GestoreLivelli gameLevel) {
+    public GameState(Player player, LevelManager gameLevel) {
         if (player == null) throw new IllegalArgumentException("Il giocatore non può essere nullo");
         if (gameLevel == null) throw new IllegalArgumentException("La partita deve avere almeno un livello");
         this.player = player;
         this.gameLevel = gameLevel;
-        this.partitaTerminata = false;
-        this.vittoria = false;
+        this.gameEnd = false;
+        this.win = false;
     }
 
-    public Player getGiocatore() {
+    public Player getPlayer() {
         return this.player;
     }
 
-    public GestoreLivelli getGameLevel() {
+    public LevelManager getGameLevel() {
         return this.gameLevel;
     }
 
@@ -27,27 +31,27 @@ public class GameState {
         return gameLevel.getCurrentLevel();
     }
 
-    public boolean isPartitaTerminata() {
-        return this.partitaTerminata;
+    public boolean isGameEnd() {
+        return this.gameEnd;
     }
 
-    public boolean isVittoria() {
-        return this.vittoria;
+    public boolean isWin() {
+        return this.win;
     }
 
     public void endGame() {
-        this.partitaTerminata = true;
+        this.gameEnd = true;
     }
 
     public void EndGameVictory() {
-        if (partitaTerminata) throw new IllegalStateException("La partita è già terminata");
+        if (gameEnd) throw new IllegalStateException("La partita è già terminata");
         if (!gameLevel.lastLevel() || !getCurrentLevel().isCompleted()) throw new IllegalStateException("L'ultimo livello deve essere completato per vincere ");
-        this.vittoria = true;
-        this.partitaTerminata = true;
+        this.win = true;
+        this.gameEnd = true;
     }
 
     public void nextLevel() {
-        if (partitaTerminata) throw new IllegalStateException("La partita è già terminata");
+        if (gameEnd) throw new IllegalStateException("La partita è già terminata");
         if (!gameLevel.nextLevel() && gameLevel.lastLevel() && getCurrentLevel().isCompleted()) {
             EndGameVictory();
         } else if (!gameLevel.nextLevel()) throw new IllegalStateException("Non è possibile avanzare al prossimo livello");
