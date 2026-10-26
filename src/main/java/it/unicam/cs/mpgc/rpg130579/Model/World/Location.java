@@ -1,4 +1,7 @@
-package it.unicam.cs.mpgc.rpg130579;
+package it.unicam.cs.mpgc.rpg130579.Model.World;
+
+import it.unicam.cs.mpgc.rpg130579.Model.Entity.Item;
+import it.unicam.cs.mpgc.rpg130579.Model.Entity.NPC;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,14 +47,14 @@ public class Location {
     public NPC getNPCById(String id) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del personaggio non può essere vuoto");
         for (NPC npc : npcs) {
-            if (npc.getID().equals(id)) return npc;
+            if (npc.getId().equals(id)) return npc;
         }
         return null;
     }
 
     public boolean addNPC(NPC x) {
         if (x == null) throw new IllegalArgumentException("Il personaggio non può essere null");
-        if (getNPCById(x.getID()) != null) return false;
+        if (getNPCById(x.getId()) != null) return false;
         npcs.add(x);
         return true;
     }

@@ -1,4 +1,7 @@
-package it.unicam.cs.mpgc.rpg130579;
+package it.unicam.cs.mpgc.rpg130579.Model.World;
+
+import it.unicam.cs.mpgc.rpg130579.Model.Interaction.Enigma;
+import it.unicam.cs.mpgc.rpg130579.Model.Interaction.Quest;
 
 import java.util.ArrayList;
 import java.util.List;

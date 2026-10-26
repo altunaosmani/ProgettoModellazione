@@ -1,13 +1,13 @@
-package it.unicam.cs.mpgc.rpg130579;
+package it.unicam.cs.mpgc.rpg130579.Model.World;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GestoreLivelli {
+public class LevelManager {
     private final List<Level> level;
     private int indexCurrentLevel;
 
-    public GestoreLivelli() {
+    public LevelManager() {
         this.level = new ArrayList<>();
         this.indexCurrentLevel = 0;
     }
@@ -52,6 +52,4 @@ public class GestoreLivelli {
         if (!level.isEmpty() && indexCurrentLevel == level.size() - 1) return true;
         return false;
     }
-
-
 }
