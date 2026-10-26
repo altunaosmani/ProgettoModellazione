@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg130579;
+package it.unicam.cs.mpgc.rpg130579.Model.Interaction;
 
 public class Quest {
     private final String id;
@@ -32,7 +32,7 @@ public class Quest {
         return this.completed;
     }
 
-    public void completato() {
+    public void complete() {
         this.completed = true;
     }
 }

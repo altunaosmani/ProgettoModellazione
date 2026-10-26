@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg130579;
+package it.unicam.cs.mpgc.rpg130579.Model.Interaction;
 
 public class Enigma {
     private final String id;
