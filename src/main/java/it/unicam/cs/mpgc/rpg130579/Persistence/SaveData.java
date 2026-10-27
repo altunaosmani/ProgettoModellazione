@@ -6,27 +6,27 @@ import java.io.Serializable;
 public class SaveData implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private int currentLevelIndex;
+    private String currentLevelIndex;
     private String currentLocationId;
     public boolean isGameEnded;
 
     public SaveData() {
+
     }
 
-    public SaveData(int currentLevelInedx, String currentLocationId, boolean isGameEnded) {
-        if (currentLevelInedx < 0) throw new IllegalArgumentException("L'attuale ID del livello non può essere negativo");
+    public SaveData(String currentLevelIndex, String currentLocationId, boolean isGameEnded) {
+        if (currentLevelIndex == null|| currentLevelIndex.isBlank()) throw new IllegalArgumentException("L'attuale ID del livello non può essere vuoto");
         if (currentLocationId == null || currentLocationId.isBlank()) throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
-        this.currentLevelIndex = currentLevelInedx;
+        this.currentLevelIndex = currentLevelIndex;
         this.currentLocationId = currentLocationId;
         this.isGameEnded = isGameEnded;
     }
 
-
-    public int getCurrentLevelIndex() {
+    public String getCurrentLevelIndex() {
         return this.currentLevelIndex;
     }
 
-    public void setCurrentLevelId(int currentLevelIndex) {
+    public void setCurrentLevelIndex(String currentLevelIndex) {
         this.currentLevelIndex = currentLevelIndex;
     }
 
