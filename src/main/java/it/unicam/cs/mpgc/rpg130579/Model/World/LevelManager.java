@@ -21,6 +21,11 @@ public class LevelManager {
         return level.get(indexCurrentLevel);
     }
 
+    public int getIndexCurrentLevel() {
+        return this.indexCurrentLevel;
+    }
+
+
     public Level getLevelById(String id) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException();
         for (Level livello : level) {
