@@ -27,6 +27,10 @@ public class GameState {
         return this.gameLevel;
     }
 
+    public int getCurrentLevelIndex() {
+        return this.gameLevel.getIndexCurrentLevel();
+    }
+
     public Level getCurrentLevel() {
         return gameLevel.getCurrentLevel();
     }
