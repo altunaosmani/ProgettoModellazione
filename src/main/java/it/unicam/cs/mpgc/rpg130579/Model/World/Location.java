@@ -52,10 +52,10 @@ public class Location {
         return null;
     }
 
-    public boolean addNPC(NPC x) {
-        if (x == null) throw new IllegalArgumentException("Il personaggio non può essere null");
-        if (getNPCById(x.getId()) != null) return false;
-        npcs.add(x);
+    public boolean addNPC(NPC npc) {
+        if (npc == null) throw new IllegalArgumentException("Il personaggio non può essere null");
+        if (getNPCById(npc.getId()) != null) return false;
+        npcs.add(npc);
         return true;
     }
 
@@ -65,7 +65,7 @@ public class Location {
     }
 
     public Item getItemsById(String id) {
-        if (id == null) throw new IllegalArgumentException("L'oggetto non può essere nullo");
+        if (id == null || id.isBlank()) throw new IllegalArgumentException("L'oggetto non può essere nullo");
         for (Item item : items) {
             if (item.getId().equals(id)) return item;
         }
@@ -79,7 +79,7 @@ public class Location {
         return true;
     }
 
-    public boolean rimuoviOggetto(String id) {
+    public boolean removeItem(String id) {
         Item i = getItemsById(id);
         if (i == null) return false;
         items.remove(i);
