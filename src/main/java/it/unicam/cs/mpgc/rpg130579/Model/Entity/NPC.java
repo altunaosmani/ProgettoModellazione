@@ -6,7 +6,7 @@ import it.unicam.cs.mpgc.rpg130579.Model.World.Location;
 public class NPC extends Character {
     private Dialogue dialogue;
 
-    public NPC(String name, String id, String description, Location currentLocation, Dialogue dialogue) {
+    public NPC(String id, String name, String description, Location currentLocation, Dialogue dialogue) {
         super(id, name, description, currentLocation);
         if (dialogue == null) throw new IllegalArgumentException("Ogni personaggio deve avere un dialogo");
         this.dialogue = dialogue;
