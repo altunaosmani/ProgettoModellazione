@@ -60,7 +60,7 @@ public class Level {
     public Location getPlaceById(String id) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException();
         for (Location place : places) {
-            if (getId().equalsIgnoreCase(id)) return place;
+            if (place.getId().equalsIgnoreCase(id)) return place;
         }
         return null;
     }
