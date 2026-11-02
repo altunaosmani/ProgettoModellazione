@@ -22,6 +22,7 @@ public class Player extends Character {
 
     public boolean addItem(Item item) {
         if (item == null) throw new IllegalArgumentException("L'oggetto non può essere null");
+        if (inventory.size() >= DEFAULT_MAX_CAPACITY) return false;
         if (hasItem(item.getId())) return false;
         return inventory.add(item);
     }
