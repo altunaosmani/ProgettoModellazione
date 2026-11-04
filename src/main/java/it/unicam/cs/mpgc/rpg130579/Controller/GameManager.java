@@ -1,6 +1,8 @@
 package it.unicam.cs.mpgc.rpg130579.Controller;
 
+import it.unicam.cs.mpgc.rpg130579.Model.Entity.NPC;
 import it.unicam.cs.mpgc.rpg130579.Model.Interaction.Dialogue;
+import it.unicam.cs.mpgc.rpg130579.Model.Interaction.DialogueSession;
 import it.unicam.cs.mpgc.rpg130579.Model.Interaction.Enigma;
 import it.unicam.cs.mpgc.rpg130579.Model.World.Level;
 import it.unicam.cs.mpgc.rpg130579.Model.World.Location;
@@ -12,9 +14,7 @@ public class GameManager {
     private final GameRepository repository;
 
     public GameManager(GameState gameState) {
-        if (gameState == null) throw new IllegalArgumentException("Lo stato del gioco non può essere nullo");
-        this.currentState = gameState;
-        this.repository = new GameRepository();
+        this (gameState, new GameRepository());
     }
 
     public GameManager(GameState gameState, GameRepository repository) {
@@ -25,8 +25,8 @@ public class GameManager {
     }
 
     public boolean saveGame(String currentLocationId) {
-        String levelIndex = currentState.getCurrentLevel().getId();
-        SaveData data = new SaveData(levelIndex, currentLocationId, currentState.isGameEnd());
+        String levelId = currentState.getCurrentLevel().getId();
+        SaveData data = new SaveData(levelId, currentLocationId, currentState.isGameEnd());
         return repository.saveGame(data);
     }
 
@@ -44,14 +44,19 @@ public class GameManager {
 
     public Location getLocation(String locationId) {
         if (locationId == null || locationId.isBlank()) throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
-        return currentState.getCurrentLevel().getPlaceById(locationId);
+        Location location = getCurrentLevel().getPlaceById(locationId);
+        if (location == null) throw new IllegalArgumentException("Luogo non trovato: " + locationId);
+        return location;
     }
 
-    public Dialogue interactWithNPC(String locationId, String npcId) {
+    public DialogueSession interactWithNPC(String locationId, String npcId) {
         if (currentState.isGameEnd()) throw new IllegalStateException("La partita è già terminata");
         if (locationId == null || locationId.isBlank()) throw new IllegalArgumentException("L'ID del luogo non opuò essere vuoto");
         if (npcId == null || npcId.isBlank()) throw new IllegalArgumentException("L'ID del NPC non può essere vuoto");
-        return currentState.getCurrentLevel().getPlaceById(locationId).getNPCById(npcId).getDialogue();
+        NPC npc = getCurrentLevel().getPlaceById(locationId).getNPCById(npcId);
+        if (npc == null) throw new IllegalArgumentException("Personaggio non trovato: " + npcId);
+        Dialogue dialogue = npc.interact(currentState.getPlayer());
+        return new DialogueSession(dialogue);
     }
 
     public boolean solveEnigma(String enigmaId, String answer) {
@@ -65,13 +70,14 @@ public class GameManager {
 
     public boolean completeCurrentQuest() {
         if (currentState.isGameEnd()) return false;
-        if (getCurrentLevel().getQuest().isCompleted()) return false;
-        for (int i = 0; i < getCurrentLevel().getSizeEnigmas(); i++) {
+        Level level = getCurrentLevel();
+        if (level.getQuest().isCompleted()) return false;
+        for (int i = 0; i < level.getSizeEnigmas(); i++) {
             Enigma enigma = getCurrentLevel().getEnigmaAt(i);
-            if (!enigma.isSolved()) return false;
+            if (!level.getEnigmaAt(i).isSolved()) return false;
         }
-        getCurrentLevel().getQuest().isCompleted();
-        getCurrentLevel().complete();
+        level.getQuest().complete();
+        level.complete();
         return true;
     }
 
