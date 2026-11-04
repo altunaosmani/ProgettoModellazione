@@ -4,7 +4,10 @@ import it.unicam.cs.mpgc.rpg130579.Model.Entity.Item;
 import it.unicam.cs.mpgc.rpg130579.Model.Entity.NPC;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.unmodifiableList;
 
 public class Location {
     private final String id;
@@ -12,6 +15,7 @@ public class Location {
     private final String description;
     private final List<Item> items;
     private final List<NPC> npcs;
+    private final List<Exit> exits;
 
     public Location(String id, String name, String description) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
@@ -22,6 +26,7 @@ public class Location {
         this.description = description;
         this.items = new ArrayList<>();
         this.npcs = new ArrayList<>();
+        this.exits = new ArrayList<>();
     }
 
     public String getId() {
@@ -84,5 +89,24 @@ public class Location {
         if (i == null) return false;
         items.remove(i);
         return true;
+    }
+
+    public Exit getExitById(String id) {
+        if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID dell'uscita on può essere vuoto");
+        for (Exit exit : exits) {
+            if (exit.getId().equalsIgnoreCase(id)) return exit;
+        }
+        return null;
+    }
+
+    public boolean addExit(Exit exit) {
+        if (exit == null) throw new IllegalArgumentException("L'uscita non può essere nulla");
+        if (getExitById(exit.getId()) != null) return false;
+        exits.add(exit);
+        return true;
+    }
+
+    public List<Exit> getExits() {
+        return Collections.unmodifiableList(exits);
     }
 }
