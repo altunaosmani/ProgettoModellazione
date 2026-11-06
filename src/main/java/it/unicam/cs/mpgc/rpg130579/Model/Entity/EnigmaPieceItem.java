@@ -19,9 +19,4 @@ public class EnigmaPieceItem extends Item {
     public int getOrderPosition() {
         return this.orderPosition;
     }
-
-    @Override
-    public boolean use(Object target) {
-        return false;
-    }
 }
