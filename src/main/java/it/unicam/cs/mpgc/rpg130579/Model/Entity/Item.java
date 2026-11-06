@@ -28,8 +28,6 @@ public abstract class Item {
         return this.description;
     }
 
-    public abstract boolean use(Object target);
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
