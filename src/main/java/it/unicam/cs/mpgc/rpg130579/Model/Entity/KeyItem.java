@@ -13,9 +13,7 @@ public class KeyItem extends Item {
         return targetMechanismId;
     }
 
-    @Override
-    public boolean use(Object target) {
-        if (target instanceof String && ((String) target).equalsIgnoreCase(targetMechanismId)) return true;
-        return false;
+    public boolean opens(String mechanismId) {
+        return mechanismId != null && targetMechanismId.equalsIgnoreCase(mechanismId);
     }
 }
