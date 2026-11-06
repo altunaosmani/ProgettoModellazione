@@ -12,9 +12,4 @@ public class DocumentItem extends Item {
     public String getText() {
         return this.text;
     }
-
-    @Override
-    public boolean use(Object target) {
-        return true;
-    }
 }
