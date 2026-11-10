@@ -1,46 +1,25 @@
 package it.unicam.cs.mpgc.rpg130579.Controller;
 
 import it.unicam.cs.mpgc.rpg130579.Model.Entity.NPC;
-import it.unicam.cs.mpgc.rpg130579.Model.Interaction.Dialogue;
-import it.unicam.cs.mpgc.rpg130579.Model.Interaction.DialogueSession;
-import it.unicam.cs.mpgc.rpg130579.Model.Interaction.Enigma;
+import it.unicam.cs.mpgc.rpg130579.Model.Interaction.*;
 import it.unicam.cs.mpgc.rpg130579.Model.World.Level;
 import it.unicam.cs.mpgc.rpg130579.Model.World.Location;
-import it.unicam.cs.mpgc.rpg130579.Persistence.GameRepository;
-import it.unicam.cs.mpgc.rpg130579.Persistence.SaveData;
 
 public class GameManager {
-    private final GameState currentState;
-    private final GameRepository repository;
+    private final GameState state;
 
-    public GameManager(GameState gameState) {
-        this (gameState, new GameRepository());
+    public GameManager(GameState state) {
+        if (state == null) throw new IllegalArgumentException("Lo stato di gioco non può essere nullo");
+        this.state = state;
     }
 
-    public GameManager(GameState gameState, GameRepository repository) {
-        if (gameState == null) throw new IllegalArgumentException();
-        if (repository == null) throw new IllegalArgumentException();
-        this.currentState = gameState;
-        this.repository = repository;
-    }
+    public GameState getCurrentState() { return state; }
 
-    public boolean saveGame(String currentLocationId) {
-        String levelId = currentState.getCurrentLevel().getId();
-        SaveData data = new SaveData(levelId, currentLocationId, currentState.isGameEnd());
-        return repository.saveGame(data);
-    }
+    public Level getCurrentLevel() { return state.getCurrentLevel(); }
 
-    public SaveData load() {
-        return repository.loadGame();
-    }
+    public boolean isGameOver() { return state.isGameEnd(); }
 
-    public GameState getCurrentState() {
-        return this.currentState;
-    }
-
-    public Level getCurrentLevel() {
-        return currentState.getCurrentLevel();
-    }
+    public boolean hasWon() { return state.isWin(); }
 
     public Location getLocation(String locationId) {
         if (locationId == null || locationId.isBlank()) throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
@@ -50,31 +29,29 @@ public class GameManager {
     }
 
     public DialogueSession interactWithNPC(String locationId, String npcId) {
-        if (currentState.isGameEnd()) throw new IllegalStateException("La partita è già terminata");
-        if (locationId == null || locationId.isBlank()) throw new IllegalArgumentException("L'ID del luogo non opuò essere vuoto");
-        if (npcId == null || npcId.isBlank()) throw new IllegalArgumentException("L'ID del NPC non può essere vuoto");
-        NPC npc = getCurrentLevel().getPlaceById(locationId).getNPCById(npcId);
+        ensureRunning();
+        if (npcId == null || npcId.isBlank()) throw new IllegalArgumentException("L'ID del personaggio non può essere vuoto");
+        NPC npc = getLocation(locationId).getNPCById(npcId);
         if (npc == null) throw new IllegalArgumentException("Personaggio non trovato: " + npcId);
-        Dialogue dialogue = npc.interact(currentState.getPlayer());
-        return new DialogueSession(dialogue);
+        return new DialogueSession(npc.interact(state.getPlayer()), state.getProgress());
     }
 
-    public boolean solveEnigma(String enigmaId, String answer) {
-        if (enigmaId == null || enigmaId.isBlank()) throw new IllegalArgumentException();
-        if (answer == null || answer.isBlank()) throw new IllegalArgumentException();
-        if (currentState.isGameEnd()) throw new IllegalStateException("La partita è già terminata");
-        Enigma enigma = getCurrentLevel().getEnigmaById(enigmaId);
-        if (enigma == null) return false;
-        return enigma.checkAnswer(answer);
+    public boolean solvePuzzle(String puzzleId, PuzzleAnswer answer) {
+        ensureRunning();
+        if (answer == null) throw new IllegalArgumentException("La risposta non può essere nulla");
+        Puzzle puzzle = getCurrentLevel().getPuzzleById(puzzleId);
+        if (puzzle == null) throw new IllegalArgumentException("Enigma non trovato: " + puzzleId);
+        boolean solved = puzzle.isSolvedBy(answer, state.getPlayer());
+        if (solved) state.getProgress().markPuzzleSolved(puzzleId);
+        return solved;
     }
 
     public boolean completeCurrentQuest() {
-        if (currentState.isGameEnd()) return false;
+        if (state.isGameEnd()) return false;
         Level level = getCurrentLevel();
         if (level.getQuest().isCompleted()) return false;
-        for (int i = 0; i < level.getSizeEnigmas(); i++) {
-            Enigma enigma = getCurrentLevel().getEnigmaAt(i);
-            if (!level.getEnigmaAt(i).isSolved()) return false;
+        for (int i = 0; i < level.getSizePuzzles(); i++) {
+            if (!state.getProgress().isPuzzleSolved(level.getPuzzleAt(i).getId())) return false;
         }
         level.getQuest().complete();
         level.complete();
@@ -82,15 +59,11 @@ public class GameManager {
     }
 
     public void advanceToNextLevel() {
-        if (currentState.isGameEnd()) throw new IllegalStateException("Il gioco è già terminato");
-        currentState.nextLevel();
+        ensureRunning();
+        state.nextLevel();
     }
 
-    public boolean isGameOver() {
-        return currentState.isGameEnd();
-    }
-
-    public boolean hasWon() {
-        return currentState.isWin();
+    private void ensureRunning() {
+        if (state.isGameEnd()) throw new IllegalStateException("La partita è già terminata");
     }
 }

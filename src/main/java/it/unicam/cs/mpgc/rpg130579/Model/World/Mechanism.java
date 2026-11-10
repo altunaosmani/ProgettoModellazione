@@ -4,7 +4,7 @@ import it.unicam.cs.mpgc.rpg130579.Model.Entity.Player;
 import it.unicam.cs.mpgc.rpg130579.Model.Interaction.PuzzleAnswer;
 
 public class Mechanism implements Lockable {
-    public final String id;
+    private final String id;
     private final String name;
     private final String description;
     private final UnlockCondition unlockCondition;

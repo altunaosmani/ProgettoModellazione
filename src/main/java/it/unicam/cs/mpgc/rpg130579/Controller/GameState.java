@@ -13,7 +13,6 @@ import java.util.Set;
 public class GameState {
     private final Player player;
     private final LevelManager gameLevel;
-    private final Set<String> solvedPuzzleIds;
     private final StoryProgress progress;
     private boolean gameEnd;
     private boolean win;
@@ -23,7 +22,6 @@ public class GameState {
         if (gameLevel == null) throw new IllegalArgumentException("La partita deve avere almeno un livello");
         this.player = player;
         this.gameLevel = gameLevel;
-        this.solvedPuzzleIds = new HashSet<>();
         this.progress = new StoryProgress();
         this.gameEnd = false;
         this.win = false;
@@ -80,18 +78,6 @@ public class GameState {
             endGameVictory();
         }
         else throw new IllegalStateException("Non è possibile avanzare al prossimo livello");
-    }
-
-    public boolean isPuzzleSolved(String puzzleId) {
-        return solvedPuzzleIds.contains(normalize(puzzleId));
-    }
-
-    public void markPuzzleSolved(String puzzleId) {
-        solvedPuzzleIds.add(normalize(puzzleId));
-    }
-
-    public Set<String> getSolvedPuzzleIds() {
-        return Collections.unmodifiableSet(solvedPuzzleIds);
     }
 
     public String normalize(String puzzleId) {

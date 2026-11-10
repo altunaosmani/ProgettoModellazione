@@ -45,7 +45,7 @@ public abstract class Character {
         return this.currentLocation;
     }
 
-    public void setCurrentLocation() {
+    public void setCurrentLocation(Location currentLocation) {
         if (currentLocation == null) throw new IllegalArgumentException("La location non può essere nulla");
         this.currentLocation = currentLocation;
     }

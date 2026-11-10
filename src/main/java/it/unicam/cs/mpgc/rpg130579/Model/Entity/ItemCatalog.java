@@ -14,7 +14,7 @@ public class ItemCatalog {
         if (items.putIfAbsent(key(item.getId()), item) != null) throw new IllegalArgumentException("Esiste già un oggetto con questo id: " + item.getId());
     }
 
-    public Optional<Item> findItemById(String id) {
+    public Optional<Item> findById(String id) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID dell'oggetto non può essere vuoto");
         return Optional.ofNullable((items.get(key(id))));
     }
