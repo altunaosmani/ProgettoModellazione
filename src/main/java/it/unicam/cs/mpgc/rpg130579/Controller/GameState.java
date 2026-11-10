@@ -1,12 +1,20 @@
 package it.unicam.cs.mpgc.rpg130579.Controller;
 
 import it.unicam.cs.mpgc.rpg130579.Model.Entity.Player;
+import it.unicam.cs.mpgc.rpg130579.Model.State.StoryProgress;
 import it.unicam.cs.mpgc.rpg130579.Model.World.LevelManager;
 import it.unicam.cs.mpgc.rpg130579.Model.World.Level;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 public class GameState {
     private final Player player;
     private final LevelManager gameLevel;
+    private final Set<String> solvedPuzzleIds;
+    private final StoryProgress progress;
     private boolean gameEnd;
     private boolean win;
 
@@ -15,6 +23,8 @@ public class GameState {
         if (gameLevel == null) throw new IllegalArgumentException("La partita deve avere almeno un livello");
         this.player = player;
         this.gameLevel = gameLevel;
+        this.solvedPuzzleIds = new HashSet<>();
+        this.progress = new StoryProgress();
         this.gameEnd = false;
         this.win = false;
     }
@@ -35,6 +45,10 @@ public class GameState {
         return gameLevel.getCurrentLevel();
     }
 
+    public StoryProgress getProgress() {
+        return progress;
+    }
+
     public boolean isGameEnd() {
         return this.gameEnd;
     }
@@ -47,17 +61,42 @@ public class GameState {
         this.gameEnd = true;
     }
 
-    public void EndGameVictory() {
+    public void endGameVictory() {
         if (gameEnd) throw new IllegalStateException("La partita è già terminata");
         if (!gameLevel.lastLevel() || !getCurrentLevel().isCompleted()) throw new IllegalStateException("L'ultimo livello deve essere completato per vincere ");
         this.win = true;
         this.gameEnd = true;
     }
 
+    public void restoreEnded(boolean won) {
+        this.gameEnd = true;
+        this.win = won;
+    }
+
     public void nextLevel() {
         if (gameEnd) throw new IllegalStateException("La partita è già terminata");
-        if (!gameLevel.nextLevel() && gameLevel.lastLevel() && getCurrentLevel().isCompleted()) {
-            EndGameVictory();
-        } else if (!gameLevel.nextLevel()) throw new IllegalStateException("Non è possibile avanzare al prossimo livello");
+        if (gameLevel.nextLevel()) return;
+        if (gameLevel.lastLevel() && getCurrentLevel().isCompleted()) {
+            endGameVictory();
+        }
+        else throw new IllegalStateException("Non è possibile avanzare al prossimo livello");
+    }
+
+    public boolean isPuzzleSolved(String puzzleId) {
+        return solvedPuzzleIds.contains(normalize(puzzleId));
+    }
+
+    public void markPuzzleSolved(String puzzleId) {
+        solvedPuzzleIds.add(normalize(puzzleId));
+    }
+
+    public Set<String> getSolvedPuzzleIds() {
+        return Collections.unmodifiableSet(solvedPuzzleIds);
+    }
+
+    public String normalize(String puzzleId) {
+        if (puzzleId == null || puzzleId.isBlank())
+            throw new IllegalStateException("L'ID dell'enigma non può essere vuoto");
+        return puzzleId.trim().toLowerCase(Locale.ROOT);
     }
 }
