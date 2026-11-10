@@ -10,6 +10,7 @@ public class Level {
     private final String id;
     private final String name;
     private final String description;
+    private String startLocationId;
     private final List<Location> places;
     private final List<Puzzle> puzzles;
     private final List<Mechanism> mechanisms;
@@ -24,6 +25,7 @@ public class Level {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.startLocationId = startLocationId;
         this.places = new ArrayList<>();
         this.puzzles = new ArrayList<>();
         this.mechanisms = new ArrayList<>();
@@ -45,6 +47,20 @@ public class Level {
 
     public Quest getQuest() {
         return this.quest;
+    }
+
+    public String getStartLocationId() {
+        return this.startLocationId;
+    }
+
+    public void setStartLocationId(String locationId) {
+        if (getPlaceById(locationId) == null) throw new IllegalArgumentException("Il luogo iniziale non appartiene al livello: " + locationId);
+        this.startLocationId = locationId;
+    }
+
+    public Location getStartLocation() {
+        if (startLocationId == null) throw new IllegalArgumentException("Il luogo iniziale non è stato impostato");
+        return getPlaceById(startLocationId);
     }
 
     public boolean isCompleted() {
