@@ -11,8 +11,6 @@ import it.unicam.cs.mpgc.rpg130579.Model.World.LevelManager;
 import java.util.List;
 
 public class GameFactory {
-    public static final String MEDALLION_ID = "medaglione";
-
     private final List<LevelBuilder> levelBuilders;
 
     public GameFactory() {
@@ -28,9 +26,8 @@ public class GameFactory {
     /** Crea ogni volta una partita nuova, con oggetti e livelli nel loro stato iniziale. */
     public GameSetup newGame() {
         ItemCatalog catalog = new ItemCatalog();
-        Item medallion = new GenericItem(MEDALLION_ID, "Medaglione d'argento",
+        Item medallion = new GenericItem(StoryIds.MEDALLION, "Medaglione d'argento",
                 "Un piccolo medaglione d'argento con un occhio circondato da tre rami.");
-        catalog.register(medallion);
 
         LevelManager levels = new LevelManager();
         for (LevelBuilder builder : levelBuilders) {
