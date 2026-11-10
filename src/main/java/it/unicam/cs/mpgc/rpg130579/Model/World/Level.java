@@ -53,7 +53,7 @@ public class Level {
         return this.startLocationId;
     }
 
-    public void setStartLocationId(String locationId) {
+    public void setStartLocation(String locationId) {
         if (getPlaceById(locationId) == null) throw new IllegalArgumentException("Il luogo iniziale non appartiene al livello: " + locationId);
         this.startLocationId = locationId;
     }
