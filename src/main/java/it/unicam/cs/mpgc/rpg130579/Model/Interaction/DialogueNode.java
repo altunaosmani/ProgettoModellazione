@@ -2,10 +2,6 @@ package it.unicam.cs.mpgc.rpg130579.Model.Interaction;
 
 import java.util.List;
 
-/**
- * Un punto del dialogo: alcune battute, seguite da zero o più scelte.
- * Senza scelte, il dialogo finisce dopo l'ultima battuta.
- */
 public class DialogueNode {
     private final String id;
     private final List<String> lines;

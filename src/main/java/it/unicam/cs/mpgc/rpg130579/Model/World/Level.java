@@ -1,6 +1,5 @@
 package it.unicam.cs.mpgc.rpg130579.Model.World;
 
-import it.unicam.cs.mpgc.rpg130579.Model.Interaction.Enigma;
 import it.unicam.cs.mpgc.rpg130579.Model.Interaction.Puzzle;
 import it.unicam.cs.mpgc.rpg130579.Model.Interaction.Quest;
 
