@@ -57,4 +57,14 @@ public class LevelManager {
         if (!level.isEmpty() && indexCurrentLevel == level.size() - 1) return true;
         return false;
     }
+
+    public boolean setCurrentLevelById(String id) {
+        for (int i = 0; i < level.size(); i++) {
+            if (level.get(i).getId().equalsIgnoreCase(id)) {
+                indexCurrentLevel = i;
+                return true;
+            }
+        }
+        return false;
+    }
 }
