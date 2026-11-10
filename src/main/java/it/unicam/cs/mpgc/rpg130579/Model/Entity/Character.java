@@ -34,7 +34,7 @@ public abstract class Character {
     }
 
     public String getDescription() {
-        return this.getDescription();
+        return this.description;
     }
 
     public void setDescription(String description) {
@@ -46,6 +46,7 @@ public abstract class Character {
     }
 
     public void setCurrentLocation() {
+        if (currentLocation == null) throw new IllegalArgumentException("La location non può essere nulla");
         this.currentLocation = currentLocation;
     }
 
