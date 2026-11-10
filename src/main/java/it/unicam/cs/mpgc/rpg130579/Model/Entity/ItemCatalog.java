@@ -1,6 +1,5 @@
 package it.unicam.cs.mpgc.rpg130579.Model.Entity;
 
-import javax.swing.*;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
