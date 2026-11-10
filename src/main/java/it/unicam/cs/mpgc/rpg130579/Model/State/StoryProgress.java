@@ -1,12 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.Model.State;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 public class StoryProgress {
@@ -41,5 +35,16 @@ public class StoryProgress {
     private String normalize(String text, String label) {
         if (text == null || text.isBlank()) throw new IllegalArgumentException(label + " non può essere vuoto");
         return text.trim().toLowerCase(Locale.ROOT);
+    }
+
+    public void markPuzzleSolved(String puzzleId) {
+        solvedPuzzleIds.add(normalize(puzzleId, "L'ID dell'enigma"));
+    }
+
+    public void restore(Collection<String> solvedIds, Map<String, String> savedFlags) {
+        solvedPuzzleIds.clear();
+        flags.clear();
+        solvedIds.forEach(this::markPuzzleSolved);
+        savedFlags.forEach(this::setFlag);
     }
 }
