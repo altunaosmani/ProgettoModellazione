@@ -14,9 +14,8 @@ public class GameFactory {
     private final List<LevelBuilder> levelBuilders;
 
     public GameFactory() {
-        this(List.of(new ForestLevelBuilder()));
+        this(List.of(new ForestLevelBuilder(), new CastleLevelBuilder()));
     }
-
     public GameFactory(List<LevelBuilder> levelBuilders) {
         if (levelBuilders == null || levelBuilders.isEmpty()) throw new IllegalArgumentException("Serve almeno un livello");
         this.levelBuilders = List.copyOf(levelBuilders);
