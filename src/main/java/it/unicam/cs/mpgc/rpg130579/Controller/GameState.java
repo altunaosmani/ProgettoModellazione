@@ -73,8 +73,10 @@ public class GameState {
 
     public void nextLevel() {
         if (gameEnd) throw new IllegalStateException("La partita è già terminata");
-        if (gameLevel.nextLevel()) return;
-        if (gameLevel.lastLevel() && getCurrentLevel().isCompleted()) {
+        if (gameLevel.nextLevel()) {
+            player.setCurrentLocation(getCurrentLevel().getStartLocation());
+            return;
+        }        if (gameLevel.lastLevel() && getCurrentLevel().isCompleted()) {
             endGameVictory();
         }
         else throw new IllegalStateException("Non è possibile avanzare al prossimo livello");

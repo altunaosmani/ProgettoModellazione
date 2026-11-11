@@ -1,9 +1,13 @@
 package it.unicam.cs.mpgc.rpg130579.Controller;
 
+import it.unicam.cs.mpgc.rpg130579.Model.Entity.Item;
 import it.unicam.cs.mpgc.rpg130579.Model.Entity.NPC;
+import it.unicam.cs.mpgc.rpg130579.Model.Entity.Player;
 import it.unicam.cs.mpgc.rpg130579.Model.Interaction.*;
+import it.unicam.cs.mpgc.rpg130579.Model.World.Exit;
 import it.unicam.cs.mpgc.rpg130579.Model.World.Level;
 import it.unicam.cs.mpgc.rpg130579.Model.World.Location;
+import it.unicam.cs.mpgc.rpg130579.Model.World.Mechanism;
 
 public class GameManager {
     private final GameState state;
@@ -46,18 +50,6 @@ public class GameManager {
         return solved;
     }
 
-    public boolean completeCurrentQuest() {
-        if (state.isGameEnd()) return false;
-        Level level = getCurrentLevel();
-        if (level.getQuest().isCompleted()) return false;
-        for (int i = 0; i < level.getSizePuzzles(); i++) {
-            if (!state.getProgress().isPuzzleSolved(level.getPuzzleAt(i).getId())) return false;
-        }
-        level.getQuest().complete();
-        level.complete();
-        return true;
-    }
-
     public void advanceToNextLevel() {
         ensureRunning();
         state.nextLevel();
@@ -65,5 +57,44 @@ public class GameManager {
 
     private void ensureRunning() {
         if (state.isGameEnd()) throw new IllegalStateException("La partita è già terminata");
+    }
+
+    public boolean move(String exitId) {
+        ensureRunning();
+        Player player = state.getPlayer();
+        Exit exit = player.getCurrentLocation().getExitById(exitId);
+        if (exit == null) throw new IllegalArgumentException("Uscita non trovata: " + exitId);
+        if (!exit.isPassable()) return false;
+        player.setCurrentLocation(getLocation(exit.getDestinationLocationId()));
+        return true;
+    }
+
+    public boolean takeItem(String itemId) {
+        ensureRunning();
+        Player player = state.getPlayer();
+        Location location = player.getCurrentLocation();
+        Item item = location.getItemsById(itemId);
+        if (item == null) throw new IllegalArgumentException("Oggetto non trovato: " + itemId);
+        if (!player.addItem(item)) return false;
+        location.removeItem(itemId);
+        return true;
+    }
+
+    public boolean unlockMechanism(String mechanismId, PuzzleAnswer answer) {
+        ensureRunning();
+        Player player = state.getPlayer();
+        Mechanism mechanism = player.getCurrentLocation().getMechanismById(mechanismId);
+        if (mechanism == null) throw new IllegalArgumentException("Meccanismo non trovato: " + mechanismId);
+        return mechanism.tryUnlock(player, answer);
+    }
+
+    public boolean completeCurrentQuest() {
+        if (state.isGameEnd()) return false;
+        Level level = getCurrentLevel();
+        Quest quest = level.getQuest();
+        if (!quest.isCompletable(state.getPlayer(), state.getProgress())) return false;
+        quest.complete();
+        level.complete();
+        return true;
     }
 }

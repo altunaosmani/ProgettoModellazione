@@ -1,7 +1,10 @@
 package it.unicam.cs.mpgc.rpg130579.Model.World;
 
 import it.unicam.cs.mpgc.rpg130579.Model.Entity.Player;
+import it.unicam.cs.mpgc.rpg130579.Model.Interaction.Puzzle;
 import it.unicam.cs.mpgc.rpg130579.Model.Interaction.PuzzleAnswer;
+
+import java.util.Optional;
 
 public class Mechanism implements Lockable {
     private final String id;
@@ -52,5 +55,9 @@ public class Mechanism implements Lockable {
 
     public void restoreUnlocked() {
         this.locked = false;
+    }
+
+    public Optional<Puzzle> getRequiredPuzzle() {
+        return unlockCondition.requiredPuzzle();
     }
 }

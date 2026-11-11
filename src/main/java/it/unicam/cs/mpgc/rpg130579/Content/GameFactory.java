@@ -18,8 +18,7 @@ public class GameFactory {
     }
 
     public GameFactory(List<LevelBuilder> levelBuilders) {
-        if (levelBuilders == null || levelBuilders.isEmpty())
-            throw new IllegalArgumentException("Serve almeno un livello");
+        if (levelBuilders == null || levelBuilders.isEmpty()) throw new IllegalArgumentException("Serve almeno un livello");
         this.levelBuilders = List.copyOf(levelBuilders);
     }
 
@@ -32,12 +31,9 @@ public class GameFactory {
             Level level = builder.build(catalog);
             levels.addLevel(level);
         }
-
         Level first = levels.getLevelAt(0);
-        Player player = new Player("eren", "Eren",
-                "Giovane elfo del villaggio di Tanusha.", first.getStartLocation());
+        Player player = new Player("eren", "Eren", "Giovane elfo del villaggio di Tanusha.", first.getStartLocation());
         player.addItem(medallion);
-
         return new GameSetup(new GameState(player, levels), catalog);
     }
 }

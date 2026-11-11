@@ -16,6 +16,7 @@ public class Location {
     private final List<Item> items;
     private final List<NPC> npcs;
     private final List<Exit> exits;
+    private final List<Mechanism> mechanisms = new ArrayList<>();
 
     public Location(String id, String name, String description) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
@@ -109,4 +110,18 @@ public class Location {
     public List<Exit> getExits() {
         return Collections.unmodifiableList(exits);
     }
+
+    public boolean addMechanism(Mechanism m) {
+        if (m == null) throw new IllegalArgumentException("Il meccanismo non può essere nullo");
+        if (getMechanismById(m.getId()) != null) return false;
+        return mechanisms.add(m);
+    }
+    public Mechanism getMechanismById(String id) {
+        for (Mechanism m : mechanisms) if (m.getId().equalsIgnoreCase(id)) return m;
+        return null;
+    }
+    public List<Mechanism> getMechanisms() { return Collections.unmodifiableList(mechanisms); }
+    public List<Item> getItems() { return Collections.unmodifiableList(items); }
+    public List<NPC> getNpcs() { return Collections.unmodifiableList(npcs); }
+
 }
