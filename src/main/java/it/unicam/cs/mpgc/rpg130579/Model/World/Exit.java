@@ -33,7 +33,7 @@ public class Exit {
         return this.destinationLocationId;
     }
 
-    public boolean isPassble() {
+    public boolean isPassable() {
         return barrier.isUnlocked();
     }
 }

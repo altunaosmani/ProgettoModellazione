@@ -45,4 +45,8 @@ public abstract class Item {
     public String toString() {
         return name;
     }
+
+    public String examine() {
+        return this.description;
+    }
 }

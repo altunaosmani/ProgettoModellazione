@@ -25,7 +25,6 @@ public class Level {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.startLocationId = startLocationId;
         this.places = new ArrayList<>();
         this.puzzles = new ArrayList<>();
         this.mechanisms = new ArrayList<>();

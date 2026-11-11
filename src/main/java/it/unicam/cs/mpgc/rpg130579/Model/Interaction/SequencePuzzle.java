@@ -13,7 +13,6 @@ public class SequencePuzzle extends AbstractPuzzle {
         Set<Integer> positions = new HashSet<>();
         for (EnigmaPieceItem piece : pieces) {
             if (piece == null) throw new IllegalArgumentException("Il frammento non può essere nullo");
-            if (piece == null) throw new IllegalArgumentException("Il frammento non può essere nullo");
             if (!positions.add(piece.getOrderPosition())) throw new IllegalArgumentException("Due frammenti hanno la stessa posizione: " + piece.getOrderPosition());
         }
         List<EnigmaPieceItem> sorted = new ArrayList<>(pieces);

@@ -23,12 +23,10 @@ public class GameFactory {
         this.levelBuilders = List.copyOf(levelBuilders);
     }
 
-    /** Crea ogni volta una partita nuova, con oggetti e livelli nel loro stato iniziale. */
     public GameSetup newGame() {
         ItemCatalog catalog = new ItemCatalog();
-        Item medallion = new GenericItem(StoryIds.MEDALLION, "Medaglione d'argento",
-                "Un piccolo medaglione d'argento con un occhio circondato da tre rami.");
-
+        Item medallion = new GenericItem(StoryIds.MEDALLION, "Medaglione d'argento", "Un piccolo medaglione d'argento con un occhio circondato da tre rami.");
+        catalog.register(medallion);
         LevelManager levels = new LevelManager();
         for (LevelBuilder builder : levelBuilders) {
             Level level = builder.build(catalog);

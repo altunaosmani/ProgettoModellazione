@@ -12,4 +12,10 @@ public class DocumentItem extends Item {
     public String getText() {
         return this.text;
     }
+
+    @Override
+    public String examine() {
+        return getDescription() + "\n" + text;
+    }
+
 }
