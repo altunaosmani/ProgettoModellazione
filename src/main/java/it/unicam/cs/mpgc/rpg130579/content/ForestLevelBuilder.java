@@ -42,10 +42,8 @@ public class ForestLevelBuilder implements LevelBuilder {
     }
 
     private void addLocations(Level level) {
-        level.addPlace(new Location(HOME, "Casa",
-                "La tua casa a Tanusha. Il medaglione si è appena aperto."));
-        level.addPlace(new Location(SQUARE, "Piazza del villaggio",
-                "Il centro di Tanusha, dove gli abitanti si incontrano."));
+        level.addPlace(new Location(HOME, "Casa", "La tua casa a Tanusha. Il medaglione si è appena aperto."));
+        level.addPlace(new Location(SQUARE, "Piazza del villaggio", "Il centro di Tanusha, dove gli abitanti si incontrano."));
         level.addPlace(new Location(PATH, "Sentiero nella foresta", "Un sentiero tra gli alberi. Sul terreno ci sono vecchie impronte."));
         level.addPlace(new Location(FORK, "Il bivio", "Il sentiero si divide in tre direzioni. Su tre alberi sono incisi una luna, " + "un sole e un occhio."));
         level.addPlace(new Location(SHRINE, "Antico santuario", "Al centro c'è una statua con il simbolo del medaglione. Sull'iscrizione si legge: " + "\"Solo chi cerca la verità può aprire il sentiero.\""));
@@ -59,7 +57,6 @@ public class ForestLevelBuilder implements LevelBuilder {
         symbols.put("sole", "Il sentiero del sole");
         symbols.put("occhio", "Il sentiero dell'occhio");
         Puzzle trees = new ChoicePuzzle(TREES_PUZZLE, "Quale sentiero scegli? Uno dei simboli è lo stesso del tuo medaglione.", symbols, "occhio");
-        level.addPuzzle(trees);
         Mechanism treesMechanism = new Mechanism(TREES_MECHANISM, "Sentiero dell'occhio", "Il sentiero che segue il simbolo del medaglione.", new PuzzleUnlockCondition(trees));
         level.addMechanism(treesMechanism);
         level.getPlaceById(FORK).addMechanism(treesMechanism);
@@ -95,8 +92,7 @@ public class ForestLevelBuilder implements LevelBuilder {
     }
 
     private void placeItems(Level level, ItemCatalog catalog) {
-        DocumentItem book = new DocumentItem("libro_madre", "Vecchio libro",
-                "Un libro appartenuto a tua madre.", "Sul retro dell'immagine di Elara è scritto: \"Tanusha non è il posto da cui sono partita.\"");
+        DocumentItem book = new DocumentItem("libro_madre", "Vecchio libro", "Un libro appartenuto a tua madre.", "Sul retro dell'immagine di Elara è scritto: \"Tanusha non è il posto da cui sono partita.\"");
         GenericItem cloth = new GenericItem("stoffa_blu", "Pezzo di stoffa blu", "Un pezzo di stoffa blu: apparteneva al mantello di tua madre.");
         DocumentItem diary = new DocumentItem("pagina_diario", "Pagina del diario", "Una pagina del diario di Elara.", "\"Se qualcuno troverà queste parole, significa che sono riuscita a lasciare Tanusha. " + "Non posso ancora tornare. Devo trovare ciò che è stato nascosto ad Ardan.\"");
         KeyItem key = new KeyItem(StoryIds.ARDAN_KEY, "Vecchia chiave", "Una vecchia chiave con lo stesso simbolo del medaglione.", StoryIds.ARDAN_GATE);

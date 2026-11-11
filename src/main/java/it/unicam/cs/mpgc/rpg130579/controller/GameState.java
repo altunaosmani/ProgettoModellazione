@@ -78,10 +78,4 @@ public class GameState {
         }
         else throw new IllegalStateException("Non è possibile avanzare al prossimo livello");
     }
-
-    public String normalize(String puzzleId) {
-        if (puzzleId == null || puzzleId.isBlank())
-            throw new IllegalStateException("L'ID dell'enigma non può essere vuoto");
-        return puzzleId.trim().toLowerCase(Locale.ROOT);
-    }
 }

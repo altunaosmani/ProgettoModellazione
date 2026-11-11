@@ -113,7 +113,6 @@ public class SaveService {
         levels.setCurrentLevelById(currentLevel.getId());
         for (Level level : completedLevels) {
             level.getQuest().complete();
-            level.complete();
         }
         unlocked.forEach(Mechanism::restoreUnlocked);
 

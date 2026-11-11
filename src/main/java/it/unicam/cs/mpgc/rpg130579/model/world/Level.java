@@ -15,7 +15,6 @@ public class Level {
     private final List<Puzzle> puzzles;
     private final List<Mechanism> mechanisms;
     private final Quest quest;
-    private boolean completed;
 
     public Level(String id, String name, String description, Quest quest) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del livello non può essere vuoto");
@@ -29,7 +28,6 @@ public class Level {
         this.puzzles = new ArrayList<>();
         this.mechanisms = new ArrayList<>();
         this.quest = quest;
-        this.completed = false;
     }
 
     public String getId() {
@@ -63,11 +61,7 @@ public class Level {
     }
 
     public boolean isCompleted() {
-        return this.completed;
-    }
-
-    public void complete() {
-        this.completed = true;
+        return quest.isCompleted();
     }
 
     public int getSizePlaces() {
@@ -132,6 +126,7 @@ public class Level {
         if (m == null) throw new IllegalArgumentException("Il meccanismo non può essere nullo");
         if (getMechanismById(m.getId()) != null) throw new IllegalArgumentException("Esiste già un meccanismo con questo ID");
         mechanisms.add(m);
+        m.getRequiredPuzzle().filter(p -> getPuzzleById(p.getId()) == null).ifPresent(puzzles::add);
     }
 
     public Mechanism getMechanismAt(int index) {

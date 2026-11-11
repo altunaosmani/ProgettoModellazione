@@ -47,7 +47,7 @@ public class LevelManager {
 
     public boolean nextLevel() {
         Level current = getCurrentLevel();
-        if (current == null || current.isCompleted()) return false;
+        if (current == null || !current.isCompleted()) return false;
         if (indexCurrentLevel >= level.size() - 1) return false;
         indexCurrentLevel++;
         return true;

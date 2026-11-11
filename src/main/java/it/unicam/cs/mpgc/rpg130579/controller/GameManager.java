@@ -85,7 +85,12 @@ public class GameManager {
         Player player = state.getPlayer();
         Mechanism mechanism = player.getCurrentLocation().getMechanismById(mechanismId);
         if (mechanism == null) throw new IllegalArgumentException("Meccanismo non trovato: " + mechanismId);
-        return mechanism.tryUnlock(player, answer);
+        boolean unlocked = mechanism.tryUnlock(player, answer);
+        if (unlocked) {
+            mechanism.getRequiredPuzzle()
+                    .ifPresent(p -> state.getProgress().markPuzzleSolved(p.getId()));
+        }
+        return unlocked;
     }
 
     public boolean completeCurrentQuest() {
@@ -94,7 +99,6 @@ public class GameManager {
         Quest quest = level.getQuest();
         if (!quest.isCompletable(state.getPlayer(), state.getProgress())) return false;
         quest.complete();
-        level.complete();
         return true;
     }
 }

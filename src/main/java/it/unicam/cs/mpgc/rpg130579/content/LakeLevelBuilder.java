@@ -60,13 +60,8 @@ public class LakeLevelBuilder implements LevelBuilder {
         options.put("monte", "La vetta delle montagne");
         options.put("centro", "Il centro del lago");
         options.put("riva", "La riva dove la luna si riflette");
-        Puzzle moonWater = new ChoicePuzzle(MOON_WATER_PUZZLE,
-                "\"Dove la luna incontra l'acqua\". Verso quale punto ti dirigi?", options, "riva");
-        level.addPuzzle(moonWater);
-
-        Mechanism gap = new Mechanism(MOON_WATER_MECHANISM, "Varco tra i canneti",
-                "Un passaggio nascosto che si apre solo a chi comprende la frase dei Custodi.",
-                new PuzzleUnlockCondition(moonWater));
+        Puzzle moonWater = new ChoicePuzzle(MOON_WATER_PUZZLE, "\"Dove la luna incontra l'acqua\". Verso quale punto ti dirigi?", options, "riva");
+        Mechanism gap = new Mechanism(MOON_WATER_MECHANISM, "Varco tra i canneti", "Un passaggio nascosto che si apre solo a chi comprende la frase dei Custodi.", new PuzzleUnlockCondition(moonWater));
         level.addMechanism(gap);
         level.getPlaceById(STONE).addMechanism(gap);
     }
