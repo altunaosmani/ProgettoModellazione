@@ -1,10 +1,7 @@
 package it.unicam.cs.mpgc.rpg130579.content;
 
 import it.unicam.cs.mpgc.rpg130579.controller.GameState;
-import it.unicam.cs.mpgc.rpg130579.model.entity.GenericItem;
-import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
-import it.unicam.cs.mpgc.rpg130579.model.entity.ItemCatalog;
-import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
+import it.unicam.cs.mpgc.rpg130579.model.entity.*;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.LevelManager;
 
@@ -23,7 +20,9 @@ public class GameFactory {
 
     public GameSetup newGame() {
         ItemCatalog catalog = new ItemCatalog();
-        Item medallion = new GenericItem(StoryIds.MEDALLION, "Medaglione d'argento", "Un piccolo medaglione d'argento con un occhio circondato da tre rami.");
+        Item medallion = new DocumentItem(StoryIds.MEDALLION, "Medaglione d'argento",
+                "Un piccolo medaglione d'argento con un occhio circondato da tre rami.",
+                "Il medaglione si è aperto e rivela una frase: \"Quando la foresta parlerà, ascolta.\"");
         catalog.register(medallion);
         LevelManager levels = new LevelManager();
         for (LevelBuilder builder : levelBuilders) {
@@ -33,6 +32,5 @@ public class GameFactory {
         Level first = levels.getLevelAt(0);
         Player player = new Player("eren", "Eren", "Giovane elfo del villaggio di Tanusha.", first.getStartLocation());
         player.addItem(medallion);
-        return new GameSetup(new GameState(player, levels), catalog);
-    }
+        return new GameSetup(new GameState(player, levels), catalog, StoryEndings.victory());    }
 }

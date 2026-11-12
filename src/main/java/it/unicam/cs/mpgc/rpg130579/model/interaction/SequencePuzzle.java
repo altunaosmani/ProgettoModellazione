@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.model.interaction;
 import it.unicam.cs.mpgc.rpg130579.model.entity.EnigmaPieceItem;
+import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 
 import java.util.*;
@@ -34,5 +35,23 @@ public class SequencePuzzle extends AbstractPuzzle {
             if (!expected.getId().equalsIgnoreCase(answer.values().get(i).trim())) return false;
         }
         return true;
+    }
+
+    @Override
+    public int answerSize() { return orderedPieces.size(); }
+
+    @Override
+    public Map<String, String> choices(Player player) {
+        Map<String, String> result = new LinkedHashMap<>();
+        for (Item item : player.getInventory()) {
+            if (item instanceof EnigmaPieceItem piece && isPiece(piece)) {
+                result.put(piece.getId(), piece.getPhraseFragment());
+            }
+        }
+        return result;
+    }
+
+    private boolean isPiece(EnigmaPieceItem piece) {
+        return orderedPieces.contains(piece);
     }
 }

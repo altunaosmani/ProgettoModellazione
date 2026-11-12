@@ -29,4 +29,10 @@ public class ChoicePuzzle extends AbstractPuzzle {
         if (answer == null || answer.values().size() != 1) return false;
         return correctOptionId.equalsIgnoreCase(answer.values().get(0).trim());
     }
+
+    @Override
+    public int answerSize() { return 1; }
+
+    @Override
+    public Map<String, String> choices(Player player) { return options; }
 }

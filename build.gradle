@@ -4,7 +4,7 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
-group = 'it.uicam.cs.mpgc'
+group = 'it.unicam.cs.mpgc'
 version = '1.0'
 
 repositories {
