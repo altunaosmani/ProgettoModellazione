@@ -2,16 +2,11 @@ package it.unicam.cs.mpgc.rpg130579.ui;
 
 import it.unicam.cs.mpgc.rpg130579.view.ItemView;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
-
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -47,23 +42,5 @@ public class ItemCard extends VBox {
             buttons.getChildren().add(action);
         }
 
-        getChildren().addAll(createIcon(item, image), name, buttons);
-    }
-
-    private Node createIcon(ItemView item, Optional<Image> image) {
-        if (image.isPresent()) {
-            ImageView view = new ImageView(image.get());
-            view.setFitWidth(ICON_SIZE);
-            view.setFitHeight(ICON_SIZE);
-            view.setPreserveRatio(true);
-            return view;
-        }
-        Rectangle background = new Rectangle(ICON_SIZE, ICON_SIZE);
-        background.setArcWidth(12);
-        background.setArcHeight(12);
-        background.setStyle("-fx-fill: #d9d2c0");
-        Label initial = new Label(item.name().substring(0, 1).toUpperCase());
-        initial.setStyle("-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #6b5f45");
-        return new StackPane(background, initial);
-    }
+        getChildren().addAll(IconFactory.create(item.name(), image, ICON_SIZE), name, buttons);    }
 }

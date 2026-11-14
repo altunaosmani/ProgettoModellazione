@@ -1,22 +1,21 @@
 package it.unicam.cs.mpgc.rpg130579.model.entity;
 
 import it.unicam.cs.mpgc.rpg130579.model.interaction.Dialogue;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.QuestCondition;
+import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 
 public class QuestNPC extends NPC {
-    private final String requiredItemId;
+    private final QuestCondition condition;
     private final Dialogue conditionalDialogue;
 
-    public QuestNPC(String id, String name, String description, Location currentLocation, Dialogue defaultDialogue, String requiredItemId, Dialogue conditionalDialogue) {
+    public QuestNPC(String id, String name, String description, Location currentLocation,
+                    Dialogue defaultDialogue, QuestCondition condition, Dialogue conditionalDialogue) {
         super(id, name, description, currentLocation, defaultDialogue);
-        if (requiredItemId == null || requiredItemId.isBlank()) throw new IllegalArgumentException("L'ID dell'oggetto richeisto non può essere vuoto");
-        if (conditionalDialogue == null) throw new IllegalArgumentException("Il dialogo in questione non può essere nullo");
-        this.requiredItemId = requiredItemId;
+        if (condition == null) throw new IllegalArgumentException("La condizione non può essere nulla");
+        if (conditionalDialogue == null) throw new IllegalArgumentException("Il dialogo condizionale non può essere nullo");
+        this.condition = condition;
         this.conditionalDialogue = conditionalDialogue;
-    }
-
-    public String getRequiredItemId() {
-        return requiredItemId;
     }
 
     public Dialogue getConditionalDialogue() {
@@ -24,8 +23,7 @@ public class QuestNPC extends NPC {
     }
 
     @Override
-    public Dialogue interact(Player player) {
-        if (player != null && player.hasItem(requiredItemId)) return conditionalDialogue;
-        return super.getDialogue();
+    public Dialogue interact(Player player, StoryProgress progress) {
+        return condition.isMetBy(player, progress) ? conditionalDialogue : getDialogue();
     }
 }

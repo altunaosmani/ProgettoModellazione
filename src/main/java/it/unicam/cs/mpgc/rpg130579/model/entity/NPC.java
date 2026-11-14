@@ -1,6 +1,7 @@
 package it.unicam.cs.mpgc.rpg130579.model.entity;
 
 import it.unicam.cs.mpgc.rpg130579.model.interaction.Dialogue;
+import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 
 public class NPC extends GameCharacter {
@@ -21,7 +22,6 @@ public class NPC extends GameCharacter {
         this.dialogue = dialogue;
     }
 
-    public Dialogue interact(Player player) {
+    public Dialogue interact(Player player, StoryProgress progress) {
         return this.dialogue;
-    }
-}
+    }}

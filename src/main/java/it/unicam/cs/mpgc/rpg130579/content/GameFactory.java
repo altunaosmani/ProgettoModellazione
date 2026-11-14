@@ -32,5 +32,6 @@ public class GameFactory {
         Level first = levels.getLevelAt(0);
         Player player = new Player("eren", "Eren", "Giovane elfo del villaggio di Tanusha.", first.getStartLocation());
         player.addItem(medallion);
-        return new GameSetup(new GameState(player, levels), catalog, StoryEndings.victory());    }
+        return new GameSetup(new GameState(player, levels), catalog, StoryIntros.prologue(), StoryEndings.victory());
+    }
 }

@@ -4,8 +4,11 @@ import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.NPC;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.Puzzle;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.Quest;
 import it.unicam.cs.mpgc.rpg130579.model.state.EndingScreen;
+import it.unicam.cs.mpgc.rpg130579.model.state.IntroScreen;
 import it.unicam.cs.mpgc.rpg130579.model.world.Exit;
+import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
 import it.unicam.cs.mpgc.rpg130579.view.*;
@@ -51,6 +54,16 @@ final class ViewMapper {
 
     List<ItemView> toItemViews(List<Item> items) {
         return items.stream().map(this::toView).toList();
+    }
+
+    IntroView toView(IntroScreen intro) {
+        return new IntroView(intro.title(), intro.paragraphs());
+    }
+
+    LevelInfoView toView(Level level, int number, int total) {
+        Quest quest = level.getQuest();
+        return new LevelInfoView(number, total, level.getName(), level.getDescription(),
+                quest.getName(), quest.getDescription(), quest.isCompleted());
     }
 
     EndingView toView(EndingScreen e) {

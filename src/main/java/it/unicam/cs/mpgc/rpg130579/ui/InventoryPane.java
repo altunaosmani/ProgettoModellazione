@@ -38,7 +38,7 @@ public class InventoryPane extends VBox {
             return;
         }
         for (ItemView item : items) {
-            tiles.getChildren().add(new ItemCard(item, images.imageForItem(item.id()), null, null, onExamine));
+            tiles.getChildren().add(new ItemCard(item, images.imageFor(ImageKind.ITEM, item.id()), null, null, onExamine));
         }
     }
 }

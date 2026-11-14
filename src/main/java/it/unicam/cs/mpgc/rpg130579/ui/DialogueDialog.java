@@ -7,37 +7,43 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
+import java.util.Optional;
 
 public final class DialogueDialog {
-    public static void run(DialogueController controller, String npcId) {
+    private static final double PORTRAIT_SIZE = 64;
+
+    public static void run(DialogueController controller, String npcId, Optional<Image> portrait) {
         DialogueView view = controller.talkTo(npcId);
         while (true) {
             if (view.choices().isEmpty()) {
-                if (!view.lines().isEmpty()) showLines(view);
+                if (!view.lines().isEmpty()) showLines(view, portrait);
                 return;
             }
-            int index = askChoice(view);
+            int index = askChoice(view, portrait);
             if (index < 0) return; // finestra chiusa
             view = controller.choose(index);
         }
     }
 
-    private static void showLines(DialogueView view) {
+    private static void showLines(DialogueView view, Optional<Image> portrait) {
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle(view.speaker());
         dialog.setHeaderText(view.speaker());
+        dialog.setGraphic(IconFactory.create(view.speaker(), portrait, PORTRAIT_SIZE));
         dialog.getDialogPane().setContent(textBox(view.lines()));
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.showAndWait();
     }
 
-    private static int askChoice(DialogueView view) {
+    private static int askChoice(DialogueView view, Optional<Image> portrait) {
         Dialog<Integer> dialog = new Dialog<>();
         dialog.setTitle(view.speaker());
         dialog.setHeaderText(view.speaker());
+        dialog.setGraphic(IconFactory.create(view.speaker(), portrait, PORTRAIT_SIZE));
 
         VBox box = textBox(view.lines());
         for (int i = 0; i < view.choices().size(); i++) {

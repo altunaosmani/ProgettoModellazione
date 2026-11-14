@@ -109,8 +109,10 @@ public class CastleLevelBuilder implements LevelBuilder {
 
     private void placeNpcs(Level level) {
         Location courtyard = level.getPlaceById(COURTYARD);
-        courtyard.addNPC(new QuestNPC("rowan", "Rowan", "Un vecchio guardiano rimasto al castello per molti anni.", courtyard, CastleDialogues.rowanStranger(), StoryIds.MEDALLION, CastleDialogues.rowanRecognizes()));
-    }
+        courtyard.addNPC(new QuestNPC("rowan", "Rowan", "Un vecchio guardiano rimasto al castello per molti anni.",
+                courtyard, CastleDialogues.rowanFirstMeeting(),
+                new FlagCondition(CastleDialogues.ROWAN_HELP_FLAG, CastleDialogues.ROWAN_HELP_VALUE),
+                CastleDialogues.rowanReminder()));    }
 
     private void place(Level level, ItemCatalog catalog, String locationId, Item item) {
         catalog.register(item);

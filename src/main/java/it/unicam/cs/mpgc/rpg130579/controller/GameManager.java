@@ -37,7 +37,7 @@ public class GameManager {
         if (npcId == null || npcId.isBlank()) throw new IllegalArgumentException("L'ID del personaggio non può essere vuoto");
         NPC npc = getLocation(locationId).getNPCById(npcId);
         if (npc == null) throw new IllegalArgumentException("Personaggio non trovato: " + npcId);
-        return new DialogueSession(npc.interact(state.getPlayer()), state.getProgress());
+        return new DialogueSession(npc.interact(state.getPlayer(), state.getProgress()), state.getProgress());
     }
 
     public boolean solvePuzzle(String puzzleId, PuzzleAnswer answer) {

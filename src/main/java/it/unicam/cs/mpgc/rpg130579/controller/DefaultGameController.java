@@ -81,8 +81,7 @@ public class DefaultGameController implements GameController {
     public ActionResult unlock(String mechanismId, List<String> answer) {
         try {
             PuzzleAnswer given = (answer == null || answer.isEmpty()) ? PuzzleAnswer.empty() : new PuzzleAnswer(answer);
-            if (!manager.unlockMechanism(mechanismId, given)) return ActionResult.fail("Non succede nulla.");
-            return ActionResult.ok("Si è sbloccato qualcosa!" + questNote());
+            if (!manager.unlockMechanism(mechanismId, given)) return ActionResult.fail("Non è la scelta giusta. Cerca un indizio tra gli oggetti che possiedi.");            return ActionResult.ok("Si è sbloccato qualcosa!" + questNote());
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ActionResult.fail(e.getMessage());
         }
@@ -181,4 +180,16 @@ public class DefaultGameController implements GameController {
     public void newGame() {
         adopt(newGameSource.get());
     }
+
+    @Override
+    public IntroView intro() {
+        return mapper.toView(setup.introScreen());
+    }
+
+    @Override
+    public LevelInfoView levelInfo() {
+        GameState state = manager.getCurrentState();
+        return mapper.toView(state.getCurrentLevel(), state.getCurrentLevelIndex() + 1, state.getGameLevel().getLevelsSize());
+    }
+
 }

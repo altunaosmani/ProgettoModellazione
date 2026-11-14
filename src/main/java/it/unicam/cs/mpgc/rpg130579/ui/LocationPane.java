@@ -5,16 +5,20 @@ import it.unicam.cs.mpgc.rpg130579.view.ItemView;
 import it.unicam.cs.mpgc.rpg130579.view.LocationView;
 import it.unicam.cs.mpgc.rpg130579.view.MechanismView;
 import it.unicam.cs.mpgc.rpg130579.view.NpcView;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
 import java.util.function.Consumer;
 
 public class LocationPane extends VBox {
+    private static final double LOCATION_ICON_SIZE = 64;
+
     private final ImageProvider images;
     private final Consumer<ItemView> onTake;
     private final Consumer<ItemView> onExamine;
@@ -37,21 +41,13 @@ public class LocationPane extends VBox {
 
     public void update(LocationView location) {
         getChildren().clear();
-
-        Label title = new Label(location.name());
-        title.setStyle("-fx-font-size: 22; -fx-font-weight: bold");
-        Label description = new Label(location.description());
-        description.setWrapText(true);
-        getChildren().addAll(title, description);
+        getChildren().add(createHeader(location));
 
         if (!location.npcs().isEmpty()) {
             getChildren().add(sectionTitle("Personaggi"));
-            FlowPane npcs = new FlowPane(8, 8);
+            FlowPane npcs = new FlowPane(10, 10);
             for (NpcView npc : location.npcs()) {
-                Button button = new Button("Parla con " + npc.name());
-                button.setTooltip(new Tooltip(npc.description()));
-                button.setOnAction(e -> onTalk.accept(npc));
-                npcs.getChildren().add(button);
+                npcs.getChildren().add(new NpcCard(npc, images.imageFor(ImageKind.NPC, npc.id()), onTalk));
             }
             getChildren().add(npcs);
         }
@@ -76,7 +72,8 @@ public class LocationPane extends VBox {
             getChildren().add(sectionTitle("Oggetti nel luogo"));
             TilePane tiles = new TilePane(10, 10);
             for (ItemView item : location.items()) {
-                tiles.getChildren().add(new ItemCard(item, images.imageForItem(item.id()), "Raccogli", onTake, onExamine));
+                tiles.getChildren().add(new ItemCard(item, images.imageFor(ImageKind.ITEM, item.id()),
+                        "Raccogli", onTake, onExamine));
             }
             getChildren().add(tiles);
         }
@@ -90,6 +87,20 @@ public class LocationPane extends VBox {
             exits.getChildren().add(button);
         }
         getChildren().add(exits);
+    }
+
+    private HBox createHeader(LocationView location) {
+        Label title = new Label(location.name());
+        title.setStyle("-fx-font-size: 22; -fx-font-weight: bold");
+        Label description = new Label(location.description());
+        description.setWrapText(true);
+        VBox texts = new VBox(6, title, description);
+
+        HBox header = new HBox(16,
+                IconFactory.create(location.name(), images.imageFor(ImageKind.LOCATION, location.id()), LOCATION_ICON_SIZE),
+                texts);
+        header.setAlignment(Pos.CENTER_LEFT);
+        return header;
     }
 
     private Label sectionTitle(String text) {
