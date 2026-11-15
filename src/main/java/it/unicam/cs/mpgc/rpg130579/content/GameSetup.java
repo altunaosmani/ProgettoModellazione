@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.content;
 
-import it.unicam.cs.mpgc.rpg130579.controller.GameState;
+import it.unicam.cs.mpgc.rpg130579.model.state.GameState;
 import it.unicam.cs.mpgc.rpg130579.model.entity.ItemCatalog;
 import it.unicam.cs.mpgc.rpg130579.model.state.EndingScreen;
 import it.unicam.cs.mpgc.rpg130579.model.state.IntroScreen;

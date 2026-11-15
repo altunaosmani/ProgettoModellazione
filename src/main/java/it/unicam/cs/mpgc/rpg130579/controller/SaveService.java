@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg130579.controller;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.ItemCatalog;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
+import it.unicam.cs.mpgc.rpg130579.model.state.GameState;
 import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.LevelManager;
@@ -49,7 +50,7 @@ public class SaveService {
 
     SaveData capture(GameState state) {
         if (state == null) throw new IllegalArgumentException("Lo stato di gioco non può essere nullo");
-        LevelManager levels = state.getGameLevel();
+        LevelManager levels = state.getLevelManager();
         Player player = state.getPlayer();
         StoryProgress progress = state.getProgress();
 
@@ -83,7 +84,7 @@ public class SaveService {
         if (data.getVersion() != SaveData.CURRENT_VERSION)
             throw new IllegalStateException("Versione di salvataggio non supportata: " + data.getVersion());
 
-        LevelManager levels = state.getGameLevel();
+        LevelManager levels = state.getLevelManager();
 
         // Fase 1: risolvo tutti gli id. Se qualcosa non torna, lancio prima di modificare lo stato.
         Level currentLevel = levels.getLevelById(data.getCurrentLevelId());

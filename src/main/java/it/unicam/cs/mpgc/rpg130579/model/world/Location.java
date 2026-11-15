@@ -3,18 +3,23 @@ package it.unicam.cs.mpgc.rpg130579.model.world;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.NPC;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
+/**
+ * Un luogo del mondo di gioco. Oggetti, personaggi, uscite e meccanismi sono indicizzati per id
+ * (senza distinzione tra maiuscole e minuscole) e mantengono l'ordine di inserimento.
+ */
 public class Location {
     private final String id;
     private final String name;
     private final String description;
-    private final List<Item> items;
-    private final List<NPC> npcs;
-    private final List<Exit> exits;
-    private final List<Mechanism> mechanisms = new ArrayList<>();
+    private final Map<String, Item> items = new LinkedHashMap<>();
+    private final Map<String, NPC> npcs = new LinkedHashMap<>();
+    private final Map<String, Exit> exits = new LinkedHashMap<>();
+    private final Map<String, Mechanism> mechanisms = new LinkedHashMap<>();
 
     public Location(String id, String name, String description) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
@@ -23,9 +28,6 @@ public class Location {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.items = new ArrayList<>();
-        this.npcs = new ArrayList<>();
-        this.exits = new ArrayList<>();
     }
 
     public String getId() {
@@ -41,85 +43,79 @@ public class Location {
     }
 
     public int getSizeNPC() {
-        return this.npcs.size();
+        return npcs.size();
     }
 
     public int getSizeItems() {
-        return this.items.size();
+        return items.size();
     }
 
-    public NPC getNPCById(String id) {
-        if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del personaggio non può essere vuoto");
-        for (NPC npc : npcs) {
-            if (npc.getId().equals(id)) return npc;
-        }
-        return null;
+    // ---------- Personaggi ----------
+
+    public NPC getNPCById(String npcId) {
+        return npcs.get(key(npcId, "L'ID del personaggio"));
     }
 
     public boolean addNPC(NPC npc) {
-        if (npc == null) throw new IllegalArgumentException("Il personaggio non può essere null");
-        if (getNPCById(npc.getId()) != null) return false;
-        npcs.add(npc);
-        return true;
+        if (npc == null) throw new IllegalArgumentException("Il personaggio non può essere nullo");
+        return npcs.putIfAbsent(key(npc.getId(), "L'ID del personaggio"), npc) == null;
     }
 
-    public NPC getNPCAt(int index) {
-        if (index < 0 || index >= npcs.size()) throw new IllegalArgumentException("L'indice del personaggio non è valido");
-        return npcs.get(index);
+    public List<NPC> getNpcs() {
+        return List.copyOf(npcs.values());
     }
 
-    public Item getItemsById(String id) {
-        if (id == null || id.isBlank()) throw new IllegalArgumentException("L'oggetto non può essere nullo");
-        for (Item item : items) {
-            if (item.getId().equals(id)) return item;
-        }
-        return null;
+    // ---------- Oggetti ----------
+
+    public Item getItemById(String itemId) {
+        return items.get(key(itemId, "L'ID dell'oggetto"));
     }
 
-    public boolean addItem(Item i) {
-        if (i == null) throw new IllegalArgumentException("L'oggetto non deve essere null");
-        if (getItemsById(i.getId()) != null) return false;
-        items.add(i);
-        return true;
+    public boolean addItem(Item item) {
+        if (item == null) throw new IllegalArgumentException("L'oggetto non può essere nullo");
+        return items.putIfAbsent(key(item.getId(), "L'ID dell'oggetto"), item) == null;
     }
 
-    public boolean removeItem(String id) {
-        Item i = getItemsById(id);
-        if (i == null) return false;
-        items.remove(i);
-        return true;
+    public boolean removeItem(String itemId) {
+        return items.remove(key(itemId, "L'ID dell'oggetto")) != null;
     }
 
-    public Exit getExitById(String id) {
-        if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID dell'uscita on può essere vuoto");
-        for (Exit exit : exits) {
-            if (exit.getId().equalsIgnoreCase(id)) return exit;
-        }
-        return null;
+    public List<Item> getItems() {
+        return List.copyOf(items.values());
+    }
+
+    // ---------- Uscite ----------
+
+    public Exit getExitById(String exitId) {
+        return exits.get(key(exitId, "L'ID dell'uscita"));
     }
 
     public boolean addExit(Exit exit) {
         if (exit == null) throw new IllegalArgumentException("L'uscita non può essere nulla");
-        if (getExitById(exit.getId()) != null) return false;
-        exits.add(exit);
-        return true;
+        return exits.putIfAbsent(key(exit.getId(), "L'ID dell'uscita"), exit) == null;
     }
 
     public List<Exit> getExits() {
-        return Collections.unmodifiableList(exits);
+        return List.copyOf(exits.values());
     }
 
-    public boolean addMechanism(Mechanism m) {
-        if (m == null) throw new IllegalArgumentException("Il meccanismo non può essere nullo");
-        if (getMechanismById(m.getId()) != null) return false;
-        return mechanisms.add(m);
-    }
-    public Mechanism getMechanismById(String id) {
-        for (Mechanism m : mechanisms) if (m.getId().equalsIgnoreCase(id)) return m;
-        return null;
-    }
-    public List<Mechanism> getMechanisms() { return Collections.unmodifiableList(mechanisms); }
-    public List<Item> getItems() { return Collections.unmodifiableList(items); }
-    public List<NPC> getNpcs() { return Collections.unmodifiableList(npcs); }
+    // ---------- Meccanismi ----------
 
+    public Mechanism getMechanismById(String mechanismId) {
+        return mechanisms.get(key(mechanismId, "L'ID del meccanismo"));
+    }
+
+    public boolean addMechanism(Mechanism mechanism) {
+        if (mechanism == null) throw new IllegalArgumentException("Il meccanismo non può essere nullo");
+        return mechanisms.putIfAbsent(key(mechanism.getId(), "L'ID del meccanismo"), mechanism) == null;
+    }
+
+    public List<Mechanism> getMechanisms() {
+        return List.copyOf(mechanisms.values());
+    }
+
+    private static String key(String value, String label) {
+        if (value == null || value.isBlank()) throw new IllegalArgumentException(label + " non può essere vuoto");
+        return value.trim().toLowerCase(Locale.ROOT);
+    }
 }

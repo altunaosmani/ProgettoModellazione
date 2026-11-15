@@ -11,13 +11,10 @@ public abstract class GameCharacter {
     private Location currentLocation;
 
     public GameCharacter(String id, String name, String description, Location currentLocation) {
-        if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del personaggio non può essere nullo");
-        if (name == null || name.isBlank()) throw new IllegalArgumentException("Il nome del personaggio non può essere nullo");
-        if (description == null || description.isBlank()) throw new IllegalArgumentException("La descrizione del personaggio non può essere nulla");
-        if (currentLocation == null) throw new IllegalArgumentException("La location non può essere nulla");
-        this.id = id;
-        this.name = name;
-        this.description = description;
+        this.id = requireText(id, "L'ID del personaggio");
+        this.name = requireText(name, "Il nome del personaggio");
+        this.description = requireText(description, "La descrizione del personaggio");
+        if (currentLocation == null) throw new IllegalArgumentException("Il luogo non può essere nullo");
         this.currentLocation = currentLocation;
     }
 
@@ -30,7 +27,7 @@ public abstract class GameCharacter {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = requireText(name, "Il nome del personaggio");
     }
 
     public String getDescription() {
@@ -38,7 +35,7 @@ public abstract class GameCharacter {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = requireText(description, "La descrizione del personaggio");
     }
 
     public Location getCurrentLocation() {
@@ -46,16 +43,20 @@ public abstract class GameCharacter {
     }
 
     public void setCurrentLocation(Location currentLocation) {
-        if (currentLocation == null) throw new IllegalArgumentException("La location non può essere nulla");
+        if (currentLocation == null) throw new IllegalArgumentException("Il luogo non può essere nullo");
         this.currentLocation = currentLocation;
+    }
+
+    private static String requireText(String value, String label) {
+        if (value == null || value.isBlank()) throw new IllegalArgumentException(label + " non può essere vuoto");
+        return value;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
         if (this == o) return true;
-        GameCharacter gameCharacter = (GameCharacter) o;
-        return Objects.equals(id, gameCharacter.id);
+        if (o == null || getClass() != o.getClass()) return false;
+        return Objects.equals(id, ((GameCharacter) o).id);
     }
 
     @Override

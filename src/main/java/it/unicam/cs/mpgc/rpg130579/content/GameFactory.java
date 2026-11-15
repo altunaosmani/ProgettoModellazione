@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.content;
 
-import it.unicam.cs.mpgc.rpg130579.controller.GameState;
+import it.unicam.cs.mpgc.rpg130579.model.state.GameState;
 import it.unicam.cs.mpgc.rpg130579.model.entity.*;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.LevelManager;

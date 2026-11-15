@@ -3,12 +3,16 @@ package it.unicam.cs.mpgc.rpg130579.controller;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.NPC;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.*;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueSession;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.PuzzleAnswer;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.Quest;
+import it.unicam.cs.mpgc.rpg130579.model.state.GameState;
 import it.unicam.cs.mpgc.rpg130579.model.world.Exit;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
 
+/** Applica le regole del gioco sullo stato: movimento, raccolta, sblocchi, dialoghi, missioni. */
 public class GameManager {
     private final GameState state;
 
@@ -17,13 +21,21 @@ public class GameManager {
         this.state = state;
     }
 
-    public GameState getCurrentState() { return state; }
+    public GameState getCurrentState() {
+        return state;
+    }
 
-    public Level getCurrentLevel() { return state.getCurrentLevel(); }
+    public Level getCurrentLevel() {
+        return state.getCurrentLevel();
+    }
 
-    public boolean isGameOver() { return state.isGameEnd(); }
+    public boolean isGameOver() {
+        return state.isGameEnd();
+    }
 
-    public boolean hasWon() { return state.isWin(); }
+    public boolean hasWon() {
+        return state.isWin();
+    }
 
     public Location getLocation(String locationId) {
         if (locationId == null || locationId.isBlank()) throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
@@ -40,23 +52,9 @@ public class GameManager {
         return new DialogueSession(npc.interact(state.getPlayer(), state.getProgress()), state.getProgress());
     }
 
-    public boolean solvePuzzle(String puzzleId, PuzzleAnswer answer) {
-        ensureRunning();
-        if (answer == null) throw new IllegalArgumentException("La risposta non può essere nulla");
-        Puzzle puzzle = getCurrentLevel().getPuzzleById(puzzleId);
-        if (puzzle == null) throw new IllegalArgumentException("Enigma non trovato: " + puzzleId);
-        boolean solved = puzzle.isSolvedBy(answer, state.getPlayer());
-        if (solved) state.getProgress().markPuzzleSolved(puzzleId);
-        return solved;
-    }
-
     public void advanceToNextLevel() {
         ensureRunning();
         state.nextLevel();
-    }
-
-    private void ensureRunning() {
-        if (state.isGameEnd()) throw new IllegalStateException("La partita è già terminata");
     }
 
     public boolean move(String exitId) {
@@ -73,7 +71,7 @@ public class GameManager {
         ensureRunning();
         Player player = state.getPlayer();
         Location location = player.getCurrentLocation();
-        Item item = location.getItemsById(itemId);
+        Item item = location.getItemById(itemId);
         if (item == null) throw new IllegalArgumentException("Oggetto non trovato: " + itemId);
         if (!player.addItem(item)) return false;
         location.removeItem(itemId);
@@ -87,18 +85,20 @@ public class GameManager {
         if (mechanism == null) throw new IllegalArgumentException("Meccanismo non trovato: " + mechanismId);
         boolean unlocked = mechanism.tryUnlock(player, answer);
         if (unlocked) {
-            mechanism.getRequiredPuzzle()
-                    .ifPresent(p -> state.getProgress().markPuzzleSolved(p.getId()));
+            mechanism.getRequiredPuzzle().ifPresent(p -> state.getProgress().markPuzzleSolved(p.getId()));
         }
         return unlocked;
     }
 
     public boolean completeCurrentQuest() {
         if (state.isGameEnd()) return false;
-        Level level = getCurrentLevel();
-        Quest quest = level.getQuest();
+        Quest quest = getCurrentLevel().getQuest();
         if (!quest.isCompletable(state.getPlayer(), state.getProgress())) return false;
         quest.complete();
         return true;
+    }
+
+    private void ensureRunning() {
+        if (state.isGameEnd()) throw new IllegalStateException("La partita è già terminata");
     }
 }

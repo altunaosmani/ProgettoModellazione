@@ -27,9 +27,10 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class GameApp extends Application {
@@ -42,14 +43,20 @@ public class GameApp extends Application {
     private final Label status = new Label();
     private final Label levelTitle = new Label();
     private final Label objective = new Label();
-    private final Button continueButton = new Button("Continua ▶");
     private final BorderPane root = new BorderPane();
     private final VBox top = new VBox();
     private MenuBar menuBar;
     private MenuItem saveItem;
     private VBox banner;
     private ScrollPane center;
+    private StackPane centerStack;
     private HBox bottomBar;
+
+    // Banner di fine livello
+    private StackPane completionOverlay;
+    private final Label completionTitle = new Label();
+    private final Label completionText = new Label();
+    private final Button nextLevelButton = new Button();
 
     @Override
     public void start(Stage stage) {
@@ -61,14 +68,12 @@ public class GameApp extends Application {
 
         center = new ScrollPane(locationPane);
         center.setFitToWidth(true);
+        completionOverlay = createCompletionOverlay();
+        centerStack = new StackPane(center, completionOverlay);
 
         status.setStyle("-fx-padding: 8 20 8 20");
-        continueButton.setOnAction(e -> onContinue());
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        bottomBar = new HBox(10, status, spacer, continueButton);
+        bottomBar = new HBox(10, status);
         bottomBar.setAlignment(Pos.CENTER_LEFT);
-        bottomBar.setStyle("-fx-padding: 0 20 0 0");
 
         banner = createBanner();
         menuBar = createMenu();
@@ -107,6 +112,45 @@ public class GameApp extends Application {
         box.setAlignment(Pos.CENTER);
         box.setStyle(PAPER);
         return box;
+    }
+
+    /** Overlay a tutto schermo con la card centrale; resta invisibile finché il livello non è completato. */
+    private StackPane createCompletionOverlay() {
+        completionTitle.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: #3b3322");
+        completionText.setStyle("-fx-font-size: 16; -fx-text-fill: #3b3322");
+        completionText.setWrapText(true);
+        completionText.setMaxWidth(420);
+        completionText.setTextAlignment(TextAlignment.CENTER);
+
+        nextLevelButton.setStyle("-fx-font-size: 18; -fx-font-weight: bold; -fx-padding: 12 32 12 32;"
+                + "-fx-background-color: #6b8e4e; -fx-text-fill: white; -fx-background-radius: 8");
+        nextLevelButton.setOnAction(e -> onContinue());
+
+        VBox card = new VBox(16, completionTitle, completionText, nextLevelButton);
+        card.setAlignment(Pos.CENTER);
+        card.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        card.setStyle("-fx-padding: 32 48 32 48; -fx-background-color: #ece7da; -fx-background-radius: 14;"
+                + "-fx-border-color: #6b8e4e; -fx-border-width: 3; -fx-border-radius: 14;"
+                + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0.3, 0, 4)");
+
+        StackPane overlay = new StackPane(card);
+        overlay.setAlignment(Pos.CENTER);
+        overlay.setStyle("-fx-background-color: rgba(0,0,0,0.45)");
+        overlay.setVisible(false); // invisibile = non intercetta i click
+        return overlay;
+    }
+
+    private void updateCompletionOverlay(GameStatus current, LevelInfoView info) {
+        boolean show = current.levelCompleted();
+        if (show) {
+            boolean last = info.number() == info.total();
+            completionTitle.setText("Hai completato il livello!");
+            completionText.setText(last
+                    ? "La tua ricerca è giunta al termine."
+                    : "Il prossimo luogo ti aspetta.");
+            nextLevelButton.setText(last ? "Concludi l'avventura ▶" : "Vai al livello successivo ▶");
+        }
+        completionOverlay.setVisible(show);
     }
 
     // ---------- Schermate ----------
@@ -171,7 +215,7 @@ public class GameApp extends Application {
         }
         top.getChildren().setAll(menuBar, banner);
         saveItem.setDisable(false);
-        root.setCenter(center);
+        root.setCenter(centerStack);
         root.setRight(inventoryPane);
         root.setBottom(bottomBar);
 
@@ -182,8 +226,7 @@ public class GameApp extends Application {
 
         locationPane.update(controller.currentLocation());
         inventoryPane.update(controller.inventory());
-        continueButton.setVisible(current.levelCompleted());
-        continueButton.setManaged(current.levelCompleted());
+        updateCompletionOverlay(current, info);
     }
 
     private void showLevelBriefing() {

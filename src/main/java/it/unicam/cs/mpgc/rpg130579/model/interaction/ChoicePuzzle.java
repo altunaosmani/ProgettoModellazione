@@ -10,14 +10,14 @@ public class ChoicePuzzle extends AbstractPuzzle {
     private final Map<String, String> options;
     private final String correctOptionId;
 
-    public ChoicePuzzle(String id, String descritpion, Map<String, String> options, String correctOptionId) {
-        super(id, descritpion);
+    public ChoicePuzzle(String id, String description, Map<String, String> options, String correctOptionId) {
+        super(id, description);
         if (options == null || options.size() < 2) throw new IllegalArgumentException("Occorrono almeno 2 opzioni");
         if (correctOptionId == null || correctOptionId.isBlank()) throw new IllegalArgumentException("L'opzione corretta non può essere vuota");
-        boolean present = options.keySet().stream().anyMatch(k -> k.equalsIgnoreCase(correctOptionId));
+        boolean present = options.keySet().stream().anyMatch(k -> k.equalsIgnoreCase(correctOptionId.trim()));
         if (!present) throw new IllegalArgumentException("L'opzione corretta deve essere tra quelle disponibili");
         this.options = Collections.unmodifiableMap(new LinkedHashMap<>(options));
-        this.correctOptionId = correctOptionId;
+        this.correctOptionId = correctOptionId.trim();
     }
 
     public Map<String, String> getOptions() {
@@ -31,8 +31,12 @@ public class ChoicePuzzle extends AbstractPuzzle {
     }
 
     @Override
-    public int answerSize() { return 1; }
+    public int answerSize() {
+        return 1;
+    }
 
     @Override
-    public Map<String, String> choices(Player player) { return options; }
+    public Map<String, String> choices(Player player) {
+        return options;
+    }
 }

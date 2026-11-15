@@ -1,24 +1,23 @@
-package it.unicam.cs.mpgc.rpg130579.controller;
+package it.unicam.cs.mpgc.rpg130579.model.state;
 
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
-import it.unicam.cs.mpgc.rpg130579.model.world.LevelManager;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
+import it.unicam.cs.mpgc.rpg130579.model.world.LevelManager;
 
-import java.util.Locale;
-
+/** Stato completo di una partita: giocatore, livelli, progressi della storia ed esito finale. */
 public class GameState {
     private final Player player;
-    private final LevelManager gameLevel;
+    private final LevelManager levelManager;
     private final StoryProgress progress;
     private boolean gameEnd;
     private boolean win;
 
-    public GameState(Player player, LevelManager gameLevel) {
+    public GameState(Player player, LevelManager levelManager) {
         if (player == null) throw new IllegalArgumentException("Il giocatore non può essere nullo");
-        if (gameLevel == null) throw new IllegalArgumentException("La partita deve avere almeno un livello");
+        if (levelManager == null) throw new IllegalArgumentException("La partita deve avere almeno un livello");
         this.player = player;
-        this.gameLevel = gameLevel;
+        this.levelManager = levelManager;
         this.progress = new StoryProgress();
         this.gameEnd = false;
         this.win = false;
@@ -28,16 +27,16 @@ public class GameState {
         return this.player;
     }
 
-    public LevelManager getGameLevel() {
-        return this.gameLevel;
+    public LevelManager getLevelManager() {
+        return this.levelManager;
     }
 
     public int getCurrentLevelIndex() {
-        return this.gameLevel.getIndexCurrentLevel();
+        return this.levelManager.getIndexCurrentLevel();
     }
 
     public Level getCurrentLevel() {
-        return gameLevel.getCurrentLevel();
+        return levelManager.getCurrentLevel();
     }
 
     public StoryProgress getProgress() {
@@ -52,30 +51,31 @@ public class GameState {
         return this.win;
     }
 
-    public void endGame() {
-        this.gameEnd = true;
-    }
-
     public void endGameVictory() {
         if (gameEnd) throw new IllegalStateException("La partita è già terminata");
-        if (!gameLevel.lastLevel() || !getCurrentLevel().isCompleted()) throw new IllegalStateException("L'ultimo livello deve essere completato per vincere ");
+        if (!levelManager.isLastLevel() || !getCurrentLevel().isCompleted())
+            throw new IllegalStateException("L'ultimo livello deve essere completato per vincere");
         this.win = true;
         this.gameEnd = true;
     }
 
+    /** Usato dal caricamento di un salvataggio di una partita già conclusa. */
     public void restoreEnded(boolean won) {
         this.gameEnd = true;
         this.win = won;
     }
 
+    /** Avanza al livello successivo; se il livello completato è l'ultimo, la partita si chiude con la vittoria. */
     public void nextLevel() {
         if (gameEnd) throw new IllegalStateException("La partita è già terminata");
-        if (gameLevel.nextLevel()) {
+        if (levelManager.nextLevel()) {
             player.setCurrentLocation(getCurrentLevel().getStartLocation());
             return;
-        }        if (gameLevel.lastLevel() && getCurrentLevel().isCompleted()) {
-            endGameVictory();
         }
-        else throw new IllegalStateException("Non è possibile avanzare al prossimo livello");
+        if (levelManager.isLastLevel() && getCurrentLevel().isCompleted()) {
+            endGameVictory();
+            return;
+        }
+        throw new IllegalStateException("Non è possibile avanzare al prossimo livello");
     }
 }

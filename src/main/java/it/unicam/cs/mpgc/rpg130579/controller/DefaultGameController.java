@@ -5,6 +5,7 @@ import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueChoice;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueSession;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.PuzzleAnswer;
+import it.unicam.cs.mpgc.rpg130579.model.state.GameState;
 import it.unicam.cs.mpgc.rpg130579.persistence.SaveRepository;
 import it.unicam.cs.mpgc.rpg130579.view.*;
 
@@ -41,7 +42,7 @@ public class DefaultGameController implements GameController {
         return manager.getCurrentState().getPlayer();
     }
 
-    /** Dopo ogni azione che può cambiare lo stato della storia controlla se la quest è finita. */
+    /** Dopo ogni azione che può cambiare lo stato della storia controlla se la missione è finita. */
     private String questNote() {
         return manager.completeCurrentQuest() ? " Missione completata!" : "";
     }
@@ -81,7 +82,10 @@ public class DefaultGameController implements GameController {
     public ActionResult unlock(String mechanismId, List<String> answer) {
         try {
             PuzzleAnswer given = (answer == null || answer.isEmpty()) ? PuzzleAnswer.empty() : new PuzzleAnswer(answer);
-            if (!manager.unlockMechanism(mechanismId, given)) return ActionResult.fail("Non è la scelta giusta. Cerca un indizio tra gli oggetti che possiedi.");            return ActionResult.ok("Si è sbloccato qualcosa!" + questNote());
+            if (!manager.unlockMechanism(mechanismId, given)) {
+                return ActionResult.fail("Non succede nulla. Forse ti manca qualcosa, o la scelta non è quella giusta.");
+            }
+            return ActionResult.ok("Si è sbloccato qualcosa!" + questNote());
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ActionResult.fail(e.getMessage());
         }
@@ -111,7 +115,7 @@ public class DefaultGameController implements GameController {
         DialogueView view = new DialogueView(session.getTitle(), lines, choices, session.isFinished());
         if (view.finished()) {
             session = null;
-            manager.completeCurrentQuest(); // gli effetti dei dialoghi (flag) possono completare la quest
+            manager.completeCurrentQuest(); // gli effetti dei dialoghi (flag) possono completare la missione
         }
         return view;
     }
@@ -142,6 +146,18 @@ public class DefaultGameController implements GameController {
         return manager.hasWon() ? Optional.of(mapper.toView(setup.victoryEnding())) : Optional.empty();
     }
 
+    @Override
+    public IntroView intro() {
+        return mapper.toView(setup.introScreen());
+    }
+
+    @Override
+    public LevelInfoView levelInfo() {
+        GameState state = manager.getCurrentState();
+        return mapper.toView(state.getCurrentLevel(), state.getCurrentLevelIndex() + 1,
+                state.getLevelManager().getLevelsSize());
+    }
+
     // ---------- Persistenza ----------
 
     @Override
@@ -165,7 +181,7 @@ public class DefaultGameController implements GameController {
 
     @Override
     public ActionResult load() {
-        GameSetup fresh = newGameSource.get(); // stato e catalogo vengono dalla stessa partita
+        GameSetup fresh = newGameSource.get(); // stato e catalogo devono venire dalla stessa partita
         try {
             if (!new SaveService(repository, fresh.catalog()).load(fresh.state()))
                 return ActionResult.fail("Nessun salvataggio trovato.");
@@ -180,16 +196,4 @@ public class DefaultGameController implements GameController {
     public void newGame() {
         adopt(newGameSource.get());
     }
-
-    @Override
-    public IntroView intro() {
-        return mapper.toView(setup.introScreen());
-    }
-
-    @Override
-    public LevelInfoView levelInfo() {
-        GameState state = manager.getCurrentState();
-        return mapper.toView(state.getCurrentLevel(), state.getCurrentLevelIndex() + 1, state.getGameLevel().getLevelsSize());
-    }
-
 }

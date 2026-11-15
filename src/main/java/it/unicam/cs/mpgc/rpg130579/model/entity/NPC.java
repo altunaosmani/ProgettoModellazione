@@ -22,6 +22,8 @@ public class NPC extends GameCharacter {
         this.dialogue = dialogue;
     }
 
+    /** Sceglie il dialogo da usare; le sottoclassi possono variarlo in base allo stato della storia. */
     public Dialogue interact(Player player, StoryProgress progress) {
         return this.dialogue;
-    }}
+    }
+}
