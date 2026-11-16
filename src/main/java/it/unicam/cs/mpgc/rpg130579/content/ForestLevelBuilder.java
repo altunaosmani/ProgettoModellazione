@@ -1,16 +1,13 @@
 package it.unicam.cs.mpgc.rpg130579.content;
 
-import it.unicam.cs.mpgc.rpg130579.model.entity.DocumentItem;
-import it.unicam.cs.mpgc.rpg130579.model.entity.GenericItem;
-import it.unicam.cs.mpgc.rpg130579.model.entity.ItemCatalog;
-import it.unicam.cs.mpgc.rpg130579.model.entity.KeyItem;
-import it.unicam.cs.mpgc.rpg130579.model.entity.NPC;
+import it.unicam.cs.mpgc.rpg130579.model.entity.*;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.*;
 import it.unicam.cs.mpgc.rpg130579.model.world.Exit;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
 import it.unicam.cs.mpgc.rpg130579.model.world.PuzzleUnlockCondition;
+import it.unicam.cs.mpgc.rpg130579.model.entity.BonusItem;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -48,6 +45,7 @@ public class ForestLevelBuilder implements LevelBuilder {
         level.addPlace(new Location(FORK, "Il bivio", "Il sentiero si divide in tre direzioni. Su tre alberi sono incisi una luna, " + "un sole e un occhio."));
         level.addPlace(new Location(SHRINE, "Antico santuario", "Al centro c'è una statua con il simbolo del medaglione. Sull'iscrizione si legge: " + "\"Solo chi cerca la verità può aprire il sentiero.\""));
         level.addPlace(new Location(CAVE, "La grotta", "Una piccola grotta nascosta. Su una parete è incisa un'iscrizione: " + "\"Ciò che cerchi è custodito dove il passato non è mai morto.\""));
+        level.getPlaceById(FORK).addDetail(new ConditionalText(new AttributeCondition(Attribute.PERCEZIONE, 1), "Noti che l'erba è calpestata solo lungo il sentiero dell'occhio: qualcuno è passato di qui, e più di una volta."));
     }
 
     private void addPuzzlesAndMechanisms(Level level) {
@@ -57,8 +55,9 @@ public class ForestLevelBuilder implements LevelBuilder {
         symbols.put("sole", "Il sentiero del sole");
         symbols.put("occhio", "Il sentiero dell'occhio");
         Puzzle trees = new ChoicePuzzle(TREES_PUZZLE, "Quale sentiero scegli? Uno dei simboli è lo stesso del tuo medaglione.", symbols, "occhio");
-        Mechanism treesMechanism = new Mechanism(TREES_MECHANISM, "Sentiero dell'occhio", "Il sentiero che segue il simbolo del medaglione.", new PuzzleUnlockCondition(trees));
-        level.addMechanism(treesMechanism);
+        Mechanism treesMechanism = new Mechanism(TREES_MECHANISM, "Sentiero dell'occhio",
+                "Il sentiero che segue il simbolo del medaglione.", new PuzzleUnlockCondition(trees))
+                .withReward(Attribute.PERCEZIONE, 1);        level.addMechanism(treesMechanism);
         level.getPlaceById(FORK).addMechanism(treesMechanism);
         Puzzle statue = new ItemPuzzle(STATUE_PUZZLE, "Avvicina il medaglione alla statua.", StoryIds.MEDALLION);
         Mechanism statueMechanism = new Mechanism(STATUE_MECHANISM, "Statua del santuario", "Una statua con lo stesso simbolo del medaglione.", new PuzzleUnlockCondition(statue));
@@ -103,12 +102,22 @@ public class ForestLevelBuilder implements LevelBuilder {
         level.getPlaceById(PATH).addItem(cloth);
         level.getPlaceById(CAVE).addItem(diary);
         level.getPlaceById(CAVE).addItem(key);
+        BonusItem clasp = new BonusItem("fermaglio_elara", "Fermaglio d'argento", "Un fermaglio d'argento con un piccolo occhio inciso. Forse apparteneva a tua madre.", Attribute.PERSUASIONE, 1);
+        catalog.register(clasp);
+        level.getPlaceById(PATH).addItem(clasp);
     }
 
     private void placeNpcs(Level level) {
+        Location square = level.getPlaceById(SQUARE);
         addNpc(level, SQUARE, "orwen", "Orwen", "Un vecchio bibliotecario che conosceva Elara.", ForestDialogues.orwen());
-        addNpc(level, SQUARE, "mira", "Mira", "Una mercante, amica di tua madre.", ForestDialogues.mira());
-        addNpc(level, SQUARE, "aldren", "Aldren", "Una guardia del villaggio che evita l'argomento.", ForestDialogues.aldren());
+        square.addNPC(new QuestNPC("mira", "Mira", "Una mercante, amica di tua madre.", square,
+                ForestDialogues.mira(),
+                new FlagCondition(ForestDialogues.MIRA_TALKED_FLAG, ForestDialogues.DONE),
+                ForestDialogues.miraAfter()));
+        square.addNPC(new QuestNPC("aldren", "Aldren", "Una guardia del villaggio che evita l'argomento.", square,
+                ForestDialogues.aldren(),
+                new FlagCondition(ForestDialogues.ALDREN_TALKED_FLAG, ForestDialogues.DONE),
+                ForestDialogues.aldrenAfter()));
     }
 
     private void addNpc(Level level, String locationId, String id, String name, String description, Dialogue dialogue) {

@@ -17,6 +17,9 @@ import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
 import it.unicam.cs.mpgc.rpg130579.model.world.PuzzleUnlockCondition;
+import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
+import it.unicam.cs.mpgc.rpg130579.model.entity.BonusItem;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.AttributeCondition;
 
 import java.util.List;
 
@@ -58,7 +61,10 @@ public class CastleLevelBuilder implements LevelBuilder {
         level.getPlaceById(GATE_AREA).addMechanism(gate);
 
         Puzzle phrase = new SequencePuzzle(MOON_PUZZLE, "Una pagina è stata strappata dal libro. Ricomponi la frase ordinando i tre frammenti.", phrasePieces);
-        Mechanism moon = new Mechanism(MOON_MECHANISM, "Simbolo della luna", "Un simbolo di luna inciso sul pavimento della biblioteca.", new PuzzleUnlockCondition(phrase));
+        Mechanism moon = new Mechanism(MOON_MECHANISM, "Simbolo della luna", "Un simbolo di luna inciso sul pavimento della biblioteca.", new PuzzleUnlockCondition(phrase))
+                .withReward(Attribute.SAPIENZA, 1)
+                .withHint(new AttributeCondition(Attribute.SAPIENZA, 1),
+                        "Il soggetto viene per primo, il verbo al centro, ciò che non si vede in fondo.");
         level.addMechanism(moon);
         level.getPlaceById(LIBRARY).addMechanism(moon);
     }
@@ -105,6 +111,7 @@ public class CastleLevelBuilder implements LevelBuilder {
         place(level, catalog, ARCHIVE, new DocumentItem("lettera_eren", "Lettera per Eren", "Una lettera indirizzata a te.", "\"Eren, se un giorno troverai questa lettera, significa che sei riuscito a seguire " + "le mie tracce. Non ho mai smesso di pensare a te. Quando sarai pronto a " + "conoscere tutta la verità, cercami dove la luna incontra l'acqua.\""));
 
         place(level, catalog, TOWER, new DocumentItem(LAKE_MAP, "Mappa del Lago degli Specchi", "Un'antica mappa trovata nel punto più alto del castello.", "La mappa indica un luogo nascosto tra le montagne: il Lago degli Specchi."));
+        place(level, catalog, ARCHIVE, new BonusItem("sigillo_custodi", "Sigillo dei Custodi", "Un sigillo con l'occhio e i tre rami, dimenticato in un cassetto.", Attribute.SAPIENZA, 1));
     }
 
     private void placeNpcs(Level level) {

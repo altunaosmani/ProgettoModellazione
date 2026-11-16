@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.controller;
 
+import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.ItemCatalog;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
@@ -13,7 +14,10 @@ import it.unicam.cs.mpgc.rpg130579.persistence.SaveData;
 import it.unicam.cs.mpgc.rpg130579.persistence.SaveRepository;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -66,6 +70,11 @@ public class SaveService {
         }
         List<String> inventory = player.getInventory().stream().map(Item::getId).toList();
 
+        Map<String, Integer> attributes = new LinkedHashMap<>();
+        for (Attribute attribute : Attribute.values()) {
+            attributes.put(attribute.name(), player.getStats().get(attribute));
+        }
+
         return new SaveData(
                 state.getCurrentLevel().getId(),
                 player.getCurrentLocation().getId(),
@@ -75,13 +84,14 @@ public class SaveService {
                 unlockedMechanisms,
                 progress.getFlags(),
                 state.isGameEnd(),
-                state.isWin());
+                state.isWin(),
+                attributes);
     }
 
     void restore(GameState state, SaveData data) {
         if (state == null) throw new IllegalArgumentException("Lo stato di gioco non può essere nullo");
         if (data == null) throw new IllegalArgumentException("Il salvataggio non può essere nullo");
-        if (data.getVersion() != SaveData.CURRENT_VERSION)
+        if (data.getVersion() < SaveData.MIN_SUPPORTED_VERSION || data.getVersion() > SaveData.CURRENT_VERSION)
             throw new IllegalStateException("Versione di salvataggio non supportata: " + data.getVersion());
 
         LevelManager levels = state.getLevelManager();
@@ -110,6 +120,19 @@ public class SaveService {
             inventory.add(catalog.findById(id).orElseThrow(() -> new IllegalStateException("Oggetto salvato inesistente: " + id)));
         }
 
+        // Un salvataggio v1 non ha attributi: restano tutti a zero.
+        Map<Attribute, Integer> attributes = new EnumMap<>(Attribute.class);
+        for (Map.Entry<String, Integer> entry : data.getAttributes().entrySet()) {
+            Integer value = entry.getValue();
+            if (value == null || value < 0)
+                throw new IllegalStateException("Valore di attributo non valido: " + entry.getKey());
+            try {
+                attributes.put(Attribute.valueOf(entry.getKey()), value);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalStateException("Attributo salvato inesistente: " + entry.getKey());
+            }
+        }
+
         // Fase 2: applico.
         levels.setCurrentLevelById(currentLevel.getId());
         for (Level level : completedLevels) {
@@ -124,6 +147,7 @@ public class SaveService {
             removeFromAllLocations(levels, item.getId());
         }
         player.setCurrentLocation(location);
+        player.getStats().restore(attributes);
 
         state.getProgress().restore(data.getSolvedPuzzleIds(), data.getFlags());
         if (data.isGameEnded()) state.restoreEnded(data.isWon());

@@ -9,10 +9,32 @@ import java.util.List;
 public class Player extends GameCharacter {
     private static final int DEFAULT_MAX_CAPACITY = 20;
     private final List<Item> inventory;
+    private final CharacterStats stats = new CharacterStats();
 
     public Player(String id, String name, String description, Location currentLocation) {
         super(id, name, description, currentLocation);
         this.inventory = new ArrayList<>();
+    }
+
+    /** Valori base degli attributi (quelli che si salvano). */
+    public CharacterStats getStats() {
+        return stats;
+    }
+
+    /** Somma dei bonus degli oggetti nell'inventario per questo attributo. */
+    public int getAttributeBonus(Attribute attribute) {
+        if (attribute == null) throw new IllegalArgumentException("L'attributo non può essere nullo");
+        return inventory.stream()
+                .filter(BonusItem.class::isInstance)
+                .map(BonusItem.class::cast)
+                .filter(item -> item.getAttribute() == attribute)
+                .mapToInt(BonusItem::getBonus)
+                .sum();
+    }
+
+    /** Valore effettivo: base più bonus degli oggetti. È quello che contano condizioni e finali. */
+    public int getAttributeValue(Attribute attribute) {
+        return stats.get(attribute) + getAttributeBonus(attribute);
     }
 
     public boolean hasItem(String itemId) {
@@ -40,4 +62,3 @@ public class Player extends GameCharacter {
         return Collections.unmodifiableList(inventory);
     }
 }
-

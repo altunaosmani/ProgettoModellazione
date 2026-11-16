@@ -1,19 +1,24 @@
 package it.unicam.cs.mpgc.rpg130579.controller;
 
+import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.NPC;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.ConditionalText;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.Puzzle;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.Quest;
 import it.unicam.cs.mpgc.rpg130579.model.state.EndingScreen;
 import it.unicam.cs.mpgc.rpg130579.model.state.IntroScreen;
+import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 import it.unicam.cs.mpgc.rpg130579.model.world.Exit;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
 import it.unicam.cs.mpgc.rpg130579.view.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 final class ViewMapper {
 
@@ -33,15 +38,23 @@ final class ViewMapper {
         return new PuzzleView(puzzle.getDescription(), puzzle.choices(player), puzzle.answerSize());
     }
 
-    MechanismView toView(Mechanism mechanism, Player player) {
+    MechanismView toView(Mechanism mechanism, Player player, StoryProgress progress) {
         PuzzleView puzzle = mechanism.getRequiredPuzzle()
                 .map(p -> toView(p, player))
                 .orElse(null);
+        String hint = mechanism.getHint()
+                .filter(h -> h.isVisibleTo(player, progress))
+                .map(ConditionalText::text)
+                .orElse("");
         return new MechanismView(mechanism.getId(), mechanism.getName(),
-                mechanism.getDescription(), mechanism.isLocked(), puzzle);
+                mechanism.getDescription(), mechanism.isLocked(), puzzle, hint);
     }
 
-    LocationView toView(Location location, Player player) {
+    LocationView toView(Location location, Player player, StoryProgress progress) {
+        List<String> details = location.getDetails().stream()
+                .filter(d -> d.isVisibleTo(player, progress))
+                .map(ConditionalText::text)
+                .toList();
         return new LocationView(
                 location.getId(),
                 location.getName(),
@@ -49,7 +62,8 @@ final class ViewMapper {
                 location.getItems().stream().map(this::toView).toList(),
                 location.getNpcs().stream().map(this::toView).toList(),
                 location.getExits().stream().map(this::toView).toList(),
-                location.getMechanisms().stream().map(m -> toView(m, player)).toList());
+                location.getMechanisms().stream().map(m -> toView(m, player, progress)).toList(),
+                details);
     }
 
     List<ItemView> toItemViews(List<Item> items) {
@@ -68,5 +82,15 @@ final class ViewMapper {
 
     EndingView toView(EndingScreen e) {
         return new EndingView(e.gameTitle(), e.headline(), e.subtitle(), e.message(), e.outcome());
+    }
+
+    StatsView toView(Player player) {
+        Map<String, Integer> values = new LinkedHashMap<>();
+        Map<String, Integer> bonuses = new LinkedHashMap<>();
+        for (Attribute attribute : Attribute.values()) {
+            values.put(attribute.getLabel(), player.getAttributeValue(attribute));
+            bonuses.put(attribute.getLabel(), player.getAttributeBonus(attribute));
+        }
+        return new StatsView(values, bonuses);
     }
 }

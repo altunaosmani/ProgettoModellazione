@@ -2,7 +2,9 @@ package it.unicam.cs.mpgc.rpg130579.model.world;
 
 import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.NPC;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.ConditionalText;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -11,6 +13,7 @@ import java.util.Map;
 /**
  * Un luogo del mondo di gioco. Oggetti, personaggi, uscite e meccanismi sono indicizzati per id
  * (senza distinzione tra maiuscole e minuscole) e mantengono l'ordine di inserimento.
+ * Può avere anche dettagli aggiuntivi visibili solo a certe condizioni.
  */
 public class Location {
     private final String id;
@@ -20,6 +23,7 @@ public class Location {
     private final Map<String, NPC> npcs = new LinkedHashMap<>();
     private final Map<String, Exit> exits = new LinkedHashMap<>();
     private final Map<String, Mechanism> mechanisms = new LinkedHashMap<>();
+    private final List<ConditionalText> details = new ArrayList<>();
 
     public Location(String id, String name, String description) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
@@ -48,6 +52,17 @@ public class Location {
 
     public int getSizeItems() {
         return items.size();
+    }
+
+    // ---------- Dettagli condizionati ----------
+
+    public void addDetail(ConditionalText detail) {
+        if (detail == null) throw new IllegalArgumentException("Il dettaglio non può essere nullo");
+        details.add(detail);
+    }
+
+    public List<ConditionalText> getDetails() {
+        return List.copyOf(details);
     }
 
     // ---------- Personaggi ----------

@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg130579.controller;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.NPC;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueContext;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueSession;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.PuzzleAnswer;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.Quest;
@@ -49,7 +50,8 @@ public class GameManager {
         if (npcId == null || npcId.isBlank()) throw new IllegalArgumentException("L'ID del personaggio non può essere vuoto");
         NPC npc = getLocation(locationId).getNPCById(npcId);
         if (npc == null) throw new IllegalArgumentException("Personaggio non trovato: " + npcId);
-        return new DialogueSession(npc.interact(state.getPlayer(), state.getProgress()), state.getProgress());
+        DialogueContext context = new DialogueContext(state.getPlayer(), state.getProgress());
+        return new DialogueSession(npc.interact(state.getPlayer(), state.getProgress()), context);
     }
 
     public void advanceToNextLevel() {
@@ -83,9 +85,12 @@ public class GameManager {
         Player player = state.getPlayer();
         Mechanism mechanism = player.getCurrentLocation().getMechanismById(mechanismId);
         if (mechanism == null) throw new IllegalArgumentException("Meccanismo non trovato: " + mechanismId);
+        boolean wasLocked = mechanism.isLocked();
         boolean unlocked = mechanism.tryUnlock(player, answer);
-        if (unlocked) {
+        if (unlocked && wasLocked) {
             mechanism.getRequiredPuzzle().ifPresent(p -> state.getProgress().markPuzzleSolved(p.getId()));
+            // Il bonus si assegna solo alla prima apertura.
+            mechanism.getReward().ifPresent(r -> player.getStats().increase(r.attribute(), r.amount()));
         }
         return unlocked;
     }

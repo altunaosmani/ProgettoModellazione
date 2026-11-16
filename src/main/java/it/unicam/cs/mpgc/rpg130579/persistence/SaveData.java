@@ -10,9 +10,12 @@ import java.util.Map;
 /**
  * Fotografia dello stato di una partita. Contiene solo id e valori semplici,
  * mai riferimenti al modello, cosi' si serializza in JSON senza sorprese.
+ * <p>
+ * Versione 2: aggiunge gli attributi del giocatore. I file v1 si leggono ancora (attributi a zero).
  */
 public class SaveData {
-    public static final int CURRENT_VERSION = 1;
+    public static final int CURRENT_VERSION = 2;
+    public static final int MIN_SUPPORTED_VERSION = 1;
 
     private int version = CURRENT_VERSION;
     private String currentLevelId;
@@ -24,6 +27,7 @@ public class SaveData {
     private Map<String, String> flags = new LinkedHashMap<>();
     private boolean gameEnded;
     private boolean won;
+    private Map<String, Integer> attributes = new LinkedHashMap<>();
 
     /** Richiesto da Gson. */
     public SaveData() {
@@ -38,6 +42,20 @@ public class SaveData {
                     Map<String, String> flags,
                     boolean gameEnded,
                     boolean won) {
+        this(currentLevelId, currentLocationId, completedLevelIds, inventoryItemIds, solvedPuzzleIds,
+                unlockedMechanismIds, flags, gameEnded, won, Map.of());
+    }
+
+    public SaveData(String currentLevelId,
+                    String currentLocationId,
+                    Collection<String> completedLevelIds,
+                    Collection<String> inventoryItemIds,
+                    Collection<String> solvedPuzzleIds,
+                    Collection<String> unlockedMechanismIds,
+                    Map<String, String> flags,
+                    boolean gameEnded,
+                    boolean won,
+                    Map<String, Integer> attributes) {
         if (currentLevelId == null || currentLevelId.isBlank()) throw new IllegalArgumentException("L'ID del livello non può essere vuoto");
         if (currentLocationId == null || currentLocationId.isBlank()) throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
         this.currentLevelId = currentLevelId;
@@ -49,6 +67,7 @@ public class SaveData {
         this.flags = flags == null ? new LinkedHashMap<>() : new LinkedHashMap<>(flags);
         this.gameEnded = gameEnded;
         this.won = won;
+        this.attributes = attributes == null ? new LinkedHashMap<>() : new LinkedHashMap<>(attributes);
     }
 
     public int getVersion() {
@@ -81,6 +100,10 @@ public class SaveData {
 
     public Map<String, String> getFlags() {
         return flags == null ? Map.of() : Collections.unmodifiableMap(flags);
+    }
+
+    public Map<String, Integer> getAttributes() {
+        return attributes == null ? Map.of() : Collections.unmodifiableMap(attributes);
     }
 
     public boolean isGameEnded() {

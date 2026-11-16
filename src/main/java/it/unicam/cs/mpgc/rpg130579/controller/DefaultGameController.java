@@ -1,17 +1,21 @@
 package it.unicam.cs.mpgc.rpg130579.controller;
 
 import it.unicam.cs.mpgc.rpg130579.content.GameSetup;
+import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueChoice;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueSession;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.PuzzleAnswer;
 import it.unicam.cs.mpgc.rpg130579.model.state.GameState;
+import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 import it.unicam.cs.mpgc.rpg130579.persistence.SaveRepository;
 import it.unicam.cs.mpgc.rpg130579.view.*;
 
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -42,16 +46,39 @@ public class DefaultGameController implements GameController {
         return manager.getCurrentState().getPlayer();
     }
 
+    private StoryProgress progress() {
+        return manager.getCurrentState().getProgress();
+    }
+
     /** Dopo ogni azione che può cambiare lo stato della storia controlla se la missione è finita. */
     private String questNote() {
         return manager.completeCurrentQuest() ? " Missione completata!" : "";
+    }
+
+    /** Fotografia dei valori effettivi (base + bonus oggetti) per calcolare cosa è cambiato dopo un'azione. */
+    private Map<Attribute, Integer> snapshotStats() {
+        Map<Attribute, Integer> snapshot = new EnumMap<>(Attribute.class);
+        for (Attribute attribute : Attribute.values()) {
+            snapshot.put(attribute, player().getAttributeValue(attribute));
+        }
+        return snapshot;
+    }
+
+    /** Testo dei bonus agli attributi ottenuti rispetto a una fotografia precedente. */
+    private String statsNote(Map<Attribute, Integer> before) {
+        StringBuilder note = new StringBuilder();
+        for (Attribute attribute : Attribute.values()) {
+            int gain = player().getAttributeValue(attribute) - before.get(attribute);
+            if (gain > 0) note.append(" +").append(gain).append(' ').append(attribute.getLabel()).append('.');
+        }
+        return note.toString();
     }
 
     // ---------- Esplorazione ----------
 
     @Override
     public LocationView currentLocation() {
-        return mapper.toView(player().getCurrentLocation(), player());
+        return mapper.toView(player().getCurrentLocation(), player(), progress());
     }
 
     @Override
@@ -71,8 +98,9 @@ public class DefaultGameController implements GameController {
     @Override
     public ActionResult takeItem(String itemId) {
         try {
+            Map<Attribute, Integer> before = snapshotStats();
             if (!manager.takeItem(itemId)) return ActionResult.fail("Non puoi raccogliere questo oggetto.");
-            return ActionResult.ok("Oggetto raccolto." + questNote());
+            return ActionResult.ok("Oggetto raccolto." + statsNote(before) + questNote());
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ActionResult.fail(e.getMessage());
         }
@@ -81,11 +109,12 @@ public class DefaultGameController implements GameController {
     @Override
     public ActionResult unlock(String mechanismId, List<String> answer) {
         try {
+            Map<Attribute, Integer> before = snapshotStats();
             PuzzleAnswer given = (answer == null || answer.isEmpty()) ? PuzzleAnswer.empty() : new PuzzleAnswer(answer);
             if (!manager.unlockMechanism(mechanismId, given)) {
                 return ActionResult.fail("Non succede nulla. Forse ti manca qualcosa, o la scelta non è quella giusta.");
             }
-            return ActionResult.ok("Si è sbloccato qualcosa!" + questNote());
+            return ActionResult.ok("Si è sbloccato qualcosa!" + statsNote(before) + questNote());
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ActionResult.fail(e.getMessage());
         }
@@ -120,6 +149,13 @@ public class DefaultGameController implements GameController {
         return view;
     }
 
+    // ---------- Personaggio ----------
+
+    @Override
+    public StatsView stats() {
+        return mapper.toView(player());
+    }
+
     // ---------- Avanzamento ----------
 
     @Override
@@ -141,9 +177,11 @@ public class DefaultGameController implements GameController {
         }
     }
 
+    /** Il finale dipende dalle scelte fatte: lo seleziona il catalogo dei finali sullo stato finale della partita. */
     @Override
     public Optional<EndingView> ending() {
-        return manager.hasWon() ? Optional.of(mapper.toView(setup.victoryEnding())) : Optional.empty();
+        if (!manager.hasWon()) return Optional.empty();
+        return Optional.of(mapper.toView(setup.endings().select(player(), progress())));
     }
 
     @Override

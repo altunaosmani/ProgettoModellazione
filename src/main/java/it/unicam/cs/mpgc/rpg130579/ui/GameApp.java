@@ -30,6 +30,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
@@ -51,6 +52,8 @@ public class GameApp extends Application {
     private ScrollPane center;
     private StackPane centerStack;
     private HBox bottomBar;
+    private StatsPane statsPane;
+    private VBox sidebar;
 
     // Banner di fine livello
     private StackPane completionOverlay;
@@ -65,6 +68,9 @@ public class GameApp extends Application {
         locationPane = new LocationPane(images, this::onTake, this::onExamine, this::onExit,
                 this::onTalk, this::onInteract);
         inventoryPane = new InventoryPane(images, this::onExamine);
+        statsPane = new StatsPane();
+        sidebar = new VBox(statsPane, inventoryPane);
+        VBox.setVgrow(inventoryPane, Priority.ALWAYS);
 
         center = new ScrollPane(locationPane);
         center.setFitToWidth(true);
@@ -216,7 +222,8 @@ public class GameApp extends Application {
         top.getChildren().setAll(menuBar, banner);
         saveItem.setDisable(false);
         root.setCenter(centerStack);
-        root.setRight(inventoryPane);
+        root.setRight(sidebar);
+        statsPane.update(controller.stats());
         root.setBottom(bottomBar);
 
         LevelInfoView info = controller.levelInfo();

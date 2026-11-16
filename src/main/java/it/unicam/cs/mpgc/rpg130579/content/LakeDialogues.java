@@ -5,19 +5,33 @@ import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueChoice;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueNode;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.SetFlagEffect;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class LakeDialogues {
     static final String ELARA_FOUND_FLAG = "elara_ritrovata";
     static final String ELARA_FOUND_VALUE = "si";
 
+    /** Elara per chi aveva creduto a Orwen (o non aveva scelto). */
     static Dialogue elara() {
-        DialogueNode start = new DialogueNode("start",
-                List.of("Eren... sei davvero tu.",
-                        "Non sono mai scomparsa perché avessi smesso di amarti.",
-                        "Qualcuno voleva impossessarsi del segreto custodito dai Custodi della Luna. "
-                                + "Avevo paura che potessi diventare un bersaglio, così ho scelto di proteggerti "
-                                + "tenendomi lontana."),
+        return build(List.of("Eren... sei davvero tu."));
+    }
+
+    /** Elara per chi a Tanusha aveva creduto ad Aldren: stessa struttura, una battuta in più. */
+    static Dialogue elaraAfterDoubt() {
+        return build(List.of("Eren... sei davvero tu.",
+                "So che al villaggio ti hanno detto che non ero mai entrata nella foresta, e che hai preferito crederlo. "
+                        + "Non ti biasimo: era proprio quello che volevo che pensassero."));
+    }
+
+    private static Dialogue build(List<String> opening) {
+        List<String> startLines = new ArrayList<>(opening);
+        startLines.add("Non sono mai scomparsa perché avessi smesso di amarti.");
+        startLines.add("Qualcuno voleva impossessarsi del segreto custodito dai Custodi della Luna. "
+                + "Avevo paura che potessi diventare un bersaglio, così ho scelto di proteggerti "
+                + "tenendomi lontana.");
+
+        DialogueNode start = new DialogueNode("start", startLines,
                 List.of(new DialogueChoice("Perché non sei mai tornata?", "perche")));
 
         DialogueNode why = new DialogueNode("perche",
@@ -38,4 +52,3 @@ public final class LakeDialogues {
     private LakeDialogues() {
     }
 }
-

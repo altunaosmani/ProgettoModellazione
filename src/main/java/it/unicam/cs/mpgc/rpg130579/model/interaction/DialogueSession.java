@@ -1,21 +1,19 @@
 package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
-import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
-
 import java.util.List;
 
 public class DialogueSession {
     private final Dialogue dialogue;
-    private final StoryProgress progress;
+    private final DialogueContext context;
     private DialogueNode currentNode;
     private int lineIndex;
     private boolean closed;
 
-    public DialogueSession(Dialogue dialogue, StoryProgress progress) {
+    public DialogueSession(Dialogue dialogue, DialogueContext context) {
         if (dialogue == null) throw new IllegalArgumentException("Il dialogo non può essere nullo");
-        if (progress == null) throw new IllegalArgumentException("Lo stato della storia non può essere nullo");
+        if (context == null) throw new IllegalArgumentException("Il contesto del dialogo non può essere nullo");
         this.dialogue = dialogue;
-        this.progress = progress;
+        this.context = context;
         this.currentNode = dialogue.getStartNode();
         this.lineIndex = 0;
         this.closed = false;
@@ -36,19 +34,20 @@ public class DialogueSession {
 
     /** Vero quando le battute sono finite e il giocatore deve scegliere. */
     public boolean awaitsChoice() {
-        return !closed && !hasNextLine() && currentNode.hasChoices();
+        return !closed && !hasNextLine() && !availableChoices().isEmpty();
     }
 
+    /** Solo le scelte il cui requisito è soddisfatto; gli indici di choose() si riferiscono a questa lista. */
     public List<DialogueChoice> getChoices() {
         if (!awaitsChoice()) throw new IllegalStateException("In questo momento non ci sono scelte da fare");
-        return currentNode.getChoices();
+        return availableChoices();
     }
 
     public void choose(int index) {
         List<DialogueChoice> choices = getChoices();
         if (index < 0 || index >= choices.size()) throw new IllegalArgumentException("Indice della scelta non valido");
         DialogueChoice choice = choices.get(index);
-        choice.effect().apply(progress);
+        choice.effect().apply(context);
         if (choice.endsDialogue()) {
             closed = true;
         } else {
@@ -58,6 +57,12 @@ public class DialogueSession {
     }
 
     public boolean isFinished() {
-        return closed || (!hasNextLine() && !currentNode.hasChoices());
+        return closed || (!hasNextLine() && availableChoices().isEmpty());
+    }
+
+    private List<DialogueChoice> availableChoices() {
+        return currentNode.getChoices().stream()
+                .filter(c -> c.requirement().isMetBy(context.player(), context.progress()))
+                .toList();
     }
 }

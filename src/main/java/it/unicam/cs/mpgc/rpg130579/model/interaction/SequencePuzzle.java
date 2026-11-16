@@ -1,4 +1,5 @@
 package it.unicam.cs.mpgc.rpg130579.model.interaction;
+
 import it.unicam.cs.mpgc.rpg130579.model.entity.EnigmaPieceItem;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
@@ -40,14 +41,38 @@ public class SequencePuzzle extends AbstractPuzzle {
     @Override
     public int answerSize() { return orderedPieces.size(); }
 
+    /**
+     * I frammenti posseduti dal giocatore. Quando li ha tutti vengono mescolati, altrimenti
+     * l'ordine di raccolta potrebbe coincidere con la soluzione e svelarla.
+     */
     @Override
     public Map<String, String> choices(Player player) {
-        Map<String, String> result = new LinkedHashMap<>();
+        List<EnigmaPieceItem> owned = new ArrayList<>();
         for (Item item : player.getInventory()) {
             if (item instanceof EnigmaPieceItem piece && isPiece(piece)) {
-                result.put(piece.getId(), piece.getPhraseFragment());
+                owned.add(piece);
             }
         }
+        if (owned.size() == orderedPieces.size()) owned = scrambled(owned);
+
+        Map<String, String> result = new LinkedHashMap<>();
+        for (EnigmaPieceItem piece : owned) {
+            result.put(piece.getId(), piece.getPhraseFragment());
+        }
+        return result;
+    }
+
+    /**
+     * Mescolamento stabile (seme legato all'id dell'enigma): l'ordine non cambia a ogni
+     * aggiornamento della schermata, ma non è mai quello della soluzione.
+     * Termina sempre: i frammenti sono almeno due, quindi esiste una permutazione diversa dall'identità.
+     */
+    private List<EnigmaPieceItem> scrambled(List<EnigmaPieceItem> pieces) {
+        List<EnigmaPieceItem> result = new ArrayList<>(pieces);
+        Random random = new Random(getId().hashCode());
+        do {
+            Collections.shuffle(result, random);
+        } while (result.equals(orderedPieces));
         return result;
     }
 

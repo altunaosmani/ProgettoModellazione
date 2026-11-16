@@ -1,12 +1,8 @@
 package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
-import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
-
 @FunctionalInterface
 public interface DialogueEffect {
-    DialogueEffect NONE = progress -> { };
+    DialogueEffect NONE = context -> { };
 
-    void apply(StoryProgress progress);
-
-
+    void apply(DialogueContext context);
 }

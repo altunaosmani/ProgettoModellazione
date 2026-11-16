@@ -17,6 +17,9 @@ public class DialogueNode {
         for (DialogueChoice choice : choices) {
             if (choice == null) throw new IllegalArgumentException("La scelta non può essere nulla");
         }
+        // Evita nodi in cui, con certi attributi, non resta nessuna scelta visibile.
+        if (!choices.isEmpty() && choices.stream().noneMatch(DialogueChoice::isUnconditional))
+            throw new IllegalArgumentException("Almeno una scelta del nodo deve essere sempre disponibile: " + id);
         this.id = id;
         this.lines = List.copyOf(lines);
         this.choices = List.copyOf(choices);
@@ -34,6 +37,7 @@ public class DialogueNode {
         return lines;
     }
 
+    /** Tutte le scelte del nodo, comprese quelle che richiedono un requisito. */
     public List<DialogueChoice> getChoices() {
         return choices;
     }

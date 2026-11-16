@@ -96,6 +96,14 @@ public class LocationPane extends VBox {
         description.setWrapText(true);
         VBox texts = new VBox(6, title, description);
 
+        // Dettagli visibili solo con certi attributi (es. Percezione): in corsivo sotto la descrizione.
+        for (String detail : location.details()) {
+            Label label = new Label(detail);
+            label.setWrapText(true);
+            label.setStyle("-fx-font-style: italic; -fx-text-fill: #5a4e2f");
+            texts.getChildren().add(label);
+        }
+
         HBox header = new HBox(16,
                 IconFactory.create(location.name(), images.imageFor(ImageKind.LOCATION, location.id()), LOCATION_ICON_SIZE),
                 texts);

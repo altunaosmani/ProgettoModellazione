@@ -1,8 +1,11 @@
 package it.unicam.cs.mpgc.rpg130579.model.world;
 
+import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.ConditionalText;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.Puzzle;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.PuzzleAnswer;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.QuestCondition;
 
 import java.util.Optional;
 
@@ -13,6 +16,8 @@ public class Mechanism implements Lockable {
     private final String description;
     private final UnlockCondition unlockCondition;
     private boolean locked;
+    private AttributeReward reward;
+    private ConditionalText hint;
 
     public Mechanism(String id, String name, String description, UnlockCondition unlockCondition) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del meccanismo non può essere vuoto");
@@ -43,6 +48,29 @@ public class Mechanism implements Lockable {
         return locked;
     }
 
+    /** Imposta il bonus assegnato allo sblocco; restituisce this per l'uso fluente nei builder. */
+    public Mechanism withReward(Attribute attribute, int amount) {
+        this.reward = new AttributeReward(attribute, amount);
+        return this;
+    }
+
+    public Optional<AttributeReward> getReward() {
+        return Optional.ofNullable(reward);
+    }
+
+    /**
+     * Imposta un indizio mostrato solo se il requisito è soddisfatto (es. abbastanza Sapienza).
+     * L'indizio è una scorciatoia: l'enigma resta risolvibile anche senza.
+     */
+    public Mechanism withHint(QuestCondition requirement, String text) {
+        this.hint = new ConditionalText(requirement, text);
+        return this;
+    }
+
+    public Optional<ConditionalText> getHint() {
+        return Optional.ofNullable(hint);
+    }
+
     public boolean tryUnlock(Player player, PuzzleAnswer answer) {
         if (player == null) throw new IllegalArgumentException("Il giocatore non può essere nullo");
         if (!locked) return true;
@@ -54,7 +82,7 @@ public class Mechanism implements Lockable {
         return tryUnlock(player, PuzzleAnswer.empty());
     }
 
-    /** Usato dal caricamento di un salvataggio: apre senza controllare le condizioni. */
+    /** Usato dal caricamento di un salvataggio: apre senza controllare le condizioni né dare bonus. */
     public void restoreUnlocked() {
         this.locked = false;
     }

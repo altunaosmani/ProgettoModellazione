@@ -14,6 +14,8 @@ import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
 import it.unicam.cs.mpgc.rpg130579.model.world.PuzzleUnlockCondition;
+import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.AttributeCondition;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -61,8 +63,7 @@ public class LakeLevelBuilder implements LevelBuilder {
         options.put("centro", "Il centro del lago");
         options.put("riva", "La riva dove la luna si riflette");
         Puzzle moonWater = new ChoicePuzzle(MOON_WATER_PUZZLE, "\"Dove la luna incontra l'acqua\". Verso quale punto ti dirigi?", options, "riva");
-        Mechanism gap = new Mechanism(MOON_WATER_MECHANISM, "Varco tra i canneti", "Un passaggio nascosto che si apre solo a chi comprende la frase dei Custodi.", new PuzzleUnlockCondition(moonWater));
-        level.addMechanism(gap);
+        Mechanism gap = new Mechanism(MOON_WATER_MECHANISM, "Varco tra i canneti", "Un passaggio nascosto che si apre solo a chi comprende la frase dei Custodi.", new PuzzleUnlockCondition(moonWater)).withHint(new AttributeCondition(Attribute.PERCEZIONE, 1), "I canneti si piegano tutti verso un punto della riva, dove l'acqua è più calma.");        level.addMechanism(gap);
         level.getPlaceById(STONE).addMechanism(gap);
     }
 

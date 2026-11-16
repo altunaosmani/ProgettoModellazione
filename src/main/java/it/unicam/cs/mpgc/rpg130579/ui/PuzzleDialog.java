@@ -9,6 +9,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
@@ -27,8 +28,9 @@ public final class PuzzleDialog {
         if (puzzle == null || puzzle.answerSize() == 0) return Optional.of(List.of());
 
         if (puzzle.choices().size() < puzzle.answerSize()) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                    "Ti manca ancora qualcosa per risolvere questo enigma.", ButtonType.OK);
+            String text = "Ti manca ancora qualcosa per risolvere questo enigma.";
+            if (!mechanism.hint().isBlank()) text += "\n\nIndizio: " + mechanism.hint();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, text, ButtonType.OK);
             alert.setHeaderText(mechanism.name());
             alert.showAndWait();
             return Optional.empty();
@@ -49,6 +51,7 @@ public final class PuzzleDialog {
 
         Label description = new Label(puzzle.description());
         description.setWrapText(true);
+        description.setMinHeight(Region.USE_PREF_SIZE); // evita il testo tagliato con "..."
 
         FlowPane options = new FlowPane(8, 8);
         for (Map.Entry<String, String> entry : puzzle.choices().entrySet()) {
@@ -67,7 +70,15 @@ public final class PuzzleDialog {
             options.getChildren().add(button);
         }
 
-        VBox content = new VBox(10, description, options);
+        VBox content = new VBox(10, description);
+        if (!mechanism.hint().isBlank()) {
+            Label hint = new Label("Indizio: " + mechanism.hint());
+            hint.setWrapText(true);
+            hint.setMinHeight(Region.USE_PREF_SIZE);
+            hint.setStyle("-fx-font-style: italic; -fx-text-fill: #5a4e2f");
+            content.getChildren().add(hint);
+        }
+        content.getChildren().add(options);
         content.setPadding(new Insets(10));
         content.setPrefWidth(460);
 
