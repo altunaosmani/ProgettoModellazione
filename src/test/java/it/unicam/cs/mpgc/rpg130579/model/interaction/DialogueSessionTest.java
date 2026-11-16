@@ -1,6 +1,9 @@
 package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
+import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
+import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
+import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +12,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DialogueSessionTest {
+    private Player player;
     private StoryProgress progress;
+    private DialogueContext context;
     private DialogueSession session;
 
     private Dialogue branching() {
@@ -20,6 +25,15 @@ class DialogueSessionTest {
         return new Dialogue("Test", "start", List.of(start, end));
     }
 
+    private Dialogue gated() {
+        DialogueNode start = new DialogueNode("start", List.of("ciao"), List.of(
+                new DialogueChoice("normale", null),
+                new DialogueChoice("persuasivo", null,
+                        new ModifyAttributeEffect(Attribute.SAPIENZA, 1),
+                        new AttributeCondition(Attribute.PERSUASIONE, 1))));
+        return new Dialogue("Gated", "start", List.of(start));
+    }
+
     private void readStartLines() {
         session.nextLine();
         session.nextLine();
@@ -27,8 +41,10 @@ class DialogueSessionTest {
 
     @BeforeEach
     void setUp() {
+        player = new Player("p", "P", "giocatore", new Location("l", "L", "luogo"));
         progress = new StoryProgress();
-        session = new DialogueSession(branching(), progress);
+        context = new DialogueContext(player, progress);
+        session = new DialogueSession(branching(), context);
     }
 
     @Test
@@ -83,7 +99,7 @@ class DialogueSessionTest {
 
     @Test
     void linearDialogueFinishesAfterItsLines() {
-        DialogueSession linear = new DialogueSession(new Dialogue("Orwen", List.of("a", "b")), progress);
+        DialogueSession linear = new DialogueSession(new Dialogue("Orwen", List.of("a", "b")), context);
         assertFalse(linear.isFinished());
         linear.nextLine();
         linear.nextLine();
@@ -103,5 +119,42 @@ class DialogueSessionTest {
         DialogueNode one = new DialogueNode("start", List.of("a"));
         DialogueNode two = new DialogueNode("start", List.of("b"));
         assertThrows(IllegalArgumentException.class, () -> new Dialogue("X", "start", List.of(one, two)));
+    }
+
+    @Test
+    void gatedChoiceIsHiddenWithoutTheAttribute() {
+        DialogueSession s = new DialogueSession(gated(), context);
+        s.nextLine();
+        assertEquals(1, s.getChoices().size());
+        assertEquals("normale", s.getChoices().get(0).text());
+    }
+
+    @Test
+    void gatedChoiceAppearsWithTheAttributeAndAppliesItsEffect() {
+        player.getStats().increase(Attribute.PERSUASIONE, 1);
+        DialogueSession s = new DialogueSession(gated(), context);
+        s.nextLine();
+        assertEquals(2, s.getChoices().size());
+
+        s.choose(1);
+
+        assertEquals(1, player.getStats().get(Attribute.SAPIENZA));
+        assertTrue(s.isFinished());
+    }
+
+    @Test
+    void nodeWithOnlyGatedChoicesIsRejected() {
+        DialogueChoice gatedOnly = new DialogueChoice("x", null, DialogueEffect.NONE,
+                new AttributeCondition(Attribute.SAPIENZA, 1));
+        assertThrows(IllegalArgumentException.class, () -> new DialogueNode("n", List.of("a"), List.of(gatedOnly)));
+    }
+
+    @Test
+    void compositeEffectAppliesAllEffects() {
+        CompositeEffect effect = CompositeEffect.of(new SetFlagEffect("k", "v"),
+                new ModifyAttributeEffect(Attribute.PERCEZIONE, 2));
+        effect.apply(context);
+        assertTrue(progress.hasFlag("k", "v"));
+        assertEquals(2, player.getStats().get(Attribute.PERCEZIONE));
     }
 }
