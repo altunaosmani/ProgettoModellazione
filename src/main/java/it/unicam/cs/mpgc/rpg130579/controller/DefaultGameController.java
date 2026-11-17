@@ -8,12 +8,13 @@ import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueSession;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.PuzzleAnswer;
 import it.unicam.cs.mpgc.rpg130579.model.state.GameState;
 import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
+import it.unicam.cs.mpgc.rpg130579.persistence.GamePersistence;
 import it.unicam.cs.mpgc.rpg130579.persistence.SaveRepository;
+import it.unicam.cs.mpgc.rpg130579.persistence.SaveService;
 import it.unicam.cs.mpgc.rpg130579.view.*;
 
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,18 +22,29 @@ import java.util.function.Supplier;
 
 public class DefaultGameController implements GameController {
     private final Supplier<GameSetup> newGameSource;
-    private final SaveRepository repository;
-    private final ViewMapper mapper = new ViewMapper();
+    private final GamePersistence persistence;
+    private final ViewMapper mapper;
+    private final StatsChangeReporter statsReporter;
 
     private GameSetup setup;
     private GameManager manager;
     private DialogueSession session;
 
+    /** Comodo: persistenza su repository, mapper e reporter predefiniti. */
     public DefaultGameController(Supplier<GameSetup> newGameSource, SaveRepository repository) {
+        this(newGameSource, new SaveService(repository), new DefaultViewMapper(), new StatsChangeReporter());
+    }
+
+    public DefaultGameController(Supplier<GameSetup> newGameSource, GamePersistence persistence,
+                                 ViewMapper mapper, StatsChangeReporter statsReporter) {
         if (newGameSource == null) throw new IllegalArgumentException("La sorgente di partite non può essere nulla");
-        if (repository == null) throw new IllegalArgumentException("Il repository non può essere nullo");
+        if (persistence == null) throw new IllegalArgumentException("La persistenza non può essere nulla");
+        if (mapper == null) throw new IllegalArgumentException("Il mapper non può essere nullo");
+        if (statsReporter == null) throw new IllegalArgumentException("Il reporter delle statistiche non può essere nullo");
         this.newGameSource = newGameSource;
-        this.repository = repository;
+        this.persistence = persistence;
+        this.mapper = mapper;
+        this.statsReporter = statsReporter;
         adopt(newGameSource.get());
     }
 
@@ -55,23 +67,8 @@ public class DefaultGameController implements GameController {
         return manager.completeCurrentQuest() ? " Missione completata!" : "";
     }
 
-    /** Fotografia dei valori effettivi (base + bonus oggetti) per calcolare cosa è cambiato dopo un'azione. */
-    private Map<Attribute, Integer> snapshotStats() {
-        Map<Attribute, Integer> snapshot = new EnumMap<>(Attribute.class);
-        for (Attribute attribute : Attribute.values()) {
-            snapshot.put(attribute, player().getAttributeValue(attribute));
-        }
-        return snapshot;
-    }
-
-    /** Testo dei bonus agli attributi ottenuti rispetto a una fotografia precedente. */
-    private String statsNote(Map<Attribute, Integer> before) {
-        StringBuilder note = new StringBuilder();
-        for (Attribute attribute : Attribute.values()) {
-            int gain = player().getAttributeValue(attribute) - before.get(attribute);
-            if (gain > 0) note.append(" +").append(gain).append(' ').append(attribute.getLabel()).append('.');
-        }
-        return note.toString();
+    private static String messageOf(RuntimeException e) {
+        return e.getMessage() == null ? "Operazione non riuscita." : e.getMessage();
     }
 
     // ---------- Esplorazione ----------
@@ -91,32 +88,32 @@ public class DefaultGameController implements GameController {
         try {
             return manager.move(exitId) ? ActionResult.ok() : ActionResult.fail("Il passaggio è bloccato.");
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return ActionResult.fail(e.getMessage());
+            return ActionResult.fail(messageOf(e));
         }
     }
 
     @Override
     public ActionResult takeItem(String itemId) {
         try {
-            Map<Attribute, Integer> before = snapshotStats();
+            Map<Attribute, Integer> before = statsReporter.capture(player());
             if (!manager.takeItem(itemId)) return ActionResult.fail("Non puoi raccogliere questo oggetto.");
-            return ActionResult.ok("Oggetto raccolto." + statsNote(before) + questNote());
+            return ActionResult.ok("Oggetto raccolto." + statsReporter.describeGains(player(), before) + questNote());
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return ActionResult.fail(e.getMessage());
+            return ActionResult.fail(messageOf(e));
         }
     }
 
     @Override
     public ActionResult unlock(String mechanismId, List<String> answer) {
         try {
-            Map<Attribute, Integer> before = snapshotStats();
+            Map<Attribute, Integer> before = statsReporter.capture(player());
             PuzzleAnswer given = (answer == null || answer.isEmpty()) ? PuzzleAnswer.empty() : new PuzzleAnswer(answer);
             if (!manager.unlockMechanism(mechanismId, given)) {
                 return ActionResult.fail("Non succede nulla. Forse ti manca qualcosa, o la scelta non è quella giusta.");
             }
-            return ActionResult.ok("Si è sbloccato qualcosa!" + statsNote(before) + questNote());
+            return ActionResult.ok("Si è sbloccato qualcosa!" + statsReporter.describeGains(player(), before) + questNote());
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return ActionResult.fail(e.getMessage());
+            return ActionResult.fail(messageOf(e));
         }
     }
 
@@ -124,15 +121,24 @@ public class DefaultGameController implements GameController {
 
     @Override
     public DialogueView talkTo(String npcId) {
-        session = manager.interactWithNPC(player().getCurrentLocation().getId(), npcId);
-        return snapshot();
+        try {
+            session = manager.interactWithNPC(player().getCurrentLocation().getId(), npcId);
+            return snapshot();
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            session = null;
+            return DialogueView.error(messageOf(e));
+        }
     }
 
     @Override
     public DialogueView choose(int index) {
-        if (session == null) throw new IllegalStateException("Nessun dialogo in corso");
-        session.choose(index);
-        return snapshot();
+        if (session == null) return DialogueView.error("Nessun dialogo in corso.");
+        try {
+            session.choose(index);
+            return snapshot();
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return DialogueView.error(messageOf(e));
+        }
     }
 
     private DialogueView snapshot() {
@@ -173,7 +179,7 @@ public class DefaultGameController implements GameController {
                     ? ActionResult.ok("Hai completato il gioco!")
                     : ActionResult.ok(manager.getCurrentLevel().getName());
         } catch (IllegalStateException e) {
-            return ActionResult.fail(e.getMessage());
+            return ActionResult.fail(messageOf(e));
         }
     }
 
@@ -200,20 +206,16 @@ public class DefaultGameController implements GameController {
 
     @Override
     public boolean hasSave() {
-        try {
-            return repository.load().isPresent();
-        } catch (UncheckedIOException e) {
-            return false;
-        }
+        return persistence.hasSave();
     }
 
     @Override
     public ActionResult save() {
         try {
-            new SaveService(repository, setup.catalog()).save(manager.getCurrentState());
+            persistence.save(manager.getCurrentState());
             return ActionResult.ok("Partita salvata.");
         } catch (UncheckedIOException e) {
-            return ActionResult.fail(e.getMessage());
+            return ActionResult.fail(messageOf(e));
         }
     }
 
@@ -221,12 +223,12 @@ public class DefaultGameController implements GameController {
     public ActionResult load() {
         GameSetup fresh = newGameSource.get(); // stato e catalogo devono venire dalla stessa partita
         try {
-            if (!new SaveService(repository, fresh.catalog()).load(fresh.state()))
+            if (!persistence.load(fresh.state(), fresh.catalog()))
                 return ActionResult.fail("Nessun salvataggio trovato.");
             adopt(fresh);
             return ActionResult.ok("Partita caricata.");
         } catch (IllegalStateException | UncheckedIOException e) {
-            return ActionResult.fail(e.getMessage());
+            return ActionResult.fail(messageOf(e));
         }
     }
 
