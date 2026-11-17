@@ -1,96 +1,32 @@
 package it.unicam.cs.mpgc.rpg130579.controller;
 
-import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
-import it.unicam.cs.mpgc.rpg130579.model.entity.NPC;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.ConditionalText;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.Puzzle;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.Quest;
 import it.unicam.cs.mpgc.rpg130579.model.state.EndingScreen;
 import it.unicam.cs.mpgc.rpg130579.model.state.IntroScreen;
 import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
-import it.unicam.cs.mpgc.rpg130579.model.world.Exit;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
-import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
-import it.unicam.cs.mpgc.rpg130579.view.*;
+import it.unicam.cs.mpgc.rpg130579.view.EndingView;
+import it.unicam.cs.mpgc.rpg130579.view.IntroView;
+import it.unicam.cs.mpgc.rpg130579.view.ItemView;
+import it.unicam.cs.mpgc.rpg130579.view.LevelInfoView;
+import it.unicam.cs.mpgc.rpg130579.view.LocationView;
+import it.unicam.cs.mpgc.rpg130579.view.StatsView;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-final class ViewMapper {
+/** Traduce il modello nei DTO mostrati dalla UI. Sostituibile (es. per un altro frontend). */
+public interface ViewMapper {
+    LocationView toView(Location location, Player player, StoryProgress progress);
 
-    ItemView toView(Item item) {
-        return new ItemView(item.getId(), item.getName(), item.getDescription(), item.examine());
-    }
+    List<ItemView> toItemViews(List<Item> items);
 
-    ExitView toView(Exit exit) {
-        return new ExitView(exit.getId(), exit.getLabel(), exit.isPassable());
-    }
+    StatsView toView(Player player);
 
-    NpcView toView(NPC npc) {
-        return new NpcView(npc.getId(), npc.getName(), npc.getDescription());
-    }
+    IntroView toView(IntroScreen intro);
 
-    PuzzleView toView(Puzzle puzzle, Player player) {
-        return new PuzzleView(puzzle.getDescription(), puzzle.choices(player), puzzle.answerSize());
-    }
+    LevelInfoView toView(Level level, int number, int total);
 
-    MechanismView toView(Mechanism mechanism, Player player, StoryProgress progress) {
-        PuzzleView puzzle = mechanism.getRequiredPuzzle()
-                .map(p -> toView(p, player))
-                .orElse(null);
-        String hint = mechanism.getHint()
-                .filter(h -> h.isVisibleTo(player, progress))
-                .map(ConditionalText::text)
-                .orElse("");
-        return new MechanismView(mechanism.getId(), mechanism.getName(),
-                mechanism.getDescription(), mechanism.isLocked(), puzzle, hint);
-    }
-
-    LocationView toView(Location location, Player player, StoryProgress progress) {
-        List<String> details = location.getDetails().stream()
-                .filter(d -> d.isVisibleTo(player, progress))
-                .map(ConditionalText::text)
-                .toList();
-        return new LocationView(
-                location.getId(),
-                location.getName(),
-                location.getDescription(),
-                location.getItems().stream().map(this::toView).toList(),
-                location.getNpcs().stream().map(this::toView).toList(),
-                location.getExits().stream().map(this::toView).toList(),
-                location.getMechanisms().stream().map(m -> toView(m, player, progress)).toList(),
-                details);
-    }
-
-    List<ItemView> toItemViews(List<Item> items) {
-        return items.stream().map(this::toView).toList();
-    }
-
-    IntroView toView(IntroScreen intro) {
-        return new IntroView(intro.title(), intro.paragraphs());
-    }
-
-    LevelInfoView toView(Level level, int number, int total) {
-        Quest quest = level.getQuest();
-        return new LevelInfoView(number, total, level.getName(), level.getDescription(),
-                quest.getName(), quest.getDescription(), quest.isCompleted());
-    }
-
-    EndingView toView(EndingScreen e) {
-        return new EndingView(e.gameTitle(), e.headline(), e.subtitle(), e.message(), e.outcome());
-    }
-
-    StatsView toView(Player player) {
-        Map<String, Integer> values = new LinkedHashMap<>();
-        Map<String, Integer> bonuses = new LinkedHashMap<>();
-        for (Attribute attribute : Attribute.values()) {
-            values.put(attribute.getLabel(), player.getAttributeValue(attribute));
-            bonuses.put(attribute.getLabel(), player.getAttributeBonus(attribute));
-        }
-        return new StatsView(values, bonuses);
-    }
+    EndingView toView(EndingScreen ending);
 }

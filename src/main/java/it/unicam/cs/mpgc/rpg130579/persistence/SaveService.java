@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg130579.controller;
+package it.unicam.cs.mpgc.rpg130579.persistence;
 
 import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
@@ -10,9 +10,8 @@ import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.LevelManager;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
-import it.unicam.cs.mpgc.rpg130579.persistence.SaveData;
-import it.unicam.cs.mpgc.rpg130579.persistence.SaveRepository;
 
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
@@ -21,34 +20,38 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Traduce lo stato di gioco in SaveData e viceversa.
+ * Traduce lo stato di gioco in SaveData e viceversa, usando un SaveRepository per leggere e scrivere.
  * Il ripristino va fatto su un GameState appena costruito dal contenuto di gioco
  * (livelli, luoghi e oggetti nel loro stato iniziale).
  */
-public class SaveService {
+public class SaveService implements GamePersistence {
     private final SaveRepository repository;
-    private final ItemCatalog catalog;
 
-    public SaveService(SaveRepository repository, ItemCatalog catalog) {
+    public SaveService(SaveRepository repository) {
         if (repository == null) throw new IllegalArgumentException("Il repository non può essere nullo");
-        if (catalog == null) throw new IllegalArgumentException("Il catalogo oggetti non può essere nullo");
         this.repository = repository;
-        this.catalog = catalog;
     }
 
+    @Override
+    public boolean hasSave() {
+        try {
+            return repository.load().isPresent();
+        } catch (UncheckedIOException e) {
+            return false;
+        }
+    }
+
+    @Override
     public void save(GameState state) {
         repository.save(capture(state));
     }
 
-    /**
-     * @return false se non esiste nessun salvataggio
-     * @throws IllegalStateException se il salvataggio non è coerente col contenuto di gioco;
-     *                               in tal caso lo stato non viene modificato
-     */
-    public boolean load(GameState state) {
+    @Override
+    public boolean load(GameState state, ItemCatalog catalog) {
+        if (catalog == null) throw new IllegalArgumentException("Il catalogo oggetti non può essere nullo");
         Optional<SaveData> data = repository.load();
         if (data.isEmpty()) return false;
-        restore(state, data.get());
+        restore(state, data.get(), catalog);
         return true;
     }
 
@@ -88,7 +91,7 @@ public class SaveService {
                 attributes);
     }
 
-    void restore(GameState state, SaveData data) {
+    void restore(GameState state, SaveData data, ItemCatalog catalog) {
         if (state == null) throw new IllegalArgumentException("Lo stato di gioco non può essere nullo");
         if (data == null) throw new IllegalArgumentException("Il salvataggio non può essere nullo");
         if (data.getVersion() < SaveData.MIN_SUPPORTED_VERSION || data.getVersion() > SaveData.CURRENT_VERSION)
@@ -97,17 +100,16 @@ public class SaveService {
         LevelManager levels = state.getLevelManager();
 
         // Fase 1: risolvo tutti gli id. Se qualcosa non torna, lancio prima di modificare lo stato.
-        Level currentLevel = levels.getLevelById(data.getCurrentLevelId());
-        if (currentLevel == null) throw new IllegalStateException("Livello salvato inesistente: " + data.getCurrentLevelId());
+        Level currentLevel = levels.findLevelById(data.getCurrentLevelId())
+                .orElseThrow(() -> new IllegalStateException("Livello salvato inesistente: " + data.getCurrentLevelId()));
 
-        Location location = currentLevel.getPlaceById(data.getCurrentLocationId());
-        if (location == null) throw new IllegalStateException("Luogo salvato inesistente: " + data.getCurrentLocationId());
+        Location location = currentLevel.findPlaceById(data.getCurrentLocationId())
+                .orElseThrow(() -> new IllegalStateException("Luogo salvato inesistente: " + data.getCurrentLocationId()));
 
         List<Level> completedLevels = new ArrayList<>();
         for (String id : data.getCompletedLevelIds()) {
-            Level level = levels.getLevelById(id);
-            if (level == null) throw new IllegalStateException("Livello completato inesistente: " + id);
-            completedLevels.add(level);
+            completedLevels.add(levels.findLevelById(id)
+                    .orElseThrow(() -> new IllegalStateException("Livello completato inesistente: " + id)));
         }
 
         List<Mechanism> unlocked = new ArrayList<>();
@@ -117,7 +119,8 @@ public class SaveService {
 
         List<Item> inventory = new ArrayList<>();
         for (String id : data.getInventoryItemIds()) {
-            inventory.add(catalog.findById(id).orElseThrow(() -> new IllegalStateException("Oggetto salvato inesistente: " + id)));
+            inventory.add(catalog.findById(id)
+                    .orElseThrow(() -> new IllegalStateException("Oggetto salvato inesistente: " + id)));
         }
 
         // Un salvataggio v1 non ha attributi: restano tutti a zero.
@@ -155,8 +158,8 @@ public class SaveService {
 
     private static Mechanism findMechanism(LevelManager levels, String id) {
         for (int i = 0; i < levels.getLevelsSize(); i++) {
-            Mechanism mechanism = levels.getLevelAt(i).getMechanismById(id);
-            if (mechanism != null) return mechanism;
+            Optional<Mechanism> mechanism = levels.getLevelAt(i).findMechanismById(id);
+            if (mechanism.isPresent()) return mechanism.get();
         }
         throw new IllegalStateException("Meccanismo salvato inesistente: " + id);
     }
