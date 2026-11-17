@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg130579.model.world;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /** Gestisce la sequenza dei livelli e quale di essi è quello corrente. */
 public class LevelManager {
@@ -21,17 +22,21 @@ public class LevelManager {
         return this.indexCurrentLevel;
     }
 
+    /** Il livello con questo id, se esiste (senza distinzione tra maiuscole e minuscole). */
+    public Optional<Level> findLevelById(String id) {
+        if (id == null || id.isBlank()) return Optional.empty();
+        return levels.stream().filter(level -> level.getId().equalsIgnoreCase(id)).findFirst();
+    }
+
+    /** @throws IllegalArgumentException se l'id è vuoto o il livello non esiste */
     public Level getLevelById(String id) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del livello non può essere vuoto");
-        for (Level level : levels) {
-            if (level.getId().equalsIgnoreCase(id)) return level;
-        }
-        return null;
+        return findLevelById(id).orElseThrow(() -> new IllegalArgumentException("Livello non trovato: " + id));
     }
 
     public void addLevel(Level level) {
         if (level == null) throw new IllegalArgumentException("Il livello non può essere nullo");
-        if (getLevelById(level.getId()) != null) throw new IllegalArgumentException("Esiste già un livello con questo id: " + level.getId());
+        if (findLevelById(level.getId()).isPresent()) throw new IllegalArgumentException("Esiste già un livello con questo id: " + level.getId());
         levels.add(level);
     }
 
