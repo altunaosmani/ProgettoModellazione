@@ -5,7 +5,7 @@ package it.unicam.cs.mpgc.rpg130579.model.entity;
  * Il bonus non viene sommato al valore base: lo calcola Player, così il salvataggio
  * resta invariato (basta l'inventario).
  */
-public class BonusItem extends Item {
+public class BonusItem extends Item implements AttributeModifier {
     private final Attribute attribute;
     private final int bonus;
 
@@ -23,6 +23,11 @@ public class BonusItem extends Item {
 
     public int getBonus() {
         return bonus;
+    }
+
+    @Override
+    public int bonusFor(Attribute requested) {
+        return requested == attribute ? bonus : 0;
     }
 
     @Override

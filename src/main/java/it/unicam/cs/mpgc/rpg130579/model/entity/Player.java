@@ -25,10 +25,9 @@ public class Player extends GameCharacter {
     public int getAttributeBonus(Attribute attribute) {
         if (attribute == null) throw new IllegalArgumentException("L'attributo non può essere nullo");
         return inventory.stream()
-                .filter(BonusItem.class::isInstance)
-                .map(BonusItem.class::cast)
-                .filter(item -> item.getAttribute() == attribute)
-                .mapToInt(BonusItem::getBonus)
+                .filter(AttributeModifier.class::isInstance)
+                .map(AttributeModifier.class::cast)
+                .mapToInt(modifier -> modifier.bonusFor(attribute))
                 .sum();
     }
 

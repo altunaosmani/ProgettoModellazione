@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.model.entity;
 
-public class KeyItem extends Item {
+public class KeyItem extends Item implements MechanismKey {
     private final String targetMechanismId;
 
     public KeyItem(String id, String name, String description, String targetMechanismId) {
@@ -13,6 +13,7 @@ public class KeyItem extends Item {
         return targetMechanismId;
     }
 
+    @Override
     public boolean opens(String mechanismId) {
         return mechanismId != null && targetMechanismId.equalsIgnoreCase(mechanismId);
     }
