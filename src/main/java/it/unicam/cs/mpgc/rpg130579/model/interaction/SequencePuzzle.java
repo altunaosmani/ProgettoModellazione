@@ -39,7 +39,9 @@ public class SequencePuzzle extends AbstractPuzzle {
     }
 
     @Override
-    public int answerSize() { return orderedPieces.size(); }
+    public int answerSize() {
+        return orderedPieces.size();
+    }
 
     /**
      * I frammenti posseduti dal giocatore. Quando li ha tutti vengono mescolati, altrimenti
@@ -47,11 +49,15 @@ public class SequencePuzzle extends AbstractPuzzle {
      */
     @Override
     public Map<String, String> choices(Player player) {
+        Map<String, EnigmaPieceItem> piecesById = new HashMap<>();
+        for (EnigmaPieceItem piece : orderedPieces) {
+            piecesById.put(key(piece.getId()), piece);
+        }
+
         List<EnigmaPieceItem> owned = new ArrayList<>();
         for (Item item : player.getInventory()) {
-            if (item instanceof EnigmaPieceItem piece && isPiece(piece)) {
-                owned.add(piece);
-            }
+            EnigmaPieceItem piece = piecesById.get(key(item.getId()));
+            if (piece != null) owned.add(piece);
         }
         if (owned.size() == orderedPieces.size()) owned = scrambled(owned);
 
@@ -76,7 +82,7 @@ public class SequencePuzzle extends AbstractPuzzle {
         return result;
     }
 
-    private boolean isPiece(EnigmaPieceItem piece) {
-        return orderedPieces.contains(piece);
+    private static String key(String id) {
+        return id.trim().toLowerCase(Locale.ROOT);
     }
 }
