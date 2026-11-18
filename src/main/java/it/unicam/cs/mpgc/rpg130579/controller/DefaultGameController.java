@@ -1,11 +1,9 @@
 package it.unicam.cs.mpgc.rpg130579.controller;
 
-import it.unicam.cs.mpgc.rpg130579.content.GameSetup;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueChoice;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueSession;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.PuzzleAnswer;
+import it.unicam.cs.mpgc.rpg130579.model.state.GameSetup;
 import it.unicam.cs.mpgc.rpg130579.model.state.GameState;
 import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 import it.unicam.cs.mpgc.rpg130579.persistence.GamePersistence;
@@ -14,7 +12,6 @@ import it.unicam.cs.mpgc.rpg130579.persistence.SaveService;
 import it.unicam.cs.mpgc.rpg130579.view.*;
 
 import java.io.UncheckedIOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,9 +20,9 @@ import java.util.function.Supplier;
 /**
  * Implementazione predefinita di {@link GameController}.
  * <p>
- * Coordina {@link GameManager}, {@link GamePersistence}, {@link ViewMapper} e
- * {@link StatsChangeReporter}, traducendo le eccezioni di dominio in {@link ActionResult}
- * o {@link DialogueView} di errore e verificando automaticamente il completamento delle missioni.
+ * Coordina {@link GameManager}, {@link DialogueFlow}, {@link GamePersistence},
+ * {@link ViewMapper} e {@link StatsChangeReporter}, traducendo le eccezioni di dominio
+ * in {@link ActionResult} di errore e verificando il completamento delle missioni.
  */
 public class DefaultGameController implements GameController {
     private final Supplier<GameSetup> newGameSource;
@@ -35,9 +32,7 @@ public class DefaultGameController implements GameController {
 
     private GameSetup setup;
     private GameManager manager;
-    private DialogueSession session;
-    private Map<Attribute, Integer> statsAtDialogueStart;
-    private boolean questCompletedInDialogue;
+    private DialogueFlow dialogues;
 
     /**
      * Comodo: persistenza su repository, mapper e reporter predefiniti.
@@ -60,16 +55,10 @@ public class DefaultGameController implements GameController {
         adopt(newGameSource.get());
     }
 
-    private static String messageOf(RuntimeException e) {
-        return e.getMessage() == null ? "Operazione non riuscita." : e.getMessage();
-    }
-
     private void adopt(GameSetup newSetup) {
         this.setup = newSetup;
         this.manager = new GameManager(newSetup.state());
-        this.session = null;
-        this.statsAtDialogueStart = null;
-        this.questCompletedInDialogue = false;
+        this.dialogues = new DialogueFlow(manager, statsReporter);
     }
 
     private Player player() {
@@ -87,6 +76,8 @@ public class DefaultGameController implements GameController {
         return manager.completeCurrentQuest() ? " Missione completata!" : "";
     }
 
+    // ---------- Esplorazione ----------
+
     @Override
     public LocationView currentLocation() {
         return mapper.toView(player().getCurrentLocation(), player(), progress());
@@ -102,7 +93,7 @@ public class DefaultGameController implements GameController {
         try {
             return manager.move(exitId) ? ActionResult.ok() : ActionResult.fail("Il passaggio è bloccato.");
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return ActionResult.fail(messageOf(e));
+            return ActionResult.fail(ErrorMessages.of(e));
         }
     }
 
@@ -113,7 +104,7 @@ public class DefaultGameController implements GameController {
             if (!manager.takeItem(itemId)) return ActionResult.fail("Non puoi raccogliere questo oggetto.");
             return ActionResult.ok("Oggetto raccolto." + statsReporter.describeGains(player(), before) + questNote());
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return ActionResult.fail(messageOf(e));
+            return ActionResult.fail(ErrorMessages.of(e));
         }
     }
 
@@ -127,64 +118,28 @@ public class DefaultGameController implements GameController {
             }
             return ActionResult.ok("Si è sbloccato qualcosa!" + statsReporter.describeGains(player(), before) + questNote());
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return ActionResult.fail(messageOf(e));
+            return ActionResult.fail(ErrorMessages.of(e));
         }
     }
 
+    // ---------- Dialoghi (delegati a DialogueFlow) ----------
+
     @Override
     public DialogueView talkTo(String npcId) {
-        try {
-            session = manager.interactWithNPC(npcId);   // (o la versione con locationId, se non hai ancora fatto il refactoring)
-            statsAtDialogueStart = statsReporter.capture(player());
-            questCompletedInDialogue = false;
-            return snapshot();
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            session = null;
-            statsAtDialogueStart = null;
-            return DialogueView.error(messageOf(e));
-        }
+        return dialogues.talkTo(npcId);
     }
 
     @Override
     public DialogueView choose(int index) {
-        if (session == null) return DialogueView.error("Nessun dialogo in corso.");
-        try {
-            session.choose(index);
-            return snapshot();
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            return DialogueView.error(messageOf(e));
-        }
-    }
-
-    private DialogueView snapshot() {
-        List<String> lines = new ArrayList<>();
-        while (session.hasNextLine()) lines.add(session.nextLine());
-        List<String> choices = session.awaitsChoice()
-                ? session.getChoices().stream().map(DialogueChoice::text).toList()
-                : List.of();
-        DialogueView view = new DialogueView(session.getTitle(), lines, choices, session.isFinished());
-        if (view.finished()) {
-            session = null;
-            if (manager.completeCurrentQuest()) questCompletedInDialogue = true;
-        }
-        return view;
+        return dialogues.choose(index);
     }
 
     @Override
     public ActionResult endDialogue() {
-        // se il dialogo è stato chiuso a metà, gli effetti già applicati potrebbero aver completato la missione
-        if (manager.completeCurrentQuest()) questCompletedInDialogue = true;
-
-        String note = statsAtDialogueStart == null
-                ? ""
-                : statsReporter.describeGains(player(), statsAtDialogueStart).trim();
-        if (questCompletedInDialogue) note = (note.isEmpty() ? "" : note + " ") + "Missione completata!";
-
-        session = null;
-        statsAtDialogueStart = null;
-        questCompletedInDialogue = false;
-        return ActionResult.ok(note);
+        return dialogues.endDialogue();
     }
+
+    // ---------- Personaggio e progressione ----------
 
     @Override
     public StatsView stats() {
@@ -206,7 +161,7 @@ public class DefaultGameController implements GameController {
                     ? ActionResult.ok("Hai completato il gioco!")
                     : ActionResult.ok(manager.getCurrentLevel().getName());
         } catch (IllegalStateException e) {
-            return ActionResult.fail(messageOf(e));
+            return ActionResult.fail(ErrorMessages.of(e));
         }
     }
 
@@ -231,6 +186,8 @@ public class DefaultGameController implements GameController {
                 state.getLevelManager().getLevelsSize());
     }
 
+    // ---------- Persistenza ----------
+
     @Override
     public boolean hasSave() {
         return persistence.hasSave();
@@ -242,7 +199,7 @@ public class DefaultGameController implements GameController {
             persistence.save(manager.getCurrentState());
             return ActionResult.ok("Partita salvata.");
         } catch (UncheckedIOException e) {
-            return ActionResult.fail(messageOf(e));
+            return ActionResult.fail(ErrorMessages.of(e));
         }
     }
 
@@ -255,7 +212,7 @@ public class DefaultGameController implements GameController {
             adopt(fresh);
             return ActionResult.ok("Partita caricata.");
         } catch (IllegalStateException | UncheckedIOException e) {
-            return ActionResult.fail(messageOf(e));
+            return ActionResult.fail(ErrorMessages.of(e));
         }
     }
 
