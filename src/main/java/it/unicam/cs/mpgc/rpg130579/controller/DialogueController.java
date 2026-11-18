@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.controller;
 
+import it.unicam.cs.mpgc.rpg130579.view.ActionResult;
 import it.unicam.cs.mpgc.rpg130579.view.DialogueView;
 
 /**
@@ -21,4 +22,12 @@ public interface DialogueController {
      * @return stato aggiornato del dialogo dopo l'applicazione degli effetti della scelta
      */
     DialogueView choose(int index);
+
+    /**
+     * Chiude la conversazione corrente, anche se è stata interrotta a metà, e azzera la sessione.
+     *
+     * @return riepilogo di ciò che è cambiato durante il dialogo (attributi guadagnati,
+     * missione completata); messaggio vuoto se non è cambiato nulla
+     */
+    ActionResult endDialogue();
 }

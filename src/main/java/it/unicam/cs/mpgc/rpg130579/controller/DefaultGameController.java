@@ -36,8 +36,12 @@ public class DefaultGameController implements GameController {
     private GameSetup setup;
     private GameManager manager;
     private DialogueSession session;
+    private Map<Attribute, Integer> statsAtDialogueStart;
+    private boolean questCompletedInDialogue;
 
-    /** Comodo: persistenza su repository, mapper e reporter predefiniti. */
+    /**
+     * Comodo: persistenza su repository, mapper e reporter predefiniti.
+     */
     public DefaultGameController(Supplier<GameSetup> newGameSource, SaveRepository repository) {
         this(newGameSource, new SaveService(repository), new DefaultViewMapper(), new StatsChangeReporter());
     }
@@ -47,7 +51,8 @@ public class DefaultGameController implements GameController {
         if (newGameSource == null) throw new IllegalArgumentException("La sorgente di partite non può essere nulla");
         if (persistence == null) throw new IllegalArgumentException("La persistenza non può essere nulla");
         if (mapper == null) throw new IllegalArgumentException("Il mapper non può essere nullo");
-        if (statsReporter == null) throw new IllegalArgumentException("Il reporter delle statistiche non può essere nullo");
+        if (statsReporter == null)
+            throw new IllegalArgumentException("Il reporter delle statistiche non può essere nullo");
         this.newGameSource = newGameSource;
         this.persistence = persistence;
         this.mapper = mapper;
@@ -55,10 +60,16 @@ public class DefaultGameController implements GameController {
         adopt(newGameSource.get());
     }
 
+    private static String messageOf(RuntimeException e) {
+        return e.getMessage() == null ? "Operazione non riuscita." : e.getMessage();
+    }
+
     private void adopt(GameSetup newSetup) {
         this.setup = newSetup;
         this.manager = new GameManager(newSetup.state());
         this.session = null;
+        this.statsAtDialogueStart = null;
+        this.questCompletedInDialogue = false;
     }
 
     private Player player() {
@@ -69,13 +80,11 @@ public class DefaultGameController implements GameController {
         return manager.getCurrentState().getProgress();
     }
 
-    /** Dopo ogni azione che può cambiare lo stato della storia controlla se la missione è finita. */
+    /**
+     * Dopo ogni azione che può cambiare lo stato della storia controlla se la missione è finita.
+     */
     private String questNote() {
         return manager.completeCurrentQuest() ? " Missione completata!" : "";
-    }
-
-    private static String messageOf(RuntimeException e) {
-        return e.getMessage() == null ? "Operazione non riuscita." : e.getMessage();
     }
 
     @Override
@@ -125,10 +134,13 @@ public class DefaultGameController implements GameController {
     @Override
     public DialogueView talkTo(String npcId) {
         try {
-            session = manager.interactWithNPC(npcId);
+            session = manager.interactWithNPC(npcId);   // (o la versione con locationId, se non hai ancora fatto il refactoring)
+            statsAtDialogueStart = statsReporter.capture(player());
+            questCompletedInDialogue = false;
             return snapshot();
         } catch (IllegalArgumentException | IllegalStateException e) {
             session = null;
+            statsAtDialogueStart = null;
             return DialogueView.error(messageOf(e));
         }
     }
@@ -153,19 +165,31 @@ public class DefaultGameController implements GameController {
         DialogueView view = new DialogueView(session.getTitle(), lines, choices, session.isFinished());
         if (view.finished()) {
             session = null;
-            manager.completeCurrentQuest(); // gli effetti dei dialoghi (flag) possono completare la missione
+            if (manager.completeCurrentQuest()) questCompletedInDialogue = true;
         }
         return view;
     }
 
-    // ---------- Personaggio ----------
+    @Override
+    public ActionResult endDialogue() {
+        // se il dialogo è stato chiuso a metà, gli effetti già applicati potrebbero aver completato la missione
+        if (manager.completeCurrentQuest()) questCompletedInDialogue = true;
+
+        String note = statsAtDialogueStart == null
+                ? ""
+                : statsReporter.describeGains(player(), statsAtDialogueStart).trim();
+        if (questCompletedInDialogue) note = (note.isEmpty() ? "" : note + " ") + "Missione completata!";
+
+        session = null;
+        statsAtDialogueStart = null;
+        questCompletedInDialogue = false;
+        return ActionResult.ok(note);
+    }
 
     @Override
     public StatsView stats() {
         return mapper.toView(player());
     }
-
-    // ---------- Avanzamento ----------
 
     @Override
     public GameStatus status() {
@@ -186,7 +210,9 @@ public class DefaultGameController implements GameController {
         }
     }
 
-    /** Il finale dipende dalle scelte fatte: lo seleziona il catalogo dei finali sullo stato finale della partita. */
+    /**
+     * Il finale dipende dalle scelte fatte: lo seleziona il catalogo dei finali sullo stato finale della partita.
+     */
     @Override
     public Optional<EndingView> ending() {
         if (!manager.hasWon()) return Optional.empty();
@@ -204,8 +230,6 @@ public class DefaultGameController implements GameController {
         return mapper.toView(state.getCurrentLevel(), state.getCurrentLevelIndex() + 1,
                 state.getLevelManager().getLevelsSize());
     }
-
-    // ---------- Persistenza ----------
 
     @Override
     public boolean hasSave() {

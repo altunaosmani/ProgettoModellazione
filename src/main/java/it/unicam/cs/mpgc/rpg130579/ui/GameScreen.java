@@ -1,25 +1,17 @@
 package it.unicam.cs.mpgc.rpg130579.ui;
 
 import it.unicam.cs.mpgc.rpg130579.controller.GameController;
-import it.unicam.cs.mpgc.rpg130579.view.ActionResult;
-import it.unicam.cs.mpgc.rpg130579.view.ExitView;
-import it.unicam.cs.mpgc.rpg130579.view.GameStatus;
-import it.unicam.cs.mpgc.rpg130579.view.ItemView;
-import it.unicam.cs.mpgc.rpg130579.view.LevelInfoView;
-import it.unicam.cs.mpgc.rpg130579.view.MechanismView;
-import it.unicam.cs.mpgc.rpg130579.view.NpcView;
+import it.unicam.cs.mpgc.rpg130579.view.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
-/** Schermata principale di gioco che integra banner del livello, vista del luogo, statistiche, inventario e overlay di completamento. */
+/**
+ * Schermata principale di gioco che integra banner del livello, vista del luogo, statistiche, inventario e overlay di completamento.
+ */
 public class GameScreen extends BorderPane {
     private final GameController controller;
     private final AppNavigator navigator;
@@ -70,13 +62,13 @@ public class GameScreen extends BorderPane {
         return box;
     }
 
-    // ---------- Aggiornamento ----------
-
     public void setStatus(String message) {
         status.setText(message == null ? "" : message);
     }
 
-    /** Mostra il messaggio dell'azione e ridisegna la schermata. */
+    /**
+     * Mostra il messaggio dell'azione e ridisegna la schermata.
+     */
     public void report(ActionResult result) {
         setStatus(result.message());
         refresh();
@@ -100,8 +92,6 @@ public class GameScreen extends BorderPane {
         completionOverlay.update(current, info);
     }
 
-    // ---------- Azioni del giocatore ----------
-
     private void onContinue() {
         ActionResult result = controller.advance();
         report(result);
@@ -122,7 +112,7 @@ public class GameScreen extends BorderPane {
 
     private void onTalk(NpcView npc) {
         DialogueDialog.run(controller, npc.id(), images.imageFor(ImageKind.NPC, npc.id()));
-        report(ActionResult.ok());
+        report(controller.endDialogue());
     }
 
     private void onInteract(MechanismView mechanism) {
