@@ -153,4 +153,19 @@ class FullPlaythroughTest {
     void takingUnknownItemFailsWithoutCrashing() {
         assertFalse(c.takeItem("non_esiste").success());
     }
+
+    @Test
+    void levelOneNeedsBothDiaryAndKey() {
+        ok(c.move("piazza"));
+        ok(c.move("sentiero"));
+        ok(c.move("bivio"));
+        ok(c.unlock("sentiero_occhio", List.of("occhio")));
+        ok(c.move("santuario"));
+        ok(c.unlock("statua_santuario", List.of()));
+        ok(c.move("grotta"));
+        ok(c.takeItem("chiave_ardan"));
+        assertFalse(c.status().levelCompleted());
+        ok(c.takeItem("pagina_diario"));
+        assertTrue(c.status().levelCompleted());
+    }
 }
