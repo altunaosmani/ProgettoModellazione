@@ -142,13 +142,18 @@ public class Level {
     }
 
     /**
-     * Registra il meccanismo e, se richiede un enigma non ancora noto al livello, registra anche quello.
+     * Registra il meccanismo nel livello e lo colloca nel luogo indicato; se richiede
+     * un enigma non ancora noto al livello, registra anche quello. È l'unico punto di registrazione.
+     *
+     * @throws IllegalArgumentException se il luogo non esiste o l'id del meccanismo è già usato
      */
-    public void addMechanism(Mechanism mechanism) {
+    public void addMechanism(String locationId, Mechanism mechanism) {
         if (mechanism == null) throw new IllegalArgumentException("Il meccanismo non può essere nullo");
+        Location place = getPlaceById(locationId);   // fallisce prima di modificare qualcosa
         if (findMechanismById(mechanism.getId()).isPresent())
             throw new IllegalArgumentException("Esiste già un meccanismo con questo id: " + mechanism.getId());
         mechanisms.add(mechanism);
         mechanism.getRequiredPuzzle().filter(p -> findPuzzleById(p.getId()).isEmpty()).ifPresent(puzzles::add);
+        place.addMechanism(mechanism);
     }
 }

@@ -49,26 +49,18 @@ public class Location {
         return this.description;
     }
 
-    public int getSizeNPC() {
-        return npcs.size();
-    }
-
     // ---------- Dettagli condizionati ----------
-
-    public int getSizeItems() {
-        return items.size();
-    }
 
     public void addDetail(ConditionalText detail) {
         if (detail == null) throw new IllegalArgumentException("Il dettaglio non può essere nullo");
         details.add(detail);
     }
 
-    // ---------- Personaggi ----------
-
     public List<ConditionalText> getDetails() {
         return List.copyOf(details);
     }
+
+    // ---------- Personaggi ----------
 
     public NPC getNPCById(String npcId) {
         return npcs.get(key(npcId, "L'ID del personaggio"));
@@ -79,11 +71,11 @@ public class Location {
         return npcs.putIfAbsent(key(npc.getId(), "L'ID del personaggio"), npc) == null;
     }
 
-    // ---------- Oggetti ----------
-
     public List<NPC> getNpcs() {
         return List.copyOf(npcs.values());
     }
+
+    // ---------- Oggetti ----------
 
     public Item getItemById(String itemId) {
         return items.get(key(itemId, "L'ID dell'oggetto"));
@@ -98,11 +90,11 @@ public class Location {
         return items.remove(key(itemId, "L'ID dell'oggetto")) != null;
     }
 
-    // ---------- Uscite ----------
-
     public List<Item> getItems() {
         return List.copyOf(items.values());
     }
+
+    // ---------- Uscite ----------
 
     public Exit getExitById(String exitId) {
         return exits.get(key(exitId, "L'ID dell'uscita"));
@@ -113,22 +105,25 @@ public class Location {
         return exits.putIfAbsent(key(exit.getId(), "L'ID dell'uscita"), exit) == null;
     }
 
-    // ---------- Meccanismi ----------
-
     public List<Exit> getExits() {
         return List.copyOf(exits.values());
     }
+
+    // ---------- Meccanismi ----------
 
     public Mechanism getMechanismById(String mechanismId) {
         return mechanisms.get(key(mechanismId, "L'ID del meccanismo"));
     }
 
-    public boolean addMechanism(Mechanism mechanism) {
-        if (mechanism == null) throw new IllegalArgumentException("Il meccanismo non può essere nullo");
-        return mechanisms.putIfAbsent(key(mechanism.getId(), "L'ID del meccanismo"), mechanism) == null;
-    }
-
     public List<Mechanism> getMechanisms() {
         return List.copyOf(mechanisms.values());
+    }
+
+    /**
+     * Solo per {@link Level#addMechanism(String, Mechanism)}, unico punto di registrazione.
+     */
+    boolean addMechanism(Mechanism mechanism) {
+        if (mechanism == null) throw new IllegalArgumentException("Il meccanismo non può essere nullo");
+        return mechanisms.putIfAbsent(key(mechanism.getId(), "L'ID del meccanismo"), mechanism) == null;
     }
 }
