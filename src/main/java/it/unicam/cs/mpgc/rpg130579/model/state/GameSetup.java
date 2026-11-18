@@ -1,9 +1,6 @@
-package it.unicam.cs.mpgc.rpg130579.content;
+package it.unicam.cs.mpgc.rpg130579.model.state;
 
 import it.unicam.cs.mpgc.rpg130579.model.entity.ItemCatalog;
-import it.unicam.cs.mpgc.rpg130579.model.state.EndingCatalog;
-import it.unicam.cs.mpgc.rpg130579.model.state.GameState;
-import it.unicam.cs.mpgc.rpg130579.model.state.IntroScreen;
 
 /**
  * Contenitore immutabile di tutti gli elementi necessari per avviare o ripristinare una partita.
