@@ -13,6 +13,10 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
+/**
+ * Implementazione di {@link SaveRepository} su file JSON tramite libreria Gson.
+ * Esegue scritture atomiche tramite file temporaneo per prevenire corruzioni in caso di errore.
+ */
 public class JsonSaveRepository implements SaveRepository {
     private static final String DEFAULT_FILE = "savegame.json";
 

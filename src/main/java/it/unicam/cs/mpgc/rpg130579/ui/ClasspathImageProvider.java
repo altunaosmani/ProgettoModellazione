@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-/** Cerca le immagini in src/main/resources/images/<cartella-del-tipo>/<id>.png */
+/** Implementazione di {@link ImageProvider} che carica e memorizza in cache le immagini PNG dal classpath. */
 public class ClasspathImageProvider implements ImageProvider {
     private final Map<String, Optional<Image>> cache = new HashMap<>();
 

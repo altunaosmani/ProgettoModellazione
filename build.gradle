@@ -11,10 +11,6 @@ repositories {
     mavenCentral()
 }
 
-java {
-    toolchain { languageVersion = JavaLanguageVersion.of(21) }  // allinea anche README e IntelliJ
-}
-
 application {
     mainClass = 'it.unicam.cs.mpgc.rpg130579.main.Main'
 }

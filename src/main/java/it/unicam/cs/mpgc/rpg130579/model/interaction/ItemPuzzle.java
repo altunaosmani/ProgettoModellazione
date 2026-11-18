@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 
+/** Enigma risolto automaticamente se il giocatore possiede uno specifico oggetto nell'inventario. */
 public class ItemPuzzle extends AbstractPuzzle {
     private final String requiredItemId;
 

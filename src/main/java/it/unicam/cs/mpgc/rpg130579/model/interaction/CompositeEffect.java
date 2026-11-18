@@ -2,8 +2,7 @@ package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
 import java.util.List;
 
-/** Applica più effetti in sequenza (es. impostare un flag e aumentare un attributo). */
-public record CompositeEffect(List<DialogueEffect> effects) implements DialogueEffect {
+/** Effetto composto che esegue in sequenza una lista di {@link DialogueEffect}. */public record CompositeEffect(List<DialogueEffect> effects) implements DialogueEffect {
     public CompositeEffect {
         if (effects == null || effects.isEmpty()) throw new IllegalArgumentException("Serve almeno un effetto");
         for (DialogueEffect effect : effects) {

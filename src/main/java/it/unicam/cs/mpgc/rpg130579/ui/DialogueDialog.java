@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 import java.util.Optional;
 
+/** Finestra di dialogo modale che gestisce l'interazione a turni con un NPC. */
 public final class DialogueDialog {
     private static final double PORTRAIT_SIZE = 64;
 

@@ -1,6 +1,9 @@
 package it.unicam.cs.mpgc.rpg130579.model.entity;
 
-/** Attributi del protagonista. Aggiungere un valore qui basta per introdurre un nuovo attributo. */
+/**
+ * Enumerazione degli attributi del protagonista che influenzano dialoghi,
+ * indizi, dettagli ambientali e finali della storia.
+ */
 public enum Attribute {
     SAPIENZA("Sapienza"),
     PERSUASIONE("Persuasione"),

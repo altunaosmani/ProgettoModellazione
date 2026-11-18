@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/** Finestra di dialogo modale per la risoluzione di enigmi a scelta o a sequenza. */
 public final class PuzzleDialog {
 
     /**

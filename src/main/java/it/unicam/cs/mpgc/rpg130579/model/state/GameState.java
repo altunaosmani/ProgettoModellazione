@@ -5,7 +5,10 @@ import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.LevelManager;
 
-/** Stato completo di una partita: giocatore, livelli, progressi della storia ed esito finale. */
+/**
+ * Aggrega l'intero stato runtime di una partita: il {@link Player}, il {@link LevelManager},
+ * i progressi narrativi ({@link StoryProgress}) e i flag di fine partita e vittoria.
+ */
 public class GameState {
     private final Player player;
     private final LevelManager levelManager;
@@ -51,6 +54,11 @@ public class GameState {
         return this.win;
     }
 
+    /**
+     * Conclude la partita dichiarando la vittoria.
+     *
+     * @throws IllegalStateException se la partita è già terminata o se l'ultimo livello non è completato
+     */
     public void endGameVictory() {
         if (gameEnd) throw new IllegalStateException("La partita è già terminata");
         if (!levelManager.isLastLevel() || !getCurrentLevel().isCompleted())
@@ -59,14 +67,17 @@ public class GameState {
         this.gameEnd = true;
     }
 
-    /** Usato dal caricamento di un salvataggio di una partita già conclusa. */
     public void restoreEnded(boolean won) {
         this.gameEnd = true;
         this.win = won;
     }
 
-    /** Avanza al livello successivo; se il livello completato è l'ultimo, la partita si chiude con la vittoria. */
-    public void nextLevel() {
+    /**
+     * Avanza al livello successivo spostando il giocatore nella relativa locazione iniziale.
+     * Se il livello corrente è l'ultimo ed è completato, conclude la partita con la vittoria.
+     *
+     * @throws IllegalStateException se la partita è terminata o il livello corrente non è completato
+     */    public void nextLevel() {
         if (gameEnd) throw new IllegalStateException("La partita è già terminata");
         if (levelManager.nextLevel()) {
             player.setCurrentLocation(getCurrentLevel().getStartLocation());

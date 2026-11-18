@@ -7,10 +7,18 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
-/** Calcola quali attributi del giocatore sono aumentati dopo un'azione e ne produce il testo per il messaggio. */
+/**
+ * Componente di supporto che rileva gli incrementi negli attributi effettivi del giocatore
+ * prima e dopo un'azione, formattando una nota testuale per il feedback all'utente.
+ */
 public class StatsChangeReporter {
 
-    /** Fotografia dei valori effettivi (base + bonus oggetti), da confrontare dopo l'azione. */
+    /**
+     * Acquisisce un'istantanea immodificabile dei valori effettivi attuali degli attributi.
+     *
+     * @param player giocatore da ispezionare
+     * @return mappa attributo -> valore effettivo corrente
+     */
     public Map<Attribute, Integer> capture(Player player) {
         if (player == null) throw new IllegalArgumentException("Il giocatore non può essere nullo");
         Map<Attribute, Integer> snapshot = new EnumMap<>(Attribute.class);
@@ -20,7 +28,13 @@ public class StatsChangeReporter {
         return Collections.unmodifiableMap(snapshot);
     }
 
-    /** Es. " +1 Persuasione. +1 Sapienza." oppure stringa vuota se nulla è aumentato. */
+    /**
+     * Confronta i valori attuali con una fotografia precedente e descrive gli eventuali aumenti.
+     *
+     * @param player giocatore aggiornato
+     * @param before mappa acquisita prima dell'azione tramite {@link #capture(Player)}
+     * @return stringa formattata (es. {@code " +1 Persuasione."}) oppure stringa vuota
+     */
     public String describeGains(Player player, Map<Attribute, Integer> before) {
         if (player == null) throw new IllegalArgumentException("Il giocatore non può essere nullo");
         if (before == null) throw new IllegalArgumentException("La fotografia precedente non può essere nulla");

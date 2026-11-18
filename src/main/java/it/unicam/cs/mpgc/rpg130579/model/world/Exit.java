@@ -1,5 +1,9 @@
 package it.unicam.cs.mpgc.rpg130579.model.world;
 
+/**
+ * Collegamento monodirezionale da un luogo a un altro, eventualmente protetto da una
+ * barriera {@link Lockable} (tipicamente un {@link Mechanism}).
+ */
 public class Exit {
     private final String id;
     private final String label;

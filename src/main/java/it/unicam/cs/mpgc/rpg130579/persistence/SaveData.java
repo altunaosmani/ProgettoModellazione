@@ -8,10 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Fotografia dello stato di una partita. Contiene solo id e valori semplici,
- * mai riferimenti al modello, cosi' si serializza in JSON senza sorprese.
- * <p>
- * Versione 2: aggiunge gli attributi del giocatore. I file v1 si leggono ancora (attributi a zero).
+ * Struttura dati serializzabile (DTO di persistenza) che rappresenta uno snapshot
+ * della partita tramite soli identificativi e tipi primitivi. Supporta la retrocompatibilità
+ * con i salvataggi di versione 1 (privi di attributi).
  */
 public class SaveData {
     public static final int CURRENT_VERSION = 2;

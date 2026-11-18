@@ -4,6 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Incapsula la risposta fornita dal giocatore a un {@link Puzzle} come lista immutabile di valori.
+ *
+ * @param values lista ordinata degli identificativi o valori scelti dal giocatore
+ */
 public record PuzzleAnswer(List<String> values) {
     public PuzzleAnswer {
         if (values == null) {

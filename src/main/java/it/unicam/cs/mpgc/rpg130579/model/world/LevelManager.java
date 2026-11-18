@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/** Gestisce la sequenza dei livelli e quale di essi è quello corrente. */
+/**
+ * Gestisce la sequenza ordinata dei livelli di una partita e tiene traccia del livello attivo.
+ */
 public class LevelManager {
     private final List<Level> levels = new ArrayList<>();
     private int indexCurrentLevel = 0;

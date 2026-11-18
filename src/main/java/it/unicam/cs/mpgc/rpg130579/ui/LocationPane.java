@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.function.Consumer;
 
+/** Pannello centrale che visualizza descrizione, dettagli condizionali, NPC, meccanismi, oggetti e uscite del luogo corrente. */
 public class LocationPane extends VBox {
     private static final double LOCATION_ICON_SIZE = 64;
 

@@ -20,9 +20,13 @@ import it.unicam.cs.mpgc.rpg130579.model.world.PuzzleUnlockCondition;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
 import it.unicam.cs.mpgc.rpg130579.model.entity.BonusItem;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.AttributeCondition;
-
 import java.util.List;
 
+/**
+ * Costruttore del secondo livello: <i>Il Castello di Ardan</i>.
+ * Configura l'accesso tramite chiave, l'incontro con Rowan, la biblioteca con l'enigma
+ * a sequenza della luna e l'archivio segreto.
+ */
 public class CastleLevelBuilder implements LevelBuilder {
     private static final String GATE_AREA = "ingresso";
     private static final String COURTYARD = "cortile";

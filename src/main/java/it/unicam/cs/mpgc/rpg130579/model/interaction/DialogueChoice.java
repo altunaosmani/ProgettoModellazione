@@ -1,8 +1,13 @@
 package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
 /**
- * Una scelta del giocatore. Se nextNodeId è null chiude il dialogo.
- * La scelta è visibile solo se il requisito è soddisfatto.
+ * Opzione di risposta selezionabile dal giocatore al termine delle battute di un nodo.
+ * Può essere vincolata a una {@link QuestCondition} e attivare un {@link DialogueEffect}.
+ *
+ * @param text        testo della scelta mostrato al giocatore
+ * @param nextNodeId  ID del nodo successivo, oppure {@code null} se la scelta termina il dialogo
+ * @param effect      effetto collaterale eseguito alla selezione
+ * @param requirement condizione necessaria affinché la scelta sia visibile
  */
 public record DialogueChoice(String text, String nextNodeId, DialogueEffect effect, QuestCondition requirement) {
     public DialogueChoice {

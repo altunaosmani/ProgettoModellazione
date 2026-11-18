@@ -6,6 +6,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Rappresenta il protagonista controllato dal giocatore.
+ * <p>
+ * Mantiene l'inventario (con capacità massima predefinita di 20 oggetti senza duplicati)
+ * e le statistiche base, calcolando dinamicamente i valori effettivi degli attributi
+ * sommando i bonus forniti dagli oggetti {@link AttributeModifier} trasportati.
+ */
 public class Player extends GameCharacter {
     private static final int DEFAULT_MAX_CAPACITY = 20;
     private final List<Item> inventory;
@@ -16,12 +23,16 @@ public class Player extends GameCharacter {
         this.inventory = new ArrayList<>();
     }
 
-    /** Valori base degli attributi (quelli che si salvano). */
     public CharacterStats getStats() {
         return stats;
     }
 
-    /** Somma dei bonus degli oggetti nell'inventario per questo attributo. */
+    /**
+     * Calcola la somma dei bonus forniti dagli oggetti nell'inventario per un dato attributo.
+     *
+     * @param attribute attributo di interesse
+     * @return bonus totale derivante dall'inventario
+     */
     public int getAttributeBonus(Attribute attribute) {
         if (attribute == null) throw new IllegalArgumentException("L'attributo non può essere nullo");
         return inventory.stream()
@@ -31,7 +42,12 @@ public class Player extends GameCharacter {
                 .sum();
     }
 
-    /** Valore effettivo: base più bonus degli oggetti. È quello che contano condizioni e finali. */
+    /**
+     * Restituisce il valore effettivo dell'attributo (valore base + bonus degli oggetti).
+     *
+     * @param attribute attributo di interesse
+     * @return valore effettivo utilizzato per verificare condizioni e finali
+     */
     public int getAttributeValue(Attribute attribute) {
         return stats.get(attribute) + getAttributeBonus(attribute);
     }
@@ -41,6 +57,12 @@ public class Player extends GameCharacter {
         return inventory.stream().anyMatch(item -> item.getId().equalsIgnoreCase(itemId));
     }
 
+    /**
+     * Aggiunge un oggetto all'inventario se non è già presente e se non è stata raggiunta la capienza massima.
+     *
+     * @param item oggetto da aggiungere
+     * @return {@code true} se l'inserimento ha avuto successo, {@code false} altrimenti
+     */
     public boolean addItem(Item item) {
         if (item == null) throw new IllegalArgumentException("L'oggetto non può essere null");
         if (inventory.size() >= DEFAULT_MAX_CAPACITY) return false;

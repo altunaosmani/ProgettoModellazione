@@ -6,9 +6,12 @@ import it.unicam.cs.mpgc.rpg130579.model.interaction.AttributeCondition;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.FlagCondition;
 import it.unicam.cs.mpgc.rpg130579.model.state.EndingCatalog;
 import it.unicam.cs.mpgc.rpg130579.model.state.EndingScreen;
-
 import java.util.List;
 
+/**
+ * Definisce i possibili finali di vittoria del gioco e le condizioni (attributi o flag)
+ * che determinano quale variante mostrare al termine dell'avventura.
+ */
 public final class StoryEndings {
     private static final String TITLE = "THE LOST ELF";
     private static final String HEADLINE = "QUEST COMPLETATA";

@@ -1,5 +1,9 @@
 package it.unicam.cs.mpgc.rpg130579.model.entity;
 
+/**
+ * Frammento di un enigma a sequenza ({@link it.unicam.cs.mpgc.rpg130579.model.interaction.SequencePuzzle}),
+ * caratterizzato da un testo parziale e da una posizione ordinale univoca.
+ */
 public class EnigmaPieceItem extends Item {
     private final String phraseFragment;
     private final int orderPosition;

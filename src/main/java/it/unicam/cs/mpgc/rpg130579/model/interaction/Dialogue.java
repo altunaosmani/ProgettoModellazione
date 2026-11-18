@@ -6,6 +6,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Rappresenta un grafo orientato di conversazione composto da {@link DialogueNode}
+ * collegati tramite {@link DialogueChoice}. Valida in costruzione l'esistenza del nodo
+ * iniziale e l'integrità di tutti i riferimenti tra nodi.
+ */
 public class Dialogue {
     private static final String LINEAR_NODE_ID = "start";
 

@@ -2,6 +2,10 @@ package it.unicam.cs.mpgc.rpg130579.model.entity;
 
 import java.util.Objects;
 
+/**
+ * Classe base astratta per tutti gli oggetti collezionabili nel mondo di gioco.
+ * L'uguaglianza tra oggetti è basata esclusivamente sul loro {@code id}.
+ */
 public abstract class Item {
     private final String id;
     private final String name;
@@ -46,6 +50,11 @@ public abstract class Item {
         return name;
     }
 
+    /**
+     * Restituisce il testo mostrato quando il giocatore esamina l'oggetto.
+     *
+     * @return descrizione dettagliata o contenuto leggibile dell'oggetto
+     */
     public String examine() {
         return this.description;
     }

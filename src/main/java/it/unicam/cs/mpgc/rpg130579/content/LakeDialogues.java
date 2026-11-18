@@ -8,6 +8,10 @@ import it.unicam.cs.mpgc.rpg130579.model.interaction.SetFlagEffect;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe di utilità contenente i dialoghi finali con Elara al Lago degli Specchi,
+ * inclusa la variante attivata se il giocatore aveva dubitato di lei a Tanusha.
+ */
 public final class LakeDialogues {
     static final String ELARA_FOUND_FLAG = "elara_ritrovata";
     static final String ELARA_FOUND_VALUE = "si";

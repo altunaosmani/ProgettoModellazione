@@ -2,7 +2,10 @@ package it.unicam.cs.mpgc.rpg130579.model.state;
 
 import java.util.*;
 
-
+/**
+ * Traccia gli eventi permanenti avvenuti durante la partita: gli ID degli enigmi risolti
+ * e una mappa di flag narrativi chiave-valore (normalizzati in minuscolo).
+ */
 public class StoryProgress {
     private final Set<String> solvedPuzzleIds = new HashSet<>();
     private final Map<String, String> flags = new HashMap<>();

@@ -3,8 +3,8 @@ package it.unicam.cs.mpgc.rpg130579.ui;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 
-/** Stile comune delle schermate a tutta pagina (menu, prologo, finale). */
-final class PageStyle {
+/** Utility interna per applicare lo stile grafico comune alle schermate a pagina intera. */
+public final class PageStyle {
     private static final String PAPER = "-fx-padding: 40; -fx-background-color: #ece7da";
 
     static void applyPaper(VBox box) {

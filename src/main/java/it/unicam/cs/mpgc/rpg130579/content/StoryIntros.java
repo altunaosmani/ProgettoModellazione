@@ -4,6 +4,9 @@ import it.unicam.cs.mpgc.rpg130579.model.state.IntroScreen;
 
 import java.util.List;
 
+/**
+ * Fornisce i testi narrativi introduttivi della storia, tra cui il prologo iniziale.
+ */
 public final class StoryIntros {
 
     public static IntroScreen prologue() {

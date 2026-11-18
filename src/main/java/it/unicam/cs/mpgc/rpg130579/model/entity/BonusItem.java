@@ -1,9 +1,8 @@
 package it.unicam.cs.mpgc.rpg130579.model.entity;
 
 /**
- * Oggetto che aumenta un attributo finché si trova nell'inventario del giocatore.
- * Il bonus non viene sommato al valore base: lo calcola Player, così il salvataggio
- * resta invariato (basta l'inventario).
+ * Oggetto che conferisce un bonus permanente a un {@link Attribute} finché rimane
+ * nell'inventario del giocatore.
  */
 public class BonusItem extends Item implements AttributeModifier {
     private final Attribute attribute;

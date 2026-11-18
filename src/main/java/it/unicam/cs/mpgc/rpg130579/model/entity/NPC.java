@@ -4,6 +4,9 @@ import it.unicam.cs.mpgc.rpg130579.model.interaction.Dialogue;
 import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 
+/**
+ * Personaggio non giocante (NPC) presente in un luogo del mondo con cui il giocatore può dialogare.
+ */
 public class NPC extends GameCharacter {
     private Dialogue dialogue;
 
@@ -22,7 +25,13 @@ public class NPC extends GameCharacter {
         this.dialogue = dialogue;
     }
 
-    /** Sceglie il dialogo da usare; le sottoclassi possono variarlo in base allo stato della storia. */
+    /**
+     * Seleziona il dialogo da avviare con il giocatore.
+     *
+     * @param player   il protagonista
+     * @param progress stato corrente dei progressi della storia
+     * @return il {@link Dialogue} da eseguire
+     */
     public Dialogue interact(Player player, StoryProgress progress) {
         return this.dialogue;
     }

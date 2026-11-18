@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/** Enigma a risposta multipla in cui il giocatore deve selezionare l'unica opzione corretta. */
 public class ChoicePuzzle extends AbstractPuzzle {
     private final Map<String, String> options;
     private final String correctOptionId;

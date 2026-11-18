@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
+/** Schermata del menu principale con avvio nuova partita e caricamento salvataggio. */
 public class MainMenuPage extends VBox {
 
     public MainMenuPage(GameController controller, AppNavigator navigator) {

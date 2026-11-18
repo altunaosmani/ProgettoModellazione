@@ -9,6 +9,10 @@ import it.unicam.cs.mpgc.rpg130579.model.interaction.SetFlagEffect;
 
 import java.util.List;
 
+/**
+ * Classe di utilità contenente i dialoghi del guardiano Rowan nel Castello di Ardan
+ * e le costanti per tracciare la sua disponibilità ad aiutare il giocatore.
+ */
 public final class CastleDialogues {
     static final String ROWAN_HELP_FLAG = "rowan_aiuto";
     static final String ROWAN_HELP_VALUE = "si";

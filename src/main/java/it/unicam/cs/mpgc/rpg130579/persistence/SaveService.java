@@ -20,9 +20,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Traduce lo stato di gioco in SaveData e viceversa, usando un SaveRepository per leggere e scrivere.
- * Il ripristino va fatto su un GameState appena costruito dal contenuto di gioco
- * (livelli, luoghi e oggetti nel loro stato iniziale).
+ * Servizio che converte uno stato di gioco attivo ({@link GameState}) in {@link SaveData}
+ * e viceversa, validando la coerenza di tutti gli ID prima di applicare il ripristino.
  */
 public class SaveService implements GamePersistence {
     private final SaveRepository repository;

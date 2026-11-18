@@ -5,6 +5,7 @@ import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 
 import java.util.List;
 
+/** Condizione composta soddisfatta solo se tutte le condizioni interne sono verificate (AND logico). */
 public record AllOfCondition(List<QuestCondition> conditions) implements QuestCondition {
     public AllOfCondition {
         if (conditions == null || conditions.isEmpty()) throw new IllegalArgumentException("Serve almeno una condizione");

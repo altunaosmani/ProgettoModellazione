@@ -10,6 +10,10 @@ import it.unicam.cs.mpgc.rpg130579.model.interaction.SetFlagEffect;
 
 import java.util.List;
 
+/**
+ * Classe di utilità contenente le definizioni statiche dei dialoghi degli NPC
+ * del primo livello (Orwen, Mira, Aldren) e le relative chiavi dei flag narrativi.
+ */
 public final class ForestDialogues {
     /** A chi crede il giocatore tra Orwen e Aldren: letto nel dialogo finale con Elara. */
     static final String BELIEF_FLAG = "credenza_elara";

@@ -10,7 +10,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
-/** Overlay a tutto schermo con la card di fine livello; resta invisibile finché il livello non è completato. */
+/** Overlay modale mostrato al completamento di un livello per proseguire al successivo o al finale. */
 public class CompletionOverlay extends StackPane {
     private final Label title = new Label();
     private final Label text = new Label();

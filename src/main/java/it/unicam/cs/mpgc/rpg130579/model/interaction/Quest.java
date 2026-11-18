@@ -3,6 +3,10 @@ package it.unicam.cs.mpgc.rpg130579.model.interaction;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 
+/**
+ * Rappresenta l'obiettivo principale di un livello, dotato di una {@link QuestCondition}
+ * che ne determina la completabilità.
+ */
 public class Quest {
     private final String id;
     private final String name;

@@ -1,7 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.ui;
 
-/** Le transizioni tra schermate e le azioni globali che le singole schermate possono richiedere. */
-public interface AppNavigator {
+/** Interfaccia di navigazione globale invocabile dalle singole schermate e dalla barra dei menu. */public interface AppNavigator {
     void showMainMenu();
 
     /** Avvia subito una nuova partita e mostra il prologo. */

@@ -3,7 +3,10 @@ package it.unicam.cs.mpgc.rpg130579.persistence;
 import it.unicam.cs.mpgc.rpg130579.model.entity.ItemCatalog;
 import it.unicam.cs.mpgc.rpg130579.model.state.GameState;
 
-/** Cosa serve al controller per salvare e caricare: non sa nulla di JSON, file o SaveData. */
+/**
+ * Contratto di alto livello utilizzato dal controller per verificare, salvare e caricare
+ * lo stato di gioco senza dipendere dal formato di serializzazione.
+ */
 public interface GamePersistence {
     /** Vero se esiste un salvataggio leggibile. */
     boolean hasSave();

@@ -1,11 +1,15 @@
 package it.unicam.cs.mpgc.rpg130579.model.entity;
 
 /**
- * Qualunque oggetto che modifica un attributo del giocatore finché è nell'inventario.
- * Player interroga questa interfaccia e non conosce le classi concrete (OCP):
- * un nuovo tipo di oggetto con bonus basta che la implementi.
+ * Interfaccia implementata dagli elementi (come oggetti nell'inventario) che conferiscono
+ * un bonus passivo agli attributi del giocatore.
  */
 public interface AttributeModifier {
-    /** Bonus fornito per l'attributo indicato; 0 se non lo riguarda. */
+    /**
+     * Restituisce il bonus fornito per l'attributo specificato.
+     *
+     * @param attribute attributo interrogato
+     * @return valore del bonus (positivo se presente, {@code 0} altrimenti)
+     */
     int bonusFor(Attribute attribute);
 }

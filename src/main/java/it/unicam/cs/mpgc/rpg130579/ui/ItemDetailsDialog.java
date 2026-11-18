@@ -9,6 +9,7 @@ import javafx.scene.layout.Region;
 
 import java.util.Optional;
 
+/** Finestra di dialogo modale che mostra i dettagli e il contenuto leggibile di un oggetto. */
 public final class ItemDetailsDialog {
 
     public static void show(ItemView item, Optional<Image> image) {

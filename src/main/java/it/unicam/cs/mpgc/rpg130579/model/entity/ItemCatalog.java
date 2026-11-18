@@ -5,7 +5,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-/** Registro di tutti gli oggetti del gioco, usato per ricostruire l'inventario dai salvataggi. */
+/**
+ * Registro centrale di tutti gli {@link Item} definiti nel gioco, indicizzati per ID
+ * (case-insensitive). Utilizzato durante il caricamento dei salvataggi per ricostruire l'inventario.
+ */
 public class ItemCatalog {
     private final Map<String, Item> items = new HashMap<>();
 

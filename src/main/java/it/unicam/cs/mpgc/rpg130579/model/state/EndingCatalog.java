@@ -6,8 +6,8 @@ import it.unicam.cs.mpgc.rpg130579.model.interaction.QuestCondition;
 import java.util.List;
 
 /**
- * Raccolta dei finali di vittoria. Vince la prima variante la cui condizione è soddisfatta;
- * se nessuna lo è si usa il finale predefinito. Per aggiungere un finale basta una nuova Variant.
+ * Seleziona la schermata finale appropriata valutando in ordine una lista di varianti
+ * condizionali e ripiegando su un finale predefinito se nessuna condizione è soddisfatta.
  */
 public class EndingCatalog {
     private final EndingScreen fallback;

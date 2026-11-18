@@ -24,11 +24,14 @@ import it.unicam.cs.mpgc.rpg130579.view.MechanismView;
 import it.unicam.cs.mpgc.rpg130579.view.NpcView;
 import it.unicam.cs.mpgc.rpg130579.view.PuzzleView;
 import it.unicam.cs.mpgc.rpg130579.view.StatsView;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implementazione standard di {@link ViewMapper} che filtra i contenuti condizionali
+ * (dettagli dei luoghi e indizi dei meccanismi) in base agli attributi e ai progressi del giocatore.
+ */
 public class DefaultViewMapper implements ViewMapper {
 
     @Override

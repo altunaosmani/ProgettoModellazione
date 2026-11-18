@@ -7,7 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/** Un livello: un insieme di luoghi, enigmi e meccanismi con una missione da completare. */
+/**
+ * Rappresenta un singolo capitolo/livello di gioco, contenente i luoghi ({@link Location}),
+ * gli enigmi ({@link Puzzle}), i meccanismi ({@link Mechanism}), il punto di partenza
+ * e la {@link Quest} da completare.
+ */
 public class Level {
     private final String id;
     private final String name;

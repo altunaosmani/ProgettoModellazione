@@ -12,6 +12,10 @@ import it.unicam.cs.mpgc.rpg130579.model.entity.BonusItem;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Costruttore del primo livello: <i>La Foresta dei Sussurri</i> (villaggio di Tanusha e dintorni).
+ * Configura l'esplorazione iniziale, gli enigmi del bivio e del santuario e gli indizi su Elara.
+ */
 public class ForestLevelBuilder implements LevelBuilder {
     private static final String HOME = "casa";
     private static final String SQUARE = "piazza";

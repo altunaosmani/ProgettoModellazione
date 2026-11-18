@@ -4,6 +4,10 @@ import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 
 import java.util.Objects;
 
+/**
+ * Classe base astratta per tutti i personaggi del mondo di gioco (protagonista e NPC).
+ * Definisce identità immutabile, nome, descrizione e posizione corrente.
+ */
 public abstract class GameCharacter {
     private final String id;
     private String name;

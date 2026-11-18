@@ -5,6 +5,7 @@ import it.unicam.cs.mpgc.rpg130579.model.interaction.Puzzle;
 import java.util.Objects;
 import java.util.Optional;
 
+/** Condizione di sblocco soddisfatta risolvendo il {@link Puzzle} associato. */
 public class PuzzleUnlockCondition implements UnlockCondition {
     private final Puzzle puzzle;
 

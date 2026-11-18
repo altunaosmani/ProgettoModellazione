@@ -2,6 +2,11 @@ package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
 import java.util.List;
 
+/**
+ * Singolo nodo di un {@link Dialogue}, contenente una sequenza di battute e le possibili
+ * scelte del giocatore. Garantisce che, se sono presenti scelte, almeno una sia incondizionata
+ * per evitare stalli nella conversazione.
+ */
 public class DialogueNode {
     private final String id;
     private final List<String> lines;

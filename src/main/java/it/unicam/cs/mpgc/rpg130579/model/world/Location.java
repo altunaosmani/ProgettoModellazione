@@ -11,9 +11,9 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Un luogo del mondo di gioco. Oggetti, personaggi, uscite e meccanismi sono indicizzati per id
- * (senza distinzione tra maiuscole e minuscole) e mantengono l'ordine di inserimento.
- * Può avere anche dettagli aggiuntivi visibili solo a certe condizioni.
+ * Rappresenta un singolo ambiente esplorabile del livello.
+ * Indicizza oggetti, personaggi, uscite e meccanismi per ID (case-insensitive)
+ * preservando l'ordine di inserimento, e può contenere dettagli ambientali condizionali.
  */
 public class Location {
     private final String id;

@@ -5,6 +5,10 @@ import it.unicam.cs.mpgc.rpg130579.model.interaction.QuestCondition;
 import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 
+/**
+ * Specializzazione di {@link NPC} il cui dialogo cambia dinamicamente al verificarsi
+ * di una {@link QuestCondition} (ad esempio dopo aver completato una richiesta o impostato un flag).
+ */
 public class QuestNPC extends NPC {
     private final QuestCondition condition;
     private final Dialogue conditionalDialogue;

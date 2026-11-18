@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg130579.view;
 
 import java.util.List;
 
+/** Stato corrente di una conversazione (interlocutore, battute, scelte disponibili e stato di chiusura). */
 public record DialogueView(String speaker, List<String> lines, List<String> choices, boolean finished) {
     public DialogueView {
         lines = List.copyOf(lines);

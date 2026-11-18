@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.model.entity;
 
+/** Oggetto leggibile (libro, lettera, appunto) che espone un contenuto testuale aggiuntivo. */
 public class DocumentItem extends Item {
     private final String text;
 

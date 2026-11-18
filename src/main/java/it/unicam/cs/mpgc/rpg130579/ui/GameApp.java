@@ -13,10 +13,7 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
-/**
- * Finestra principale: possiede la menu bar e decide quale schermata mostrare.
- * Non costruisce il controller (lo riceve da Main) e non contiene la logica delle singole schermate.
- */
+/** Applicazione JavaFX principale: gestisce lo {@link Stage}, la barra dei menu e la navigazione tra schermate. */
 public class GameApp extends Application implements AppNavigator {
     private static GameController injectedController;
     private static ImageProvider injectedImages;

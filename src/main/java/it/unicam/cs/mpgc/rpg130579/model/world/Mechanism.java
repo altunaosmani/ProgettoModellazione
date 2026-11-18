@@ -9,7 +9,11 @@ import it.unicam.cs.mpgc.rpg130579.model.interaction.QuestCondition;
 
 import java.util.Optional;
 
-/** Elemento del mondo che parte bloccato e si apre quando la sua UnlockCondition è soddisfatta. */
+/**
+ * Elemento interattivo di un luogo (cancello, statua, passaggio segreto) che nasce bloccato
+ * e può essere aperto soddisfacendo la propria {@link UnlockCondition}.
+ * Può offrire un indizio condizionale e assegnare una ricompensa in attributi al primo sblocco.
+ */
 public class Mechanism implements Lockable {
     private final String id;
     private final String name;

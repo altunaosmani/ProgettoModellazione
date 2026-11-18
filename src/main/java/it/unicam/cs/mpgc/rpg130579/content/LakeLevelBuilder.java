@@ -1,6 +1,5 @@
 package it.unicam.cs.mpgc.rpg130579.content;
 
-import it.unicam.cs.mpgc.rpg130579.content.LevelBuilder;
 import it.unicam.cs.mpgc.rpg130579.model.entity.*;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.ChoicePuzzle;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.FlagCondition;
@@ -12,10 +11,13 @@ import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
 import it.unicam.cs.mpgc.rpg130579.model.world.PuzzleUnlockCondition;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.AttributeCondition;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Costruttore del terzo e ultimo livello: <i>Il Lago degli Specchi</i>.
+ * Configura il percorso finale lungo le rive del lago e l'incontro risolutivo con Elara.
+ */
 public class LakeLevelBuilder implements LevelBuilder {
     private static final String SHORE = "riva";
     private static final String LAKE_PATH = "sentiero_lago";

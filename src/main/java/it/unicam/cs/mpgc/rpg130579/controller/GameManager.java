@@ -13,10 +13,22 @@ import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
 
-/** Applica le regole del gioco sullo stato: movimento, raccolta, sblocchi, dialoghi, missioni. */
+/**
+ * Motore delle regole di gioco che opera direttamente sul modello ({@link GameState}).
+ * <p>
+ * Gestisce la logica transazionale delle azioni del giocatore: spostamenti tra luoghi,
+ * raccolta di oggetti, sblocco di meccanismi con assegnazione unica delle ricompense,
+ * creazione di sessioni di dialogo e verifica del completamento delle missioni.
+ */
 public class GameManager {
     private final GameState state;
 
+    /**
+     * Crea un manager associato allo stato di gioco fornito.
+     *
+     * @param state stato della partita da gestire
+     * @throws IllegalArgumentException se {@code state} è {@code null}
+     */
     public GameManager(GameState state) {
         if (state == null) throw new IllegalArgumentException("Lo stato di gioco non può essere nullo");
         this.state = state;
@@ -45,6 +57,15 @@ public class GameManager {
         return location;
     }
 
+    /**
+     * Avvia un'interazione con un NPC situato nel luogo specificato.
+     *
+     * @param locationId identificativo del luogo
+     * @param npcId      identificativo del personaggio non giocante
+     * @return nuova {@link DialogueSession} pronta per essere percorsa
+     * @throws IllegalStateException    se la partita è già terminata
+     * @throws IllegalArgumentException se luogo o personaggio non esistono
+     */
     public DialogueSession interactWithNPC(String locationId, String npcId) {
         ensureRunning();
         if (npcId == null || npcId.isBlank()) throw new IllegalArgumentException("L'ID del personaggio non può essere vuoto");
@@ -59,6 +80,14 @@ public class GameManager {
         state.nextLevel();
     }
 
+    /**
+     * Tenta di spostare il giocatore lungo un'uscita del luogo corrente.
+     *
+     * @param exitId identificativo dell'uscita
+     * @return {@code true} se lo spostamento è avvenuto, {@code false} se l'uscita è bloccata
+     * @throws IllegalStateException    se la partita è già terminata
+     * @throws IllegalArgumentException se l'uscita non esiste nel luogo corrente
+     */
     public boolean move(String exitId) {
         ensureRunning();
         Player player = state.getPlayer();
@@ -80,6 +109,16 @@ public class GameManager {
         return true;
     }
 
+    /**
+     * Tenta di sbloccare un meccanismo nel luogo corrente, registrando l'eventuale enigma
+     * come risolto e assegnando la ricompensa in attributi alla prima apertura.
+     *
+     * @param mechanismId identificativo del meccanismo
+     * @param answer      risposta fornita dal giocatore
+     * @return {@code true} se il meccanismo risulta sbloccato al termine dell'operazione
+     * @throws IllegalStateException    se la partita è già terminata
+     * @throws IllegalArgumentException se il meccanismo non esiste nel luogo corrente
+     */
     public boolean unlockMechanism(String mechanismId, PuzzleAnswer answer) {
         ensureRunning();
         Player player = state.getPlayer();
@@ -95,6 +134,12 @@ public class GameManager {
         return unlocked;
     }
 
+    /**
+     * Verifica se la missione del livello corrente soddisfa le sue condizioni e, in tal caso,
+     * la contrassegna come completata.
+     *
+     * @return {@code true} se la missione è stata appena completata, {@code false} altrimenti
+     */
     public boolean completeCurrentQuest() {
         if (state.isGameEnd()) return false;
         Quest quest = getCurrentLevel().getQuest();

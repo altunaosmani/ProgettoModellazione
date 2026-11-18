@@ -20,6 +20,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+/**
+ * Implementazione predefinita di {@link GameController}.
+ * <p>
+ * Coordina {@link GameManager}, {@link GamePersistence}, {@link ViewMapper} e
+ * {@link StatsChangeReporter}, traducendo le eccezioni di dominio in {@link ActionResult}
+ * o {@link DialogueView} di errore e verificando automaticamente il completamento delle missioni.
+ */
 public class DefaultGameController implements GameController {
     private final Supplier<GameSetup> newGameSource;
     private final GamePersistence persistence;

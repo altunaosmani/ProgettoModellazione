@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 import java.util.function.Consumer;
 
+/** Pannello laterale che mostra gli oggetti attualmente nell'inventario del giocatore. */
 public class InventoryPane extends VBox {
     private final ImageProvider images;
     private final Consumer<ItemView> onExamine;

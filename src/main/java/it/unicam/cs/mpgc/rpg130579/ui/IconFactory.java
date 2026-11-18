@@ -9,8 +9,8 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.Optional;
 
-/** Crea l'icona di un elemento: l'immagine se c'è, altrimenti un riquadro con l'iniziale. */
-final class IconFactory {
+/** Factory interna per generare nodi grafici icona con fallback sull'iniziale in caso di immagine mancante. */
+public final class IconFactory {
 
     static Node create(String label, Optional<Image> image, double size) {
         if (image.isPresent()) {

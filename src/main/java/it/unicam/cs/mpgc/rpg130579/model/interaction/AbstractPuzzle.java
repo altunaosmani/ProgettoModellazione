@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
 import java.util.Objects;
 
+/** Implementazione base astratta di {@link Puzzle} che gestisce ID, descrizione e uguaglianza. */
 public abstract class AbstractPuzzle implements Puzzle {
     private final String id;
     private final String description;

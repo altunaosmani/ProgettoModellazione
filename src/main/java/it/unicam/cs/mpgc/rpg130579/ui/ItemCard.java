@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+/** Card grafica compatta che rappresenta un singolo oggetto con pulsanti di esame ed eventuale raccolta. */
 public class ItemCard extends VBox {
     private static final double ICON_SIZE = 72;
 

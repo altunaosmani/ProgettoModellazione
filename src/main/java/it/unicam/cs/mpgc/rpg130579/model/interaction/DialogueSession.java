@@ -2,6 +2,11 @@ package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
 import java.util.List;
 
+/**
+ * Macchina a stati che governa l'avanzamento di una singola conversazione con un NPC.
+ * Gestisce la lettura sequenziale delle battute, il filtraggio delle scelte disponibili
+ * e la transizione tra i nodi fino alla chiusura del dialogo.
+ */
 public class DialogueSession {
     private final Dialogue dialogue;
     private final DialogueContext context;

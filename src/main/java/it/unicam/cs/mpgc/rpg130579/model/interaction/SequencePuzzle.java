@@ -6,6 +6,11 @@ import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 
 import java.util.*;
 
+/**
+ * Enigma che richiede di ordinare correttamente una collezione di {@link EnigmaPieceItem}.
+ * Quando il giocatore possiede tutti i frammenti, le opzioni vengono mescolate in modo
+ * deterministico (legato all'ID dell'enigma) affinché non appaiano già nell'ordine risolutivo.
+ */
 public class SequencePuzzle extends AbstractPuzzle {
     private final List<EnigmaPieceItem> orderedPieces;
 

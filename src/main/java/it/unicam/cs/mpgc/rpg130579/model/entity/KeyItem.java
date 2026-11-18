@@ -1,5 +1,9 @@
 package it.unicam.cs.mpgc.rpg130579.model.entity;
 
+/**
+ * Oggetto chiave associato a uno specifico {@link it.unicam.cs.mpgc.rpg130579.model.world.Mechanism}.
+ * Implementa {@link MechanismKey} per disaccoppiare la logica di sblocco dalla classe concreta.
+ */
 public class KeyItem extends Item implements MechanismKey {
     private final String targetMechanismId;
 

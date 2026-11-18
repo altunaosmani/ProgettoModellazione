@@ -2,7 +2,7 @@ package it.unicam.cs.mpgc.rpg130579.view;
 
 import java.util.List;
 
-/** details: testi extra del luogo che il giocatore può vedere in questo momento (es. dettagli notati con la Percezione). */
+/** Dati di presentazione di un luogo esplorabile e dei suoi elementi visibili. */
 public record LocationView(String id, String name, String description, List<ItemView> items, List<NpcView> npcs,
                            List<ExitView> exits, List<MechanismView> mechanisms, List<String> details) {
     public LocationView {

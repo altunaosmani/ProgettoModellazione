@@ -4,8 +4,8 @@ import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 
 /**
- * Un testo che il giocatore vede solo se il requisito è soddisfatto
- * (es. un dettaglio notato solo con abbastanza Percezione, o un indizio che richiede Sapienza).
+ * Testo narrativo (dettaglio di un luogo o indizio di un meccanismo) visibile solo
+ * quando la {@link QuestCondition} associata è soddisfatta.
  */
 public record ConditionalText(QuestCondition requirement, String text) {
     public ConditionalText {

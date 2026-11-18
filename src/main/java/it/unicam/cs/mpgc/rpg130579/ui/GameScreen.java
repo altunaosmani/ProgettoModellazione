@@ -19,7 +19,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-/** Schermata di gioco: banner del livello, luogo corrente, barra laterale, stato e overlay di fine livello. */
+/** Schermata principale di gioco che integra banner del livello, vista del luogo, statistiche, inventario e overlay di completamento. */
 public class GameScreen extends BorderPane {
     private final GameController controller;
     private final AppNavigator navigator;

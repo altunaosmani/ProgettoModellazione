@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.model.state;
 
+/** DTO di dominio che descrive i testi e l'esito di una schermata finale. */
 public record EndingScreen(String gameTitle, String headline, String subtitle, String message, String outcome) {
     public EndingScreen {
         if (gameTitle == null || gameTitle.isBlank()) throw new IllegalArgumentException("Il titolo del gioco non può essere vuoto");

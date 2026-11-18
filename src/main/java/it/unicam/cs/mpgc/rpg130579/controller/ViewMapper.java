@@ -16,7 +16,10 @@ import it.unicam.cs.mpgc.rpg130579.view.StatsView;
 
 import java.util.List;
 
-/** Traduce il modello nei DTO mostrati dalla UI. Sostituibile (es. per un altro frontend). */
+/**
+ * Contratto per la conversione delle entità del modello nei DTO immutabili destinati alla UI.
+ * Consente di sostituire la rappresentazione della vista senza alterare la logica di gioco.
+ */
 public interface ViewMapper {
     LocationView toView(Location location, Player player, StoryProgress progress);
 
