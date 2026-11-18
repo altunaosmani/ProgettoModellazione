@@ -53,7 +53,17 @@ public class Level {
         return quest.isCompleted();
     }
 
-    // ---------- Luoghi ----------
+    public List<Location> getPlaces() {
+        return List.copyOf(places);
+    }
+
+    public List<Puzzle> getPuzzles() {
+        return List.copyOf(puzzles);
+    }
+
+    public List<Mechanism> getMechanisms() {
+        return List.copyOf(mechanisms);
+    }
 
     public String getStartLocationId() {
         return this.startLocationId;
@@ -68,10 +78,6 @@ public class Level {
     public Location getStartLocation() {
         if (startLocationId == null) throw new IllegalStateException("Il luogo iniziale non è stato impostato");
         return getPlaceById(startLocationId);
-    }
-
-    public int getSizePlaces() {
-        return places.size();
     }
 
     /** Il luogo con questo id, se esiste (senza distinzione tra maiuscole e minuscole). */
@@ -92,17 +98,6 @@ public class Level {
         places.add(place);
     }
 
-    public Location getPlaceAt(int index) {
-        if (index < 0 || index >= places.size()) throw new IllegalArgumentException("Indice del luogo non valido");
-        return places.get(index);
-    }
-
-    // ---------- Enigmi ----------
-
-    public int getSizePuzzles() {
-        return puzzles.size();
-    }
-
     public Optional<Puzzle> findPuzzleById(String puzzleId) {
         if (puzzleId == null || puzzleId.isBlank()) return Optional.empty();
         return puzzles.stream().filter(puzzle -> puzzle.getId().equalsIgnoreCase(puzzleId)).findFirst();
@@ -118,17 +113,6 @@ public class Level {
         if (puzzle == null) throw new IllegalArgumentException("L'enigma non può essere nullo");
         if (findPuzzleById(puzzle.getId()).isPresent()) throw new IllegalArgumentException("Esiste già un enigma con questo id: " + puzzle.getId());
         puzzles.add(puzzle);
-    }
-
-    public Puzzle getPuzzleAt(int index) {
-        if (index < 0 || index >= puzzles.size()) throw new IllegalArgumentException("Indice dell'enigma non valido");
-        return puzzles.get(index);
-    }
-
-    // ---------- Meccanismi ----------
-
-    public int getSizeMechanism() {
-        return mechanisms.size();
     }
 
     public Optional<Mechanism> findMechanismById(String mechanismId) {
@@ -148,10 +132,5 @@ public class Level {
         if (findMechanismById(mechanism.getId()).isPresent()) throw new IllegalArgumentException("Esiste già un meccanismo con questo id: " + mechanism.getId());
         mechanisms.add(mechanism);
         mechanism.getRequiredPuzzle().filter(p -> findPuzzleById(p.getId()).isEmpty()).ifPresent(puzzles::add);
-    }
-
-    public Mechanism getMechanismAt(int index) {
-        if (index < 0 || index >= mechanisms.size()) throw new IllegalArgumentException("Indice del meccanismo non valido");
-        return mechanisms.get(index);
     }
 }

@@ -78,8 +78,6 @@ public class DefaultGameController implements GameController {
         return e.getMessage() == null ? "Operazione non riuscita." : e.getMessage();
     }
 
-    // ---------- Esplorazione ----------
-
     @Override
     public LocationView currentLocation() {
         return mapper.toView(player().getCurrentLocation(), player(), progress());
@@ -124,12 +122,10 @@ public class DefaultGameController implements GameController {
         }
     }
 
-    // ---------- Dialoghi ----------
-
     @Override
     public DialogueView talkTo(String npcId) {
         try {
-            session = manager.interactWithNPC(player().getCurrentLocation().getId(), npcId);
+            session = manager.interactWithNPC(npcId);
             return snapshot();
         } catch (IllegalArgumentException | IllegalStateException e) {
             session = null;

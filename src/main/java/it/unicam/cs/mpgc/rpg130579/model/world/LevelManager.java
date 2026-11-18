@@ -68,4 +68,8 @@ public class LevelManager {
         }
         return false;
     }
+
+    public List<Level> getLevels() {
+        return List.copyOf(levels);
+    }
 }

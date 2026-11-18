@@ -65,8 +65,7 @@ public class SaveService implements GamePersistence {
         for (int i = 0; i < levels.getLevelsSize(); i++) {
             Level level = levels.getLevelAt(i);
             if (level.isCompleted()) completedLevels.add(level.getId());
-            for (int m = 0; m < level.getSizeMechanism(); m++) {
-                Mechanism mechanism = level.getMechanismAt(m);
+            for (Mechanism mechanism : level.getMechanisms()) {
                 if (mechanism.isUnlocked()) unlockedMechanisms.add(mechanism.getId());
             }
         }
@@ -98,7 +97,6 @@ public class SaveService implements GamePersistence {
 
         LevelManager levels = state.getLevelManager();
 
-        // Fase 1: risolvo tutti gli id. Se qualcosa non torna, lancio prima di modificare lo stato.
         Level currentLevel = levels.findLevelById(data.getCurrentLevelId())
                 .orElseThrow(() -> new IllegalStateException("Livello salvato inesistente: " + data.getCurrentLevelId()));
 
@@ -122,7 +120,6 @@ public class SaveService implements GamePersistence {
                     .orElseThrow(() -> new IllegalStateException("Oggetto salvato inesistente: " + id)));
         }
 
-        // Un salvataggio v1 non ha attributi: restano tutti a zero.
         Map<Attribute, Integer> attributes = new EnumMap<>(Attribute.class);
         for (Map.Entry<String, Integer> entry : data.getAttributes().entrySet()) {
             Integer value = entry.getValue();
@@ -135,7 +132,6 @@ public class SaveService implements GamePersistence {
             }
         }
 
-        // Fase 2: applico.
         levels.setCurrentLevelById(currentLevel.getId());
         for (Level level : completedLevels) {
             level.getQuest().complete();
@@ -163,12 +159,10 @@ public class SaveService implements GamePersistence {
         throw new IllegalStateException("Meccanismo salvato inesistente: " + id);
     }
 
-    // Un oggetto in inventario non deve comparire anche nel luogo dove era all'inizio.
     private static void removeFromAllLocations(LevelManager levels, String itemId) {
         for (int i = 0; i < levels.getLevelsSize(); i++) {
-            Level level = levels.getLevelAt(i);
-            for (int p = 0; p < level.getSizePlaces(); p++) {
-                level.getPlaceAt(p).removeItem(itemId);
+            for (Location place : levels.getLevelAt(i).getPlaces()) {
+                place.removeItem(itemId);
             }
         }
     }

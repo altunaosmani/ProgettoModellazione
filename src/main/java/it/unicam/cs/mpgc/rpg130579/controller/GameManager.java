@@ -58,21 +58,21 @@ public class GameManager {
     }
 
     /**
-     * Avvia un'interazione con un NPC situato nel luogo specificato.
+     * Avvia un'interazione con un NPC.
      *
-     * @param locationId identificativo del luogo
      * @param npcId      identificativo del personaggio non giocante
      * @return nuova {@link DialogueSession} pronta per essere percorsa
      * @throws IllegalStateException    se la partita è già terminata
-     * @throws IllegalArgumentException se luogo o personaggio non esistono
+     * @throws IllegalArgumentException se personaggio non esiste
      */
-    public DialogueSession interactWithNPC(String locationId, String npcId) {
+    public DialogueSession interactWithNPC(String npcId) {
         ensureRunning();
         if (npcId == null || npcId.isBlank()) throw new IllegalArgumentException("L'ID del personaggio non può essere vuoto");
-        NPC npc = getLocation(locationId).getNPCById(npcId);
+        Player player = state.getPlayer();
+        NPC npc = player.getCurrentLocation().getNPCById(npcId);
         if (npc == null) throw new IllegalArgumentException("Personaggio non trovato: " + npcId);
-        DialogueContext context = new DialogueContext(state.getPlayer(), state.getProgress());
-        return new DialogueSession(npc.interact(state.getPlayer(), state.getProgress()), context);
+        DialogueContext context = new DialogueContext(player, state.getProgress());
+        return new DialogueSession(npc.interact(player, state.getProgress()), context);
     }
 
     public void advanceToNextLevel() {
