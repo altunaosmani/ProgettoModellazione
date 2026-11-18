@@ -1,15 +1,31 @@
 package it.unicam.cs.mpgc.rpg130579.content;
 
-import it.unicam.cs.mpgc.rpg130579.model.entity.*;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.*;
-import it.unicam.cs.mpgc.rpg130579.model.world.*;
+import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
+import it.unicam.cs.mpgc.rpg130579.model.entity.DocumentItem;
+import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
+import it.unicam.cs.mpgc.rpg130579.model.entity.ItemCatalog;
+import it.unicam.cs.mpgc.rpg130579.model.entity.NPC;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.AttributeCondition;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.ChoicePuzzle;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.FlagCondition;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.Puzzle;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.Quest;
+import it.unicam.cs.mpgc.rpg130579.model.world.Exit;
+import it.unicam.cs.mpgc.rpg130579.model.world.Level;
+import it.unicam.cs.mpgc.rpg130579.model.world.Location;
+import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
+import it.unicam.cs.mpgc.rpg130579.model.world.PuzzleUnlockCondition;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Costruttore del terzo e ultimo livello: <i>Il Lago degli Specchi</i>.
- * Configura il percorso finale lungo le rive del lago e l'incontro risolutivo con Elara.
+ * Costruisce il terzo e ultimo livello, "Il Lago degli Specchi".
+ * <p>
+ * Il giocatore segue il sentiero fino alla Pietra dei Custodi e risolve l'enigma
+ * "dove la luna incontra l'acqua" ({@link ChoicePuzzle}) per raggiungere la radura dove
+ * si trova Elara. La missione si completa quando il dialogo con Elara imposta il flag
+ * {@code elara_ritrovata}.
  */
 public class LakeLevelBuilder implements LevelBuilder {
     private static final String SHORE = "riva";
@@ -20,6 +36,12 @@ public class LakeLevelBuilder implements LevelBuilder {
     private static final String MOON_WATER_PUZZLE = "puzzle_luna_acqua";
     private static final String MOON_WATER_MECHANISM = "varco_luna_acqua";
 
+    /**
+     * Costruisce il livello completo: luoghi, meccanismo, collegamenti, oggetti e personaggi.
+     *
+     * @param catalog catalogo in cui registrare gli oggetti del livello (serve al salvataggio)
+     * @return il livello pronto, con luogo iniziale impostato
+     */
     @Override
     public Level build(ItemCatalog catalog) {
         Level level = new Level("livello3", "Il Lago degli Specchi",
@@ -36,6 +58,7 @@ public class LakeLevelBuilder implements LevelBuilder {
         return level;
     }
 
+    /** Crea i quattro luoghi del livello. */
     private void addLocations(Level level) {
         level.addPlace(new Location(SHORE, "Riva del Lago degli Specchi",
                 "Un lago nascosto tra le montagne e circondato dalla foresta. L'acqua è così ferma da riflettere il cielo come uno specchio."));
@@ -48,17 +71,27 @@ public class LakeLevelBuilder implements LevelBuilder {
                 "Una piccola radura sulle rive del lago. C'è qualcuno ad aspettarti."));
     }
 
+    /**
+     * Crea il varco tra i canneti, che si apre scegliendo la riva, e lo registra nella
+     * pietra con {@link Level#addMechanism(String, Mechanism)}. Con Percezione sufficiente
+     * compare un indizio; l'enigma resta risolvibile anche senza.
+     */
     private void addPuzzleAndMechanism(Level level) {
         Map<String, String> options = new LinkedHashMap<>();
         options.put("monte", "La vetta delle montagne");
         options.put("centro", "Il centro del lago");
         options.put("riva", "La riva dove la luna si riflette");
-        Puzzle moonWater = new ChoicePuzzle(MOON_WATER_PUZZLE, "\"Dove la luna incontra l'acqua\". Verso quale punto ti dirigi?", options, "riva");
-        Mechanism gap = new Mechanism(MOON_WATER_MECHANISM, "Varco tra i canneti", "Un passaggio nascosto che si apre solo a chi comprende la frase dei Custodi.", new PuzzleUnlockCondition(moonWater)).withHint(new AttributeCondition(Attribute.PERCEZIONE, 1), "I canneti si piegano tutti verso un punto della riva, dove l'acqua è più calma.");
-        level.addMechanism(gap);
-        level.getPlaceById(STONE).addMechanism(gap);
+        Puzzle moonWater = new ChoicePuzzle(MOON_WATER_PUZZLE,
+                "\"Dove la luna incontra l'acqua\". Verso quale punto ti dirigi?", options, "riva");
+        Mechanism gap = new Mechanism(MOON_WATER_MECHANISM, "Varco tra i canneti",
+                "Un passaggio nascosto che si apre solo a chi comprende la frase dei Custodi.",
+                new PuzzleUnlockCondition(moonWater))
+                .withHint(new AttributeCondition(Attribute.PERCEZIONE, 1),
+                        "I canneti si piegano tutti verso un punto della riva, dove l'acqua è più calma.");
+        level.addMechanism(STONE, gap);
     }
 
+    /** Collega i luoghi; l'uscita dalla pietra verso la radura è bloccata dal varco. */
     private void connectLocations(Level level) {
         Mechanism gap = level.getMechanismById(MOON_WATER_MECHANISM);
 
@@ -75,6 +108,7 @@ public class LakeLevelBuilder implements LevelBuilder {
         level.getPlaceById(CLEARING).addExit(new Exit(STONE, "Torna alla pietra", STONE));
     }
 
+    /** Colloca i due documenti del livello, registrandoli nel catalogo. */
     private void placeItems(Level level, ItemCatalog catalog) {
         place(level, catalog, LAKE_PATH, new DocumentItem("segno_elara", "Segno sul tronco",
                 "Un segno inciso su un albero lungo il sentiero.",
@@ -84,14 +118,14 @@ public class LakeLevelBuilder implements LevelBuilder {
                 "\"Dove la luna incontra l'acqua, lì finisce la ricerca.\""));
     }
 
+    /** Inserisce Elara nella radura; il suo dialogo finale completa la missione. */
     private void placeNpcs(Level level) {
         Location clearing = level.getPlaceById(CLEARING);
-        clearing.addNPC(new QuestNPC("elara", "Elara", "Tua madre, finalmente ritrovata.", clearing,
-                LakeDialogues.elara(),
-                new FlagCondition(ForestDialogues.BELIEF_FLAG, ForestDialogues.BELIEF_ALDREN),
-                LakeDialogues.elaraAfterDoubt()));
+        clearing.addNPC(new NPC("elara", "Elara", "Tua madre, finalmente ritrovata.",
+                clearing, LakeDialogues.elara()));
     }
 
+    /** Registra l'oggetto nel catalogo e lo colloca nel luogo indicato. */
     private void place(Level level, ItemCatalog catalog, String locationId, Item item) {
         catalog.register(item);
         level.getPlaceById(locationId).addItem(item);
