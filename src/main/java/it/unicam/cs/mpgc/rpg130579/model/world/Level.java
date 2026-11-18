@@ -24,8 +24,10 @@ public class Level {
 
     public Level(String id, String name, String description, Quest quest) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del livello non può essere vuoto");
-        if (name == null || name.isBlank()) throw new IllegalArgumentException("Il nome del livello non può essere vuoto");
-        if (description == null || description.isBlank()) throw new IllegalArgumentException("La descrizione del livello non può essere vuota");
+        if (name == null || name.isBlank())
+            throw new IllegalArgumentException("Il nome del livello non può essere vuoto");
+        if (description == null || description.isBlank())
+            throw new IllegalArgumentException("La descrizione del livello non può essere vuota");
         if (quest == null) throw new IllegalArgumentException("Il livello deve avere una missione");
         this.id = id;
         this.name = name;
@@ -69,32 +71,38 @@ public class Level {
         return this.startLocationId;
     }
 
+    public Location getStartLocation() {
+        if (startLocationId == null) throw new IllegalStateException("Il luogo iniziale non è stato impostato");
+        return getPlaceById(startLocationId);
+    }
+
     public void setStartLocation(String locationId) {
         Location start = findPlaceById(locationId)
                 .orElseThrow(() -> new IllegalArgumentException("Il luogo iniziale non appartiene al livello: " + locationId));
         this.startLocationId = start.getId();
     }
 
-    public Location getStartLocation() {
-        if (startLocationId == null) throw new IllegalStateException("Il luogo iniziale non è stato impostato");
-        return getPlaceById(startLocationId);
-    }
-
-    /** Il luogo con questo id, se esiste (senza distinzione tra maiuscole e minuscole). */
+    /**
+     * Il luogo con questo id, se esiste (senza distinzione tra maiuscole e minuscole).
+     */
     public Optional<Location> findPlaceById(String placeId) {
         if (placeId == null || placeId.isBlank()) return Optional.empty();
         return places.stream().filter(place -> place.getId().equalsIgnoreCase(placeId)).findFirst();
     }
 
-    /** @throws IllegalArgumentException se l'id è vuoto o il luogo non esiste */
+    /**
+     * @throws IllegalArgumentException se l'id è vuoto o il luogo non esiste
+     */
     public Location getPlaceById(String placeId) {
-        if (placeId == null || placeId.isBlank()) throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
+        if (placeId == null || placeId.isBlank())
+            throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
         return findPlaceById(placeId).orElseThrow(() -> new IllegalArgumentException("Luogo non trovato: " + placeId));
     }
 
     public void addPlace(Location place) {
         if (place == null) throw new IllegalArgumentException("Il luogo da aggiungere non può essere nullo");
-        if (findPlaceById(place.getId()).isPresent()) throw new IllegalArgumentException("Esiste già un luogo con questo id: " + place.getId());
+        if (findPlaceById(place.getId()).isPresent())
+            throw new IllegalArgumentException("Esiste già un luogo con questo id: " + place.getId());
         places.add(place);
     }
 
@@ -103,15 +111,19 @@ public class Level {
         return puzzles.stream().filter(puzzle -> puzzle.getId().equalsIgnoreCase(puzzleId)).findFirst();
     }
 
-    /** @throws IllegalArgumentException se l'id è vuoto o l'enigma non esiste */
+    /**
+     * @throws IllegalArgumentException se l'id è vuoto o l'enigma non esiste
+     */
     public Puzzle getPuzzleById(String puzzleId) {
-        if (puzzleId == null || puzzleId.isBlank()) throw new IllegalArgumentException("L'ID dell'enigma non può essere vuoto");
+        if (puzzleId == null || puzzleId.isBlank())
+            throw new IllegalArgumentException("L'ID dell'enigma non può essere vuoto");
         return findPuzzleById(puzzleId).orElseThrow(() -> new IllegalArgumentException("Enigma non trovato: " + puzzleId));
     }
 
     public void addPuzzle(Puzzle puzzle) {
         if (puzzle == null) throw new IllegalArgumentException("L'enigma non può essere nullo");
-        if (findPuzzleById(puzzle.getId()).isPresent()) throw new IllegalArgumentException("Esiste già un enigma con questo id: " + puzzle.getId());
+        if (findPuzzleById(puzzle.getId()).isPresent())
+            throw new IllegalArgumentException("Esiste già un enigma con questo id: " + puzzle.getId());
         puzzles.add(puzzle);
     }
 
@@ -120,16 +132,22 @@ public class Level {
         return mechanisms.stream().filter(mechanism -> mechanism.getId().equalsIgnoreCase(mechanismId)).findFirst();
     }
 
-    /** @throws IllegalArgumentException se l'id è vuoto o il meccanismo non esiste */
+    /**
+     * @throws IllegalArgumentException se l'id è vuoto o il meccanismo non esiste
+     */
     public Mechanism getMechanismById(String mechanismId) {
-        if (mechanismId == null || mechanismId.isBlank()) throw new IllegalArgumentException("L'ID del meccanismo non può essere vuoto");
+        if (mechanismId == null || mechanismId.isBlank())
+            throw new IllegalArgumentException("L'ID del meccanismo non può essere vuoto");
         return findMechanismById(mechanismId).orElseThrow(() -> new IllegalArgumentException("Meccanismo non trovato: " + mechanismId));
     }
 
-    /** Registra il meccanismo e, se richiede un enigma non ancora noto al livello, registra anche quello. */
+    /**
+     * Registra il meccanismo e, se richiede un enigma non ancora noto al livello, registra anche quello.
+     */
     public void addMechanism(Mechanism mechanism) {
         if (mechanism == null) throw new IllegalArgumentException("Il meccanismo non può essere nullo");
-        if (findMechanismById(mechanism.getId()).isPresent()) throw new IllegalArgumentException("Esiste già un meccanismo con questo id: " + mechanism.getId());
+        if (findMechanismById(mechanism.getId()).isPresent())
+            throw new IllegalArgumentException("Esiste già un meccanismo con questo id: " + mechanism.getId());
         mechanisms.add(mechanism);
         mechanism.getRequiredPuzzle().filter(p -> findPuzzleById(p.getId()).isEmpty()).ifPresent(puzzles::add);
     }

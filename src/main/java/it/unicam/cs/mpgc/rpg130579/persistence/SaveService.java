@@ -12,12 +12,7 @@ import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
 
 import java.io.UncheckedIOException;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Servizio che converte uno stato di gioco attivo ({@link GameState}) in {@link SaveData}
@@ -29,6 +24,22 @@ public class SaveService implements GamePersistence {
     public SaveService(SaveRepository repository) {
         if (repository == null) throw new IllegalArgumentException("Il repository non può essere nullo");
         this.repository = repository;
+    }
+
+    private static Mechanism findMechanism(LevelManager levels, String id) {
+        for (int i = 0; i < levels.getLevelsSize(); i++) {
+            Optional<Mechanism> mechanism = levels.getLevelAt(i).findMechanismById(id);
+            if (mechanism.isPresent()) return mechanism.get();
+        }
+        throw new IllegalStateException("Meccanismo salvato inesistente: " + id);
+    }
+
+    private static void removeFromAllLocations(LevelManager levels, String itemId) {
+        for (int i = 0; i < levels.getLevelsSize(); i++) {
+            for (Location place : levels.getLevelAt(i).getPlaces()) {
+                place.removeItem(itemId);
+            }
+        }
     }
 
     @Override
@@ -149,21 +160,5 @@ public class SaveService implements GamePersistence {
 
         state.getProgress().restore(data.getSolvedPuzzleIds(), data.getFlags());
         if (data.isGameEnded()) state.restoreEnded(data.isWon());
-    }
-
-    private static Mechanism findMechanism(LevelManager levels, String id) {
-        for (int i = 0; i < levels.getLevelsSize(); i++) {
-            Optional<Mechanism> mechanism = levels.getLevelAt(i).findMechanismById(id);
-            if (mechanism.isPresent()) return mechanism.get();
-        }
-        throw new IllegalStateException("Meccanismo salvato inesistente: " + id);
-    }
-
-    private static void removeFromAllLocations(LevelManager levels, String itemId) {
-        for (int i = 0; i < levels.getLevelsSize(); i++) {
-            for (Location place : levels.getLevelAt(i).getPlaces()) {
-                place.removeItem(itemId);
-            }
-        }
     }
 }
