@@ -12,6 +12,10 @@ import java.util.Optional;
 public class ItemCatalog {
     private final Map<String, Item> items = new HashMap<>();
 
+    private static String key(String id) {
+        return id.trim().toLowerCase(Locale.ROOT);
+    }
+
     public void register(Item item) {
         if (item == null) throw new IllegalArgumentException("L'oggetto non può essere nullo");
         if (items.putIfAbsent(key(item.getId()), item) != null)
@@ -25,9 +29,5 @@ public class ItemCatalog {
 
     public int size() {
         return items.size();
-    }
-
-    private static String key(String id) {
-        return id.trim().toLowerCase(Locale.ROOT);
     }
 }

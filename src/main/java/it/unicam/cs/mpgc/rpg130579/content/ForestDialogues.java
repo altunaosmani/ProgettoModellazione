@@ -1,12 +1,7 @@
 package it.unicam.cs.mpgc.rpg130579.content;
 
 import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.CompositeEffect;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.Dialogue;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueChoice;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueNode;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.ModifyAttributeEffect;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.SetFlagEffect;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.*;
 
 import java.util.List;
 
@@ -15,15 +10,22 @@ import java.util.List;
  * del primo livello (Orwen, Mira, Aldren) e le relative chiavi dei flag narrativi.
  */
 public final class ForestDialogues {
-    /** A chi crede il giocatore tra Orwen e Aldren: letto nel dialogo finale con Elara. */
+    /**
+     * A chi crede il giocatore tra Orwen e Aldren: letto nel dialogo finale con Elara.
+     */
     static final String BELIEF_FLAG = "credenza_elara";
     static final String BELIEF_ORWEN = "orwen";
     static final String BELIEF_ALDREN = "aldren";
 
-    /** Segnano che il dialogo "con ricompensa" è già stato fatto, così il bonus non si ripete. */
+    /**
+     * Segnano che il dialogo "con ricompensa" è già stato fatto, così il bonus non si ripete.
+     */
     static final String MIRA_TALKED_FLAG = "mira_confidenza";
     static final String ALDREN_TALKED_FLAG = "aldren_parlato";
     static final String DONE = "si";
+
+    private ForestDialogues() {
+    }
 
     static Dialogue orwen() {
         return new Dialogue("Orwen", List.of(
@@ -44,7 +46,9 @@ public final class ForestDialogues {
         return new Dialogue("Mira", "start", List.of(start, memory));
     }
 
-    /** Dopo aver ascoltato il ricordo di Mira. */
+    /**
+     * Dopo aver ascoltato il ricordo di Mira.
+     */
     static Dialogue miraAfter() {
         return new Dialogue("Mira", List.of("Ti ho detto tutto quello che so, Eren. Abbi cura di te."));
     }
@@ -66,11 +70,10 @@ public final class ForestDialogues {
         return new Dialogue("Aldren", "start", List.of(start, believeOrwen, believeAldren));
     }
 
-    /** Dopo che il giocatore ha scelto a chi credere. */
+    /**
+     * Dopo che il giocatore ha scelto a chi credere.
+     */
     static Dialogue aldrenAfter() {
         return new Dialogue("Aldren", List.of("Ho già detto quello che dovevo, ragazzo. Non insistere."));
-    }
-
-    private ForestDialogues() {
     }
 }

@@ -1,10 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Rappresenta un grafo orientato di conversazione composto da {@link DialogueNode}
@@ -19,9 +15,12 @@ public class Dialogue {
     private final Map<String, DialogueNode> nodes;
 
     public Dialogue(String title, String startNodeId, Collection<DialogueNode> nodes) {
-        if (title == null || title.isBlank()) throw new IllegalArgumentException("Il titolo del dialogo non può essere vuoto");
-        if (startNodeId == null || startNodeId.isBlank()) throw new IllegalArgumentException("L'ID del nodo iniziale non può essere vuoto");
-        if (nodes == null || nodes.isEmpty()) throw new IllegalArgumentException("Il dialogo deve avere almeno un nodo");
+        if (title == null || title.isBlank())
+            throw new IllegalArgumentException("Il titolo del dialogo non può essere vuoto");
+        if (startNodeId == null || startNodeId.isBlank())
+            throw new IllegalArgumentException("L'ID del nodo iniziale non può essere vuoto");
+        if (nodes == null || nodes.isEmpty())
+            throw new IllegalArgumentException("Il dialogo deve avere almeno un nodo");
 
         Map<String, DialogueNode> map = new LinkedHashMap<>();
         for (DialogueNode node : nodes) {
@@ -42,7 +41,9 @@ public class Dialogue {
         this.nodes = Collections.unmodifiableMap(map);
     }
 
-    /** Dialogo lineare: solo battute, nessuna scelta. */
+    /**
+     * Dialogo lineare: solo battute, nessuna scelta.
+     */
     public Dialogue(String title, List<String> lines) {
         this(title, LINEAR_NODE_ID, List.of(new DialogueNode(LINEAR_NODE_ID, lines)));
     }

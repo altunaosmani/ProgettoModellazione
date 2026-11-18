@@ -6,6 +6,7 @@ import it.unicam.cs.mpgc.rpg130579.model.interaction.AttributeCondition;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.FlagCondition;
 import it.unicam.cs.mpgc.rpg130579.model.state.EndingCatalog;
 import it.unicam.cs.mpgc.rpg130579.model.state.EndingScreen;
+
 import java.util.List;
 
 /**
@@ -17,7 +18,12 @@ public final class StoryEndings {
     private static final String HEADLINE = "QUEST COMPLETATA";
     private static final String OUTCOME = "VITTORIA";
 
-    /** Tutti i finali di vittoria. L'ordine conta: vince la prima variante soddisfatta. */
+    private StoryEndings() {
+    }
+
+    /**
+     * Tutti i finali di vittoria. L'ordine conta: vince la prima variante soddisfatta.
+     */
     public static EndingCatalog endings() {
         return new EndingCatalog(victory(), List.of(
                 new EndingCatalog.Variant(
@@ -33,7 +39,9 @@ public final class StoryEndings {
                         persuasionVictory())));
     }
 
-    /** Finale predefinito, quello della trama. */
+    /**
+     * Finale predefinito, quello della trama.
+     */
     public static EndingScreen victory() {
         return new EndingScreen(TITLE, HEADLINE, "HAI TROVATO ELARA",
                 "Dopo anni di ricerca, Eren ha finalmente ritrovato sua madre e scoperto la verità sulla sua scomparsa.",
@@ -59,8 +67,5 @@ public final class StoryEndings {
                 "Eren ha ritrovato sua madre: lungo la strada, le parole giuste hanno aperto "
                         + "più porte di qualunque chiave.",
                 OUTCOME);
-    }
-
-    private StoryEndings() {
     }
 }

@@ -1,11 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.persistence;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Struttura dati serializzabile (DTO di persistenza) che rappresenta uno snapshot
@@ -28,7 +23,9 @@ public class SaveData {
     private boolean won;
     private Map<String, Integer> attributes = new LinkedHashMap<>();
 
-    /** Richiesto da Gson. */
+    /**
+     * Richiesto da Gson.
+     */
     public SaveData() {
     }
 
@@ -55,8 +52,10 @@ public class SaveData {
                     boolean gameEnded,
                     boolean won,
                     Map<String, Integer> attributes) {
-        if (currentLevelId == null || currentLevelId.isBlank()) throw new IllegalArgumentException("L'ID del livello non può essere vuoto");
-        if (currentLocationId == null || currentLocationId.isBlank()) throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
+        if (currentLevelId == null || currentLevelId.isBlank())
+            throw new IllegalArgumentException("L'ID del livello non può essere vuoto");
+        if (currentLocationId == null || currentLocationId.isBlank())
+            throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
         this.currentLevelId = currentLevelId;
         this.currentLocationId = currentLocationId;
         this.completedLevelIds = copy(completedLevelIds);
@@ -67,6 +66,15 @@ public class SaveData {
         this.gameEnded = gameEnded;
         this.won = won;
         this.attributes = attributes == null ? new LinkedHashMap<>() : new LinkedHashMap<>(attributes);
+    }
+
+    private static List<String> copy(Collection<String> source) {
+        return source == null ? new ArrayList<>() : new ArrayList<>(source);
+    }
+
+    // Gson lascia null i campi assenti nel file: le viste li trattano come vuoti.
+    private static List<String> view(List<String> list) {
+        return list == null ? List.of() : Collections.unmodifiableList(list);
     }
 
     public int getVersion() {
@@ -111,14 +119,5 @@ public class SaveData {
 
     public boolean isWon() {
         return won;
-    }
-
-    private static List<String> copy(Collection<String> source) {
-        return source == null ? new ArrayList<>() : new ArrayList<>(source);
-    }
-
-    // Gson lascia null i campi assenti nel file: le viste li trattano come vuoti.
-    private static List<String> view(List<String> list) {
-        return list == null ? List.of() : Collections.unmodifiableList(list);
     }
 }

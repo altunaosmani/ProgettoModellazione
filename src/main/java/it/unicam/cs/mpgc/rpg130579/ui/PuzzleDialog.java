@@ -3,11 +3,7 @@ package it.unicam.cs.mpgc.rpg130579.ui;
 import it.unicam.cs.mpgc.rpg130579.view.MechanismView;
 import it.unicam.cs.mpgc.rpg130579.view.PuzzleView;
 import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -17,12 +13,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/** Finestra di dialogo modale per la risoluzione di enigmi a scelta o a sequenza. */
+/**
+ * Finestra di dialogo modale per la risoluzione di enigmi a scelta o a sequenza.
+ */
 public final class PuzzleDialog {
+
+    private PuzzleDialog() {
+    }
 
     /**
      * @return la risposta da passare a unlock(); lista vuota se non serve input;
-     *         Optional.empty() se il giocatore annulla o non può ancora provare
+     * Optional.empty() se il giocatore annulla o non può ancora provare
      */
     public static Optional<List<String>> ask(MechanismView mechanism) {
         PuzzleView puzzle = mechanism.puzzle();
@@ -97,8 +98,5 @@ public final class PuzzleDialog {
         dialog.getDialogPane().setContent(content);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
         return dialog.showAndWait();
-    }
-
-    private PuzzleDialog() {
     }
 }

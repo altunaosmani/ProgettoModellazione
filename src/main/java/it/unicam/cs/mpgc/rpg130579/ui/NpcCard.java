@@ -11,7 +11,9 @@ import javafx.scene.layout.VBox;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-/** Card grafica che rappresenta un NPC nel luogo corrente con pulsante per avviare il dialogo. */
+/**
+ * Card grafica che rappresenta un NPC nel luogo corrente con pulsante per avviare il dialogo.
+ */
 public class NpcCard extends VBox {
     private static final double ICON_SIZE = 72;
 

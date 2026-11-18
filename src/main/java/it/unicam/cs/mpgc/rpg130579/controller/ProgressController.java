@@ -8,7 +8,9 @@ import java.util.Optional;
  * Interrogazione e avanzamento della progressione tra i livelli e i finali.
  */
 public interface ProgressController {
-    /** @return stato corrente di completamento del livello e della partita */
+    /**
+     * @return stato corrente di completamento del livello e della partita
+     */
     GameStatus status();
 
     /**
@@ -19,12 +21,18 @@ public interface ProgressController {
      */
     ActionResult advance();
 
-    /** @return vista del finale selezionato se la partita è stata vinta, altrimenti {@link Optional#empty()} */
+    /**
+     * @return vista del finale selezionato se la partita è stata vinta, altrimenti {@link Optional#empty()}
+     */
     Optional<EndingView> ending();
 
-    /** @return dati della schermata introduttiva della partita */
+    /**
+     * @return dati della schermata introduttiva della partita
+     */
     IntroView intro();
 
-    /** @return informazioni sul livello corrente e sulla relativa missione */
+    /**
+     * @return informazioni sul livello corrente e sulla relativa missione
+     */
     LevelInfoView levelInfo();
 }

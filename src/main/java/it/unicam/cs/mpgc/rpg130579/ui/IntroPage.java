@@ -5,7 +5,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-/** Schermata introduttiva che mostra i paragrafi del prologo prima di entrare nel gioco. */
+/**
+ * Schermata introduttiva che mostra i paragrafi del prologo prima di entrare nel gioco.
+ */
 public class IntroPage extends VBox {
 
     public IntroPage(IntroView intro, AppNavigator navigator) {

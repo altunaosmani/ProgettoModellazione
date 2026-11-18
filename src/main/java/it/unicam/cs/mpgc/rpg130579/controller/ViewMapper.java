@@ -7,12 +7,7 @@ import it.unicam.cs.mpgc.rpg130579.model.state.IntroScreen;
 import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
-import it.unicam.cs.mpgc.rpg130579.view.EndingView;
-import it.unicam.cs.mpgc.rpg130579.view.IntroView;
-import it.unicam.cs.mpgc.rpg130579.view.ItemView;
-import it.unicam.cs.mpgc.rpg130579.view.LevelInfoView;
-import it.unicam.cs.mpgc.rpg130579.view.LocationView;
-import it.unicam.cs.mpgc.rpg130579.view.StatsView;
+import it.unicam.cs.mpgc.rpg130579.view.*;
 
 import java.util.List;
 

@@ -9,7 +9,9 @@ import javafx.scene.layout.VBox;
 
 import java.util.Optional;
 
-/** Schermata conclusiva che presenta il finale raggiunto al termine dell'avventura. */
+/**
+ * Schermata conclusiva che presenta il finale raggiunto al termine dell'avventura.
+ */
 public class EndingPage extends VBox {
 
     public EndingPage(Optional<EndingView> ending, AppNavigator navigator) {

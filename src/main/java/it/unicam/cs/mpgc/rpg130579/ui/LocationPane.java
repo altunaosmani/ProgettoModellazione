@@ -1,10 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.ui;
 
-import it.unicam.cs.mpgc.rpg130579.view.ExitView;
-import it.unicam.cs.mpgc.rpg130579.view.ItemView;
-import it.unicam.cs.mpgc.rpg130579.view.LocationView;
-import it.unicam.cs.mpgc.rpg130579.view.MechanismView;
-import it.unicam.cs.mpgc.rpg130579.view.NpcView;
+import it.unicam.cs.mpgc.rpg130579.view.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,7 +12,9 @@ import javafx.scene.layout.VBox;
 
 import java.util.function.Consumer;
 
-/** Pannello centrale che visualizza descrizione, dettagli condizionali, NPC, meccanismi, oggetti e uscite del luogo corrente. */
+/**
+ * Pannello centrale che visualizza descrizione, dettagli condizionali, NPC, meccanismi, oggetti e uscite del luogo corrente.
+ */
 public class LocationPane extends VBox {
     private static final double LOCATION_ICON_SIZE = 64;
 

@@ -4,7 +4,9 @@ import it.unicam.cs.mpgc.rpg130579.view.StatsView;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-/** Pannello laterale che visualizza gli attributi effettivi del giocatore e i relativi bonus da oggetti. */
+/**
+ * Pannello laterale che visualizza gli attributi effettivi del giocatore e i relativi bonus da oggetti.
+ */
 public class StatsPane extends VBox {
 
     public StatsPane() {

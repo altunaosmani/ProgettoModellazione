@@ -11,13 +11,15 @@ public class Quest {
     private final String id;
     private final String name;
     private final String description;
-    private boolean completed;
     private final QuestCondition condition;
+    private boolean completed;
 
     public Quest(String id, String name, String description, QuestCondition condition) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID della missione non può essere vuoto");
-        if (name == null || name.isBlank()) throw new IllegalArgumentException("Il nome della missione non può essere vuoto");
-        if (description == null || description.isBlank()) throw new IllegalArgumentException("La descrizione della missione non può essere vuota");
+        if (name == null || name.isBlank())
+            throw new IllegalArgumentException("Il nome della missione non può essere vuoto");
+        if (description == null || description.isBlank())
+            throw new IllegalArgumentException("La descrizione della missione non può essere vuota");
         if (condition == null) throw new IllegalArgumentException("La condizione della missione non può essere nulla");
         this.id = id;
         this.name = name;

@@ -19,7 +19,8 @@ public class StoryProgress {
     }
 
     public void setFlag(String key, String value) {
-        if (value == null || value.isBlank()) throw new IllegalArgumentException("Il valore del flag non può essere vuoto");
+        if (value == null || value.isBlank())
+            throw new IllegalArgumentException("Il valore del flag non può essere vuoto");
         flags.put(normalize(key, "La chiave del flag"), value.trim());
     }
 

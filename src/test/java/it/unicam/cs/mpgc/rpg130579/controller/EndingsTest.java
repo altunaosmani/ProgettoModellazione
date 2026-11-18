@@ -19,7 +19,9 @@ class EndingsTest {
         c = newController(dir.resolve("save.json"));
     }
 
-    /** Dal sentiero alla grotta, con diario e chiave. */
+    /**
+     * Dal sentiero alla grotta, con diario e chiave.
+     */
     private void pathToCave() {
         ok(c.move("bivio"));
         ok(c.unlock("sentiero_occhio", List.of("occhio")));

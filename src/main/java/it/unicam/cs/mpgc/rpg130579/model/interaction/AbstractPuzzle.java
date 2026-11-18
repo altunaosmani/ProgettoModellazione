@@ -2,14 +2,17 @@ package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
 import java.util.Objects;
 
-/** Implementazione base astratta di {@link Puzzle} che gestisce ID, descrizione e uguaglianza. */
+/**
+ * Implementazione base astratta di {@link Puzzle} che gestisce ID, descrizione e uguaglianza.
+ */
 public abstract class AbstractPuzzle implements Puzzle {
     private final String id;
     private final String description;
 
     protected AbstractPuzzle(String id, String description) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID dell'enigma non può essere vuoto");
-        if (description == null || description.isBlank()) throw new IllegalArgumentException("La descrizione dell'enigma non può essere vuota");
+        if (description == null || description.isBlank())
+            throw new IllegalArgumentException("La descrizione dell'enigma non può essere vuota");
         this.id = id;
         this.description = description;
     }

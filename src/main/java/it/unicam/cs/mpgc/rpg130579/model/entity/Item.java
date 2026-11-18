@@ -13,8 +13,10 @@ public abstract class Item {
 
     public Item(String id, String name, String description) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID dell'oggetto non può essere vuoto");
-        if (name == null || name.isBlank()) throw new IllegalArgumentException("Il nome dell'oggetto non può essere vuoto");
-        if (description == null || description.isBlank()) throw new IllegalArgumentException("La descrizione dell'oggetto non può essere vuota");
+        if (name == null || name.isBlank())
+            throw new IllegalArgumentException("Il nome dell'oggetto non può essere vuoto");
+        if (description == null || description.isBlank())
+            throw new IllegalArgumentException("La descrizione dell'oggetto non può essere vuota");
         this.id = id;
         this.name = name;
         this.description = description;

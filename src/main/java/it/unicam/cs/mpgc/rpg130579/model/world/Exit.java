@@ -16,8 +16,10 @@ public class Exit {
 
     public Exit(String id, String label, String destinationLocationId, Lockable barrier) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'uscita non può avere ID vuoto");
-        if (label == null || label.isBlank()) throw new IllegalArgumentException("L'uscita non può avere un'etichetta vuota");
-        if (destinationLocationId == null || destinationLocationId.isBlank()) throw new IllegalArgumentException("La destinazione non può essere vuota");
+        if (label == null || label.isBlank())
+            throw new IllegalArgumentException("L'uscita non può avere un'etichetta vuota");
+        if (destinationLocationId == null || destinationLocationId.isBlank())
+            throw new IllegalArgumentException("La destinazione non può essere vuota");
         if (barrier == null) throw new IllegalArgumentException("La barriera non può essere nulla");
         this.id = id;
         this.label = label;

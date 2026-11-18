@@ -9,7 +9,8 @@ public class KeyItem extends Item implements MechanismKey {
 
     public KeyItem(String id, String name, String description, String targetMechanismId) {
         super(id, name, description);
-        if (targetMechanismId == null || targetMechanismId.isBlank()) throw new IllegalArgumentException("L'ID del meccanismo bersaglio non può essere vuoto");
+        if (targetMechanismId == null || targetMechanismId.isBlank())
+            throw new IllegalArgumentException("L'ID del meccanismo bersaglio non può essere vuoto");
         this.targetMechanismId = targetMechanismId;
     }
 

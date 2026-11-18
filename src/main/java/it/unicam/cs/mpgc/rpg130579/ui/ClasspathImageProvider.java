@@ -8,7 +8,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-/** Implementazione di {@link ImageProvider} che carica e memorizza in cache le immagini PNG dal classpath. */
+/**
+ * Implementazione di {@link ImageProvider} che carica e memorizza in cache le immagini PNG dal classpath.
+ */
 public class ClasspathImageProvider implements ImageProvider {
     private final Map<String, Optional<Image>> cache = new HashMap<>();
 

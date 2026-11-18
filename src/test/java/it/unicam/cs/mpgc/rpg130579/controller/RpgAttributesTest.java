@@ -8,7 +8,8 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static it.unicam.cs.mpgc.rpg130579.controller.Walkthrough.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RpgAttributesTest {
     private GameController c;

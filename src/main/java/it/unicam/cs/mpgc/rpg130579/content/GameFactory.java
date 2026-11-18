@@ -1,7 +1,10 @@
 package it.unicam.cs.mpgc.rpg130579.content;
 
+import it.unicam.cs.mpgc.rpg130579.model.entity.DocumentItem;
+import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
+import it.unicam.cs.mpgc.rpg130579.model.entity.ItemCatalog;
+import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 import it.unicam.cs.mpgc.rpg130579.model.state.GameState;
-import it.unicam.cs.mpgc.rpg130579.model.entity.*;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.LevelManager;
 
@@ -16,6 +19,7 @@ import java.util.List;
  */
 public class GameFactory {
     private final List<LevelBuilder> levelBuilders;
+
     /**
      * Crea una factory preconfigurata con i tre livelli standard della storia
      * (Foresta, Castello, Lago).
@@ -23,6 +27,7 @@ public class GameFactory {
     public GameFactory() {
         this(List.of(new ForestLevelBuilder(), new CastleLevelBuilder(), new LakeLevelBuilder()));
     }
+
     /**
      * Crea una factory con una lista personalizzata di builder di livelli.
      *
@@ -30,9 +35,11 @@ public class GameFactory {
      * @throws IllegalArgumentException se la lista è {@code null} o vuota
      */
     public GameFactory(List<LevelBuilder> levelBuilders) {
-        if (levelBuilders == null || levelBuilders.isEmpty()) throw new IllegalArgumentException("Serve almeno un livello");
+        if (levelBuilders == null || levelBuilders.isEmpty())
+            throw new IllegalArgumentException("Serve almeno un livello");
         this.levelBuilders = List.copyOf(levelBuilders);
     }
+
     /**
      * Genera una nuova istanza completa e indipendente di {@link GameSetup}.
      *

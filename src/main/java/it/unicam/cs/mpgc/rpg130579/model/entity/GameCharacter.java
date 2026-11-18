@@ -22,6 +22,11 @@ public abstract class GameCharacter {
         this.currentLocation = currentLocation;
     }
 
+    private static String requireText(String value, String label) {
+        if (value == null || value.isBlank()) throw new IllegalArgumentException(label + " non può essere vuoto");
+        return value;
+    }
+
     public String getId() {
         return this.id;
     }
@@ -49,11 +54,6 @@ public abstract class GameCharacter {
     public void setCurrentLocation(Location currentLocation) {
         if (currentLocation == null) throw new IllegalArgumentException("Il luogo non può essere nullo");
         this.currentLocation = currentLocation;
-    }
-
-    private static String requireText(String value, String label) {
-        if (value == null || value.isBlank()) throw new IllegalArgumentException(label + " non può essere vuoto");
-        return value;
     }
 
     @Override

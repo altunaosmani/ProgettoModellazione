@@ -14,16 +14,8 @@ import it.unicam.cs.mpgc.rpg130579.model.world.Exit;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
-import it.unicam.cs.mpgc.rpg130579.view.EndingView;
-import it.unicam.cs.mpgc.rpg130579.view.ExitView;
-import it.unicam.cs.mpgc.rpg130579.view.IntroView;
-import it.unicam.cs.mpgc.rpg130579.view.ItemView;
-import it.unicam.cs.mpgc.rpg130579.view.LevelInfoView;
-import it.unicam.cs.mpgc.rpg130579.view.LocationView;
-import it.unicam.cs.mpgc.rpg130579.view.MechanismView;
-import it.unicam.cs.mpgc.rpg130579.view.NpcView;
-import it.unicam.cs.mpgc.rpg130579.view.PuzzleView;
-import it.unicam.cs.mpgc.rpg130579.view.StatsView;
+import it.unicam.cs.mpgc.rpg130579.view.*;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

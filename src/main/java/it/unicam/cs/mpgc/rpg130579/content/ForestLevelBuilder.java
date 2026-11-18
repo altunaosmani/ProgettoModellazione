@@ -2,12 +2,7 @@ package it.unicam.cs.mpgc.rpg130579.content;
 
 import it.unicam.cs.mpgc.rpg130579.model.entity.*;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.*;
-import it.unicam.cs.mpgc.rpg130579.model.world.Exit;
-import it.unicam.cs.mpgc.rpg130579.model.world.Level;
-import it.unicam.cs.mpgc.rpg130579.model.world.Location;
-import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
-import it.unicam.cs.mpgc.rpg130579.model.world.PuzzleUnlockCondition;
-import it.unicam.cs.mpgc.rpg130579.model.entity.BonusItem;
+import it.unicam.cs.mpgc.rpg130579.model.world.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -61,7 +56,8 @@ public class ForestLevelBuilder implements LevelBuilder {
         Puzzle trees = new ChoicePuzzle(TREES_PUZZLE, "Quale sentiero scegli? Uno dei simboli è lo stesso del tuo medaglione.", symbols, "occhio");
         Mechanism treesMechanism = new Mechanism(TREES_MECHANISM, "Sentiero dell'occhio",
                 "Il sentiero che segue il simbolo del medaglione.", new PuzzleUnlockCondition(trees))
-                .withReward(Attribute.PERCEZIONE, 1);        level.addMechanism(treesMechanism);
+                .withReward(Attribute.PERCEZIONE, 1);
+        level.addMechanism(treesMechanism);
         level.getPlaceById(FORK).addMechanism(treesMechanism);
         Puzzle statue = new ItemPuzzle(STATUE_PUZZLE, "Avvicina il medaglione alla statua.", StoryIds.MEDALLION);
         Mechanism statueMechanism = new Mechanism(STATUE_MECHANISM, "Statua del santuario", "Una statua con lo stesso simbolo del medaglione.", new PuzzleUnlockCondition(statue));

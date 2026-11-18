@@ -1,6 +1,8 @@
 package it.unicam.cs.mpgc.rpg130579.model.world;
 
-/** Astrazione per qualsiasi elemento che può trovarsi in stato bloccato o sbloccato. */
+/**
+ * Astrazione per qualsiasi elemento che può trovarsi in stato bloccato o sbloccato.
+ */
 public interface Lockable {
     Lockable NEVER_LOCKED = () -> false;
 

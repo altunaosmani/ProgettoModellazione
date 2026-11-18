@@ -9,8 +9,13 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.Optional;
 
-/** Factory interna per generare nodi grafici icona con fallback sull'iniziale in caso di immagine mancante. */
+/**
+ * Factory interna per generare nodi grafici icona con fallback sull'iniziale in caso di immagine mancante.
+ */
 public final class IconFactory {
+
+    private IconFactory() {
+    }
 
     static Node create(String label, Optional<Image> image, double size) {
         if (image.isPresent()) {
@@ -28,6 +33,4 @@ public final class IconFactory {
         initial.setStyle("-fx-font-size: " + (size * 0.4) + "; -fx-font-weight: bold; -fx-text-fill: #6b5f45");
         return new StackPane(background, initial);
     }
-
-    private IconFactory() { }
 }

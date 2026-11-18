@@ -20,11 +20,16 @@ public class SequencePuzzle extends AbstractPuzzle {
         Set<Integer> positions = new HashSet<>();
         for (EnigmaPieceItem piece : pieces) {
             if (piece == null) throw new IllegalArgumentException("Il frammento non può essere nullo");
-            if (!positions.add(piece.getOrderPosition())) throw new IllegalArgumentException("Due frammenti hanno la stessa posizione: " + piece.getOrderPosition());
+            if (!positions.add(piece.getOrderPosition()))
+                throw new IllegalArgumentException("Due frammenti hanno la stessa posizione: " + piece.getOrderPosition());
         }
         List<EnigmaPieceItem> sorted = new ArrayList<>(pieces);
         sorted.sort(Comparator.comparingInt(EnigmaPieceItem::getOrderPosition));
         this.orderedPieces = Collections.unmodifiableList(sorted);
+    }
+
+    private static String key(String id) {
+        return id.trim().toLowerCase(Locale.ROOT);
     }
 
     public int getPieceCount() {
@@ -85,9 +90,5 @@ public class SequencePuzzle extends AbstractPuzzle {
             Collections.shuffle(result, random);
         } while (result.equals(orderedPieces));
         return result;
-    }
-
-    private static String key(String id) {
-        return id.trim().toLowerCase(Locale.ROOT);
     }
 }

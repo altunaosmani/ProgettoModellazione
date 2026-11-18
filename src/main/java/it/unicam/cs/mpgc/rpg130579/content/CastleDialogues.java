@@ -1,11 +1,7 @@
 package it.unicam.cs.mpgc.rpg130579.content;
 
 import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.AttributeCondition;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.Dialogue;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueChoice;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueNode;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.SetFlagEffect;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.*;
 
 import java.util.List;
 
@@ -16,6 +12,9 @@ import java.util.List;
 public final class CastleDialogues {
     static final String ROWAN_HELP_FLAG = "rowan_aiuto";
     static final String ROWAN_HELP_VALUE = "si";
+
+    private CastleDialogues() {
+    }
 
     /**
      * Primo incontro: Rowan riconosce il medaglione e all'inizio esita.
@@ -39,13 +38,12 @@ public final class CastleDialogues {
         return new Dialogue("Rowan", "start", List.of(start, help));
     }
 
-    /** Dopo che Rowan ha scelto di aiutare, ripete solo l'indicazione. */
+    /**
+     * Dopo che Rowan ha scelto di aiutare, ripete solo l'indicazione.
+     */
     static Dialogue rowanReminder() {
         return new Dialogue("Rowan", List.of(
                 "Cerca nella biblioteca il libro \"I Custodi\". È qui accanto, oltre il portone del cortile.",
                 "Tua madre sarebbe fiera di te, Eren."));
-    }
-
-    private CastleDialogues() {
     }
 }

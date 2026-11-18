@@ -1,12 +1,15 @@
 package it.unicam.cs.mpgc.rpg130579.model.entity;
 
-/** Oggetto leggibile (libro, lettera, appunto) che espone un contenuto testuale aggiuntivo. */
+/**
+ * Oggetto leggibile (libro, lettera, appunto) che espone un contenuto testuale aggiuntivo.
+ */
 public class DocumentItem extends Item {
     private final String text;
 
     public DocumentItem(String id, String name, String description, String text) {
         super(id, name, description);
-        if (text == null || text.isBlank()) throw new IllegalArgumentException("Il testo del documento non può essere vuoto");
+        if (text == null || text.isBlank())
+            throw new IllegalArgumentException("Il testo del documento non può essere vuoto");
         this.text = text;
     }
 

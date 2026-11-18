@@ -9,6 +9,9 @@ import java.util.List;
  */
 public final class StoryIntros {
 
+    private StoryIntros() {
+    }
+
     public static IntroScreen prologue() {
         return new IntroScreen("PROLOGO", List.of(
                 "Tanusha, un piccolo villaggio ai margini di una grande foresta.",
@@ -21,6 +24,4 @@ public final class StoryIntros {
                 "Da questo momento Eren ha un solo obiettivo: seguire le tracce di sua madre "
                         + "e scoprire che cosa le sia davvero accaduto."));
     }
-
-    private StoryIntros() { }
 }

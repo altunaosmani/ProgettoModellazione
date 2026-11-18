@@ -17,7 +17,8 @@ public class QuestNPC extends NPC {
                     Dialogue defaultDialogue, QuestCondition condition, Dialogue conditionalDialogue) {
         super(id, name, description, currentLocation, defaultDialogue);
         if (condition == null) throw new IllegalArgumentException("La condizione non può essere nulla");
-        if (conditionalDialogue == null) throw new IllegalArgumentException("Il dialogo condizionale non può essere nullo");
+        if (conditionalDialogue == null)
+            throw new IllegalArgumentException("Il dialogo condizionale non può essere nullo");
         this.condition = condition;
         this.conditionalDialogue = conditionalDialogue;
     }

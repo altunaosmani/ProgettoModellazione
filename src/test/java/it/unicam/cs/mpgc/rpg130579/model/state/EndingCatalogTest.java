@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class EndingCatalogTest {
     private final Player player = new Player("p", "P", "giocatore", new Location("l", "L", "luogo"));

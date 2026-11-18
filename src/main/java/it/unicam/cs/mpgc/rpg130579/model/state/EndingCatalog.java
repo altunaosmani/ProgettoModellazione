@@ -37,7 +37,9 @@ public class EndingCatalog {
                 .orElse(fallback);
     }
 
-    /** Un finale alternativo con la condizione che lo attiva. */
+    /**
+     * Un finale alternativo con la condizione che lo attiva.
+     */
     public record Variant(QuestCondition condition, EndingScreen ending) {
         public Variant {
             if (condition == null) throw new IllegalArgumentException("La condizione non può essere nulla");

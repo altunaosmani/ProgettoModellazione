@@ -1,6 +1,8 @@
 package it.unicam.cs.mpgc.rpg130579.ui;
 
-/** Categorie di immagini supportate ({@code ITEM}, {@code NPC}, {@code LOCATION}) con relative cartelle e dimensioni. */
+/**
+ * Categorie di immagini supportate ({@code ITEM}, {@code NPC}, {@code LOCATION}) con relative cartelle e dimensioni.
+ */
 public enum ImageKind {
     ITEM("items", 128),
     NPC("npcs", 128),
@@ -14,6 +16,11 @@ public enum ImageKind {
         this.loadSize = loadSize;
     }
 
-    public String folder() { return folder; }
-    public double loadSize() { return loadSize; }
+    public String folder() {
+        return folder;
+    }
+
+    public double loadSize() {
+        return loadSize;
+    }
 }

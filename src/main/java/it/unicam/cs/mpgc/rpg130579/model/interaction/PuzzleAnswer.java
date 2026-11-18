@@ -15,7 +15,8 @@ public record PuzzleAnswer(List<String> values) {
             values = List.of();
         } else {
             for (String v : values) {
-                if (v == null || v.isBlank()) throw new IllegalArgumentException("I valori della risposta non possono essere vuoti");
+                if (v == null || v.isBlank())
+                    throw new IllegalArgumentException("I valori della risposta non possono essere vuoti");
             }
             values = List.copyOf(values);
         }

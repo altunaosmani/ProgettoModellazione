@@ -1,4 +1,5 @@
 package it.unicam.cs.mpgc.rpg130579.model.interaction;
+
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 
 import java.util.Map;
@@ -7,10 +8,14 @@ import java.util.Map;
  * Rappresenta un enigma associato a un meccanismo del mondo di gioco.
  */
 public interface Puzzle {
-    /** @return identificativo univoco dell'enigma */
+    /**
+     * @return identificativo univoco dell'enigma
+     */
     String getId();
 
-    /** @return descrizione o domanda posta al giocatore */
+    /**
+     * @return descrizione o domanda posta al giocatore
+     */
     String getDescription();
 
     /**
@@ -22,8 +27,12 @@ public interface Puzzle {
      */
     boolean isSolvedBy(PuzzleAnswer answer, Player player);
 
-    /** @return numero di elementi attesi nella risposta ({@code 0} se non richiede input esplicito) */
-    default int answerSize() { return 0; }
+    /**
+     * @return numero di elementi attesi nella risposta ({@code 0} se non richiede input esplicito)
+     */
+    default int answerSize() {
+        return 0;
+    }
 
     /**
      * Restituisce le opzioni selezionabili dal giocatore (mappa ID opzione -> etichetta).
@@ -31,5 +40,7 @@ public interface Puzzle {
      * @param player protagonista corrente
      * @return mappa ordinata delle opzioni disponibili
      */
-    default Map<String, String> choices(Player player) { return Map.of(); }
+    default Map<String, String> choices(Player player) {
+        return Map.of();
+    }
 }

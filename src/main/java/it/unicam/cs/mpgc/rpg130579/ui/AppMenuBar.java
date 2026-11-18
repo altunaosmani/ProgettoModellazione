@@ -4,7 +4,9 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 
-/** Barra dei menu superiore con le azioni di gestione partita (Nuova, Salva, Carica, Esci). */
+/**
+ * Barra dei menu superiore con le azioni di gestione partita (Nuova, Salva, Carica, Esci).
+ */
 public class AppMenuBar extends MenuBar {
     private final MenuItem saveItem = new MenuItem("Salva");
 
@@ -19,7 +21,9 @@ public class AppMenuBar extends MenuBar {
         getMenus().add(new Menu("Partita", null, newGame, saveItem, load, exit));
     }
 
-    /** Si può salvare solo mentre si sta giocando. */
+    /**
+     * Si può salvare solo mentre si sta giocando.
+     */
     public void setSaveEnabled(boolean enabled) {
         saveItem.setDisable(!enabled);
     }

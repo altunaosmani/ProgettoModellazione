@@ -24,13 +24,17 @@ public class LevelManager {
         return this.indexCurrentLevel;
     }
 
-    /** Il livello con questo id, se esiste (senza distinzione tra maiuscole e minuscole). */
+    /**
+     * Il livello con questo id, se esiste (senza distinzione tra maiuscole e minuscole).
+     */
     public Optional<Level> findLevelById(String id) {
         if (id == null || id.isBlank()) return Optional.empty();
         return levels.stream().filter(level -> level.getId().equalsIgnoreCase(id)).findFirst();
     }
 
-    /** @throws IllegalArgumentException se l'id è vuoto o il livello non esiste */
+    /**
+     * @throws IllegalArgumentException se l'id è vuoto o il livello non esiste
+     */
     public Level getLevelById(String id) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del livello non può essere vuoto");
         return findLevelById(id).orElseThrow(() -> new IllegalArgumentException("Livello non trovato: " + id));
@@ -38,7 +42,8 @@ public class LevelManager {
 
     public void addLevel(Level level) {
         if (level == null) throw new IllegalArgumentException("Il livello non può essere nullo");
-        if (findLevelById(level.getId()).isPresent()) throw new IllegalArgumentException("Esiste già un livello con questo id: " + level.getId());
+        if (findLevelById(level.getId()).isPresent())
+            throw new IllegalArgumentException("Esiste già un livello con questo id: " + level.getId());
         levels.add(level);
     }
 
@@ -47,7 +52,9 @@ public class LevelManager {
         return levels.get(index);
     }
 
-    /** Passa al livello successivo solo se quello corrente è completato e ne esiste uno dopo. */
+    /**
+     * Passa al livello successivo solo se quello corrente è completato e ne esiste uno dopo.
+     */
     public boolean nextLevel() {
         if (levels.isEmpty() || !getCurrentLevel().isCompleted()) return false;
         if (isLastLevel()) return false;

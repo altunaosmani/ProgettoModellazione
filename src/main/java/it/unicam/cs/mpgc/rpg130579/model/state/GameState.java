@@ -1,7 +1,6 @@
 package it.unicam.cs.mpgc.rpg130579.model.state;
 
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
-import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.LevelManager;
 
@@ -77,7 +76,8 @@ public class GameState {
      * Se il livello corrente è l'ultimo ed è completato, conclude la partita con la vittoria.
      *
      * @throws IllegalStateException se la partita è terminata o il livello corrente non è completato
-     */    public void nextLevel() {
+     */
+    public void nextLevel() {
         if (gameEnd) throw new IllegalStateException("La partita è già terminata");
         if (levelManager.nextLevel()) {
             player.setCurrentLocation(getCurrentLevel().getStartLocation());

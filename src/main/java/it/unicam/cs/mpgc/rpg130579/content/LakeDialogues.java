@@ -16,12 +16,19 @@ public final class LakeDialogues {
     static final String ELARA_FOUND_FLAG = "elara_ritrovata";
     static final String ELARA_FOUND_VALUE = "si";
 
-    /** Elara per chi aveva creduto a Orwen (o non aveva scelto). */
+    private LakeDialogues() {
+    }
+
+    /**
+     * Elara per chi aveva creduto a Orwen (o non aveva scelto).
+     */
     static Dialogue elara() {
         return build(List.of("Eren... sei davvero tu."));
     }
 
-    /** Elara per chi a Tanusha aveva creduto ad Aldren: stessa struttura, una battuta in più. */
+    /**
+     * Elara per chi a Tanusha aveva creduto ad Aldren: stessa struttura, una battuta in più.
+     */
     static Dialogue elaraAfterDoubt() {
         return build(List.of("Eren... sei davvero tu.",
                 "So che al villaggio ti hanno detto che non ero mai entrata nella foresta, e che hai preferito crederlo. "
@@ -51,8 +58,5 @@ public final class LakeDialogues {
                         new SetFlagEffect(ELARA_FOUND_FLAG, ELARA_FOUND_VALUE))));
 
         return new Dialogue("Elara", "start", List.of(start, why, mistake));
-    }
-
-    private LakeDialogues() {
     }
 }

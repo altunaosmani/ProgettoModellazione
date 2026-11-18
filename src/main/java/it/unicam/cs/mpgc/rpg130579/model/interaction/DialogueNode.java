@@ -14,9 +14,11 @@ public class DialogueNode {
 
     public DialogueNode(String id, List<String> lines, List<DialogueChoice> choices) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del nodo non può essere vuoto");
-        if (lines == null || lines.isEmpty()) throw new IllegalArgumentException("Il nodo deve contenere almeno una battuta");
+        if (lines == null || lines.isEmpty())
+            throw new IllegalArgumentException("Il nodo deve contenere almeno una battuta");
         for (String line : lines) {
-            if (line == null || line.isBlank()) throw new IllegalArgumentException("Le battute non possono essere vuote");
+            if (line == null || line.isBlank())
+                throw new IllegalArgumentException("Le battute non possono essere vuote");
         }
         if (choices == null) throw new IllegalArgumentException("La lista delle scelte non può essere nulla");
         for (DialogueChoice choice : choices) {
@@ -42,7 +44,9 @@ public class DialogueNode {
         return lines;
     }
 
-    /** Tutte le scelte del nodo, comprese quelle che richiedono un requisito. */
+    /**
+     * Tutte le scelte del nodo, comprese quelle che richiedono un requisito.
+     */
     public List<DialogueChoice> getChoices() {
         return choices;
     }

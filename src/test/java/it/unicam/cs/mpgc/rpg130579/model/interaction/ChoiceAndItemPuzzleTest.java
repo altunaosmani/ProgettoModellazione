@@ -2,9 +2,6 @@ package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
 import it.unicam.cs.mpgc.rpg130579.model.entity.GenericItem;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.ChoicePuzzle;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.ItemPuzzle;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.PuzzleAnswer;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import org.junit.jupiter.api.Test;
 

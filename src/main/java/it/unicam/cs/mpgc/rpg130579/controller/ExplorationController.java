@@ -10,10 +10,14 @@ import java.util.List;
  * Operazioni di esplorazione del mondo e gestione dell'inventario.
  */
 public interface ExplorationController {
-    /** @return vista del luogo in cui si trova attualmente il giocatore */
+    /**
+     * @return vista del luogo in cui si trova attualmente il giocatore
+     */
     LocationView currentLocation();
 
-    /** @return lista degli oggetti attualmente nell'inventario del giocatore */
+    /**
+     * @return lista degli oggetti attualmente nell'inventario del giocatore
+     */
     List<ItemView> inventory();
 
     /**

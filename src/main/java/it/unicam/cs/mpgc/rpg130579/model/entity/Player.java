@@ -53,7 +53,8 @@ public class Player extends GameCharacter {
     }
 
     public boolean hasItem(String itemId) {
-        if (itemId == null || itemId.isBlank()) throw new IllegalArgumentException("L'ID dell'oggetto non deve essere vuoto");
+        if (itemId == null || itemId.isBlank())
+            throw new IllegalArgumentException("L'ID dell'oggetto non deve essere vuoto");
         return inventory.stream().anyMatch(item -> item.getId().equalsIgnoreCase(itemId));
     }
 

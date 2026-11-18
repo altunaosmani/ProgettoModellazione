@@ -37,12 +37,16 @@ public class DialogueSession {
         return currentNode.getLines().get(lineIndex++);
     }
 
-    /** Vero quando le battute sono finite e il giocatore deve scegliere. */
+    /**
+     * Vero quando le battute sono finite e il giocatore deve scegliere.
+     */
     public boolean awaitsChoice() {
         return !closed && !hasNextLine() && !availableChoices().isEmpty();
     }
 
-    /** Solo le scelte il cui requisito è soddisfatto; gli indici di choose() si riferiscono a questa lista. */
+    /**
+     * Solo le scelte il cui requisito è soddisfatto; gli indici di choose() si riferiscono a questa lista.
+     */
     public List<DialogueChoice> getChoices() {
         if (!awaitsChoice()) throw new IllegalStateException("In questo momento non ci sono scelte da fare");
         return availableChoices();

@@ -25,9 +25,12 @@ public class Mechanism implements Lockable {
 
     public Mechanism(String id, String name, String description, UnlockCondition unlockCondition) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del meccanismo non può essere vuoto");
-        if (name == null || name.isBlank()) throw new IllegalArgumentException("Il nome del meccanismo non può essere vuoto");
-        if (description == null || description.isBlank()) throw new IllegalArgumentException("La descrizione del meccanismo non può essere vuota");
-        if (unlockCondition == null) throw new IllegalArgumentException("La condizione di sblocco non può essere nulla");
+        if (name == null || name.isBlank())
+            throw new IllegalArgumentException("Il nome del meccanismo non può essere vuoto");
+        if (description == null || description.isBlank())
+            throw new IllegalArgumentException("La descrizione del meccanismo non può essere vuota");
+        if (unlockCondition == null)
+            throw new IllegalArgumentException("La condizione di sblocco non può essere nulla");
         this.id = id;
         this.name = name;
         this.description = description;
@@ -52,7 +55,9 @@ public class Mechanism implements Lockable {
         return locked;
     }
 
-    /** Imposta il bonus assegnato allo sblocco; restituisce this per l'uso fluente nei builder. */
+    /**
+     * Imposta il bonus assegnato allo sblocco; restituisce this per l'uso fluente nei builder.
+     */
     public Mechanism withReward(Attribute attribute, int amount) {
         this.reward = new AttributeReward(attribute, amount);
         return this;
@@ -86,7 +91,9 @@ public class Mechanism implements Lockable {
         return tryUnlock(player, PuzzleAnswer.empty());
     }
 
-    /** Usato dal caricamento di un salvataggio: apre senza controllare le condizioni né dare bonus. */
+    /**
+     * Usato dal caricamento di un salvataggio: apre senza controllare le condizioni né dare bonus.
+     */
     public void restoreUnlocked() {
         this.locked = false;
     }

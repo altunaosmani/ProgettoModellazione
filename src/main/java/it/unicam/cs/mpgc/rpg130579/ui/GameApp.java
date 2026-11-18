@@ -13,7 +13,9 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
-/** Applicazione JavaFX principale: gestisce lo {@link Stage}, la barra dei menu e la navigazione tra schermate. */
+/**
+ * Applicazione JavaFX principale: gestisce lo {@link Stage}, la barra dei menu e la navigazione tra schermate.
+ */
 public class GameApp extends Application implements AppNavigator {
     private static GameController injectedController;
     private static ImageProvider injectedImages;
@@ -23,7 +25,9 @@ public class GameApp extends Application implements AppNavigator {
     private AppMenuBar menuBar;
     private GameScreen gameScreen;
 
-    /** Avvia l'interfaccia con le dipendenze già composte. */
+    /**
+     * Avvia l'interfaccia con le dipendenze già composte.
+     */
     public static void run(GameController controller, ImageProvider images, String... args) {
         injectedController = Objects.requireNonNull(controller, "Il controller non può essere nullo");
         injectedImages = Objects.requireNonNull(images, "L'image provider non può essere nullo");

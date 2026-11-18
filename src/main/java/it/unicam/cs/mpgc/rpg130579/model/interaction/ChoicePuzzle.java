@@ -6,7 +6,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** Enigma a risposta multipla in cui il giocatore deve selezionare l'unica opzione corretta. */
+/**
+ * Enigma a risposta multipla in cui il giocatore deve selezionare l'unica opzione corretta.
+ */
 public class ChoicePuzzle extends AbstractPuzzle {
     private final Map<String, String> options;
     private final String correctOptionId;
@@ -14,7 +16,8 @@ public class ChoicePuzzle extends AbstractPuzzle {
     public ChoicePuzzle(String id, String description, Map<String, String> options, String correctOptionId) {
         super(id, description);
         if (options == null || options.size() < 2) throw new IllegalArgumentException("Occorrono almeno 2 opzioni");
-        if (correctOptionId == null || correctOptionId.isBlank()) throw new IllegalArgumentException("L'opzione corretta non può essere vuota");
+        if (correctOptionId == null || correctOptionId.isBlank())
+            throw new IllegalArgumentException("L'opzione corretta non può essere vuota");
         boolean present = options.keySet().stream().anyMatch(k -> k.equalsIgnoreCase(correctOptionId.trim()));
         if (!present) throw new IllegalArgumentException("L'opzione corretta deve essere tra quelle disponibili");
         this.options = Collections.unmodifiableMap(new LinkedHashMap<>(options));

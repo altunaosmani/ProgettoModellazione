@@ -1,25 +1,9 @@
 package it.unicam.cs.mpgc.rpg130579.content;
 
-import it.unicam.cs.mpgc.rpg130579.model.entity.DocumentItem;
-import it.unicam.cs.mpgc.rpg130579.model.entity.EnigmaPieceItem;
-import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
-import it.unicam.cs.mpgc.rpg130579.model.entity.ItemCatalog;
-import it.unicam.cs.mpgc.rpg130579.model.entity.QuestNPC;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.AllOfCondition;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.FlagCondition;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.HasItemCondition;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.Puzzle;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.Quest;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.SequencePuzzle;
-import it.unicam.cs.mpgc.rpg130579.model.world.Exit;
-import it.unicam.cs.mpgc.rpg130579.model.world.KeyUnlockCondition;
-import it.unicam.cs.mpgc.rpg130579.model.world.Level;
-import it.unicam.cs.mpgc.rpg130579.model.world.Location;
-import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
-import it.unicam.cs.mpgc.rpg130579.model.world.PuzzleUnlockCondition;
-import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
-import it.unicam.cs.mpgc.rpg130579.model.entity.BonusItem;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.AttributeCondition;
+import it.unicam.cs.mpgc.rpg130579.model.entity.*;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.*;
+import it.unicam.cs.mpgc.rpg130579.model.world.*;
+
 import java.util.List;
 
 /**
@@ -123,7 +107,8 @@ public class CastleLevelBuilder implements LevelBuilder {
         courtyard.addNPC(new QuestNPC("rowan", "Rowan", "Un vecchio guardiano rimasto al castello per molti anni.",
                 courtyard, CastleDialogues.rowanFirstMeeting(),
                 new FlagCondition(CastleDialogues.ROWAN_HELP_FLAG, CastleDialogues.ROWAN_HELP_VALUE),
-                CastleDialogues.rowanReminder()));    }
+                CastleDialogues.rowanReminder()));
+    }
 
     private void place(Level level, ItemCatalog catalog, String locationId, Item item) {
         catalog.register(item);

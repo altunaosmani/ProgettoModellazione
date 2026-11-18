@@ -4,11 +4,7 @@ import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.NPC;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.ConditionalText;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Rappresenta un singolo ambiente esplorabile del livello.
@@ -27,11 +23,18 @@ public class Location {
 
     public Location(String id, String name, String description) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
-        if (name == null || name.isBlank()) throw new IllegalArgumentException("Il nome del luogo non può essere vuoto");
-        if (description == null || description.isBlank()) throw new IllegalArgumentException("La descrizione del luogo non può essere vuota");
+        if (name == null || name.isBlank())
+            throw new IllegalArgumentException("Il nome del luogo non può essere vuoto");
+        if (description == null || description.isBlank())
+            throw new IllegalArgumentException("La descrizione del luogo non può essere vuota");
         this.id = id;
         this.name = name;
         this.description = description;
+    }
+
+    private static String key(String value, String label) {
+        if (value == null || value.isBlank()) throw new IllegalArgumentException(label + " non può essere vuoto");
+        return value.trim().toLowerCase(Locale.ROOT);
     }
 
     public String getId() {
@@ -50,22 +53,22 @@ public class Location {
         return npcs.size();
     }
 
+    // ---------- Dettagli condizionati ----------
+
     public int getSizeItems() {
         return items.size();
     }
-
-    // ---------- Dettagli condizionati ----------
 
     public void addDetail(ConditionalText detail) {
         if (detail == null) throw new IllegalArgumentException("Il dettaglio non può essere nullo");
         details.add(detail);
     }
 
+    // ---------- Personaggi ----------
+
     public List<ConditionalText> getDetails() {
         return List.copyOf(details);
     }
-
-    // ---------- Personaggi ----------
 
     public NPC getNPCById(String npcId) {
         return npcs.get(key(npcId, "L'ID del personaggio"));
@@ -76,11 +79,11 @@ public class Location {
         return npcs.putIfAbsent(key(npc.getId(), "L'ID del personaggio"), npc) == null;
     }
 
+    // ---------- Oggetti ----------
+
     public List<NPC> getNpcs() {
         return List.copyOf(npcs.values());
     }
-
-    // ---------- Oggetti ----------
 
     public Item getItemById(String itemId) {
         return items.get(key(itemId, "L'ID dell'oggetto"));
@@ -95,11 +98,11 @@ public class Location {
         return items.remove(key(itemId, "L'ID dell'oggetto")) != null;
     }
 
+    // ---------- Uscite ----------
+
     public List<Item> getItems() {
         return List.copyOf(items.values());
     }
-
-    // ---------- Uscite ----------
 
     public Exit getExitById(String exitId) {
         return exits.get(key(exitId, "L'ID dell'uscita"));
@@ -110,11 +113,11 @@ public class Location {
         return exits.putIfAbsent(key(exit.getId(), "L'ID dell'uscita"), exit) == null;
     }
 
+    // ---------- Meccanismi ----------
+
     public List<Exit> getExits() {
         return List.copyOf(exits.values());
     }
-
-    // ---------- Meccanismi ----------
 
     public Mechanism getMechanismById(String mechanismId) {
         return mechanisms.get(key(mechanismId, "L'ID del meccanismo"));
@@ -127,10 +130,5 @@ public class Location {
 
     public List<Mechanism> getMechanisms() {
         return List.copyOf(mechanisms.values());
-    }
-
-    private static String key(String value, String label) {
-        if (value == null || value.isBlank()) throw new IllegalArgumentException(label + " non può essere vuoto");
-        return value.trim().toLowerCase(Locale.ROOT);
     }
 }

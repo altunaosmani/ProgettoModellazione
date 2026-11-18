@@ -37,7 +37,8 @@ public class CharacterStats {
 
     /**
      * Copia non modificabile dei soli attributi con un valore assegnato.
-     * */
+     *
+     */
     public Map<Attribute, Integer> asMap() {
         return Collections.unmodifiableMap(new EnumMap<>(values));
     }

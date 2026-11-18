@@ -1,10 +1,13 @@
 package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
-/** Effetto che imposta una coppia chiave-valore nei flag narrativi di {@link StoryProgress}. */
+/**
+ * Effetto che imposta una coppia chiave-valore nei flag narrativi di {@link StoryProgress}.
+ */
 public record SetFlagEffect(String key, String value) implements DialogueEffect {
     public SetFlagEffect {
         if (key == null || key.isBlank()) throw new IllegalArgumentException("La chiave del flag non può essere vuota");
-        if (value == null || value.isBlank()) throw new IllegalArgumentException("Il valore del flag non può essere vuoto");
+        if (value == null || value.isBlank())
+            throw new IllegalArgumentException("Il valore del flag non può essere vuoto");
     }
 
     @Override

@@ -7,10 +7,13 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+
 import java.util.Optional;
 import java.util.function.Consumer;
 
-/** Card grafica compatta che rappresenta un singolo oggetto con pulsanti di esame ed eventuale raccolta. */
+/**
+ * Card grafica compatta che rappresenta un singolo oggetto con pulsanti di esame ed eventuale raccolta.
+ */
 public class ItemCard extends VBox {
     private static final double ICON_SIZE = 72;
 
@@ -43,5 +46,6 @@ public class ItemCard extends VBox {
             buttons.getChildren().add(action);
         }
 
-        getChildren().addAll(IconFactory.create(item.name(), image, ICON_SIZE), name, buttons);    }
+        getChildren().addAll(IconFactory.create(item.name(), image, ICON_SIZE), name, buttons);
+    }
 }
