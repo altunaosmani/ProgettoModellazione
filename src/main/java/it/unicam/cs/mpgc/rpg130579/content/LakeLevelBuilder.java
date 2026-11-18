@@ -1,10 +1,7 @@
 package it.unicam.cs.mpgc.rpg130579.content;
 
 import it.unicam.cs.mpgc.rpg130579.content.LevelBuilder;
-import it.unicam.cs.mpgc.rpg130579.model.entity.DocumentItem;
-import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
-import it.unicam.cs.mpgc.rpg130579.model.entity.ItemCatalog;
-import it.unicam.cs.mpgc.rpg130579.model.entity.NPC;
+import it.unicam.cs.mpgc.rpg130579.model.entity.*;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.ChoicePuzzle;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.FlagCondition;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.Puzzle;
@@ -14,7 +11,6 @@ import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
 import it.unicam.cs.mpgc.rpg130579.model.world.PuzzleUnlockCondition;
-import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.AttributeCondition;
 
 import java.util.LinkedHashMap;
@@ -94,8 +90,10 @@ public class LakeLevelBuilder implements LevelBuilder {
 
     private void placeNpcs(Level level) {
         Location clearing = level.getPlaceById(CLEARING);
-        clearing.addNPC(new NPC("elara", "Elara", "Tua madre, finalmente ritrovata.",
-                clearing, LakeDialogues.elara()));
+        clearing.addNPC(new QuestNPC("elara", "Elara", "Tua madre, finalmente ritrovata.", clearing,
+                LakeDialogues.elara(),
+                new FlagCondition(ForestDialogues.BELIEF_FLAG, ForestDialogues.BELIEF_ALDREN),
+                LakeDialogues.elaraAfterDoubt()));
     }
 
     private void place(Level level, ItemCatalog catalog, String locationId, Item item) {
