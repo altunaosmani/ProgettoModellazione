@@ -20,7 +20,7 @@ public class GameScreen extends BorderPane {
     private final LocationPane locationPane;
     private final InventoryPane inventoryPane;
     private final StatsPane statsPane = new StatsPane();
-    private final CompletionOverlay completionOverlay;
+    private final CompletionBanner completionBanner;
     private final Label status = new Label();
     private final Label levelTitle = new Label();
     private final Label objective = new Label();
@@ -36,7 +36,7 @@ public class GameScreen extends BorderPane {
         locationPane = new LocationPane(images, this::onTake, this::onExamine, this::onExit,
                 this::onTalk, this::onInteract);
         inventoryPane = new InventoryPane(images, this::onExamine);
-        completionOverlay = new CompletionOverlay(this::onContinue);
+        completionBanner = new CompletionBanner(this::onContinue);
 
         VBox sidebar = new VBox(statsPane, inventoryPane);
         VBox.setVgrow(inventoryPane, Priority.ALWAYS);
@@ -48,8 +48,8 @@ public class GameScreen extends BorderPane {
         HBox bottomBar = new HBox(10, status);
         bottomBar.setAlignment(Pos.CENTER_LEFT);
 
-        setTop(createBanner());
-        setCenter(new StackPane(center, completionOverlay));
+        setTop(new VBox(createBanner(), completionBanner));
+        setCenter(center);
         setRight(sidebar);
         setBottom(bottomBar);
     }
@@ -89,7 +89,7 @@ public class GameScreen extends BorderPane {
 
         locationPane.update(controller.currentLocation());
         inventoryPane.update(controller.inventory());
-        completionOverlay.update(current, info);
+        completionBanner.update(current, info);
     }
 
     private void onContinue() {

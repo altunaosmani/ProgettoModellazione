@@ -4,6 +4,7 @@ import it.unicam.cs.mpgc.rpg130579.model.entity.DocumentItem;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.ItemCatalog;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
+import it.unicam.cs.mpgc.rpg130579.model.state.GameSetup;
 import it.unicam.cs.mpgc.rpg130579.model.state.GameState;
 import it.unicam.cs.mpgc.rpg130579.model.world.Level;
 import it.unicam.cs.mpgc.rpg130579.model.world.LevelManager;

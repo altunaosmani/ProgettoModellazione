@@ -140,17 +140,11 @@ public class CastleLevelBuilder implements LevelBuilder {
      * e la mappa del lago, necessaria per completare la missione.
      */
     private void placeItems(Level level, ItemCatalog catalog, List<EnigmaPieceItem> phrasePieces) {
-        place(level, catalog, LIBRARY, new DocumentItem("libro_ardan", "Storia di Ardan", "Un volume sulla storia del castello.",
-                "Il Castello di Ardan fu per secoli un luogo di studio e di custodia. Poi, un giorno, i suoi abitanti se ne andarono."));
-        place(level, catalog, LIBRARY, new DocumentItem("libro_creature", "Creature magiche", "Un bestiario illustrato.",
-                "Un elenco di creature dei boschi. Molte pagine sono rovinate dall'umidità."));
-        place(level, catalog, LIBRARY, new DocumentItem("libro_regni", "Antichi regni", "Un libro sui regni elfici scomparsi.",
-                "I regni degli elfi caddero uno dopo l'altro, ma alcuni segreti sopravvissero."));
-        place(level, catalog, LIBRARY, new DocumentItem("libro_foresta", "La Foresta dei Sussurri", "Un libro sulla foresta che hai attraversato.",
-                "Si dice che la foresta parli solo a chi è disposto ad ascoltare."));
-        place(level, catalog, LIBRARY, new DocumentItem("libro_custodi", "I Custodi", "Un antico libro con un simbolo che conosci bene.",
-                "I Custodi della Luna furono un antico ordine elfico. Il loro emblema è un occhio circondato da tre rami. "
-                        + "\"Il Custode non protegge un tesoro. Protegge ciò che non deve essere trovato.\""));
+        place(level, catalog, LIBRARY, DocumentItem.readOnly("libro_ardan", "Storia di Ardan", "Un volume sulla storia del castello.", "Il Castello di Ardan fu per secoli un luogo di studio e di custodia. Poi, un giorno, i suoi abitanti se ne andarono."));
+        place(level, catalog, LIBRARY, DocumentItem.readOnly("libro_creature", "Creature magiche", "Un bestiario illustrato.", "Un elenco di creature dei boschi. Molte pagine sono rovinate dall'umidità."));
+        place(level, catalog, LIBRARY, DocumentItem.readOnly("libro_regni", "Antichi regni", "Un libro sui regni elfici scomparsi.", "I regni degli elfi caddero uno dopo l'altro, ma alcuni segreti sopravvissero."));
+        place(level, catalog, LIBRARY, DocumentItem.readOnly("libro_foresta", "La Foresta dei Sussurri", "Un libro sulla foresta che hai attraversato.", "Si dice che la foresta parli solo a chi è disposto ad ascoltare."));
+        place(level, catalog, LIBRARY, DocumentItem.readOnly("libro_custodi", "I Custodi", "Un antico libro con un simbolo che conosci bene.", "I Custodi della Luna furono un antico ordine elfico. Il loro emblema è un occhio circondato da tre rami. \"Il Custode non protegge un tesoro. Protegge ciò che non deve essere trovato.\""));
         for (EnigmaPieceItem piece : phrasePieces) {
             place(level, catalog, LIBRARY, piece);
         }

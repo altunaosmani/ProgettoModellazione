@@ -9,6 +9,7 @@ import it.unicam.cs.mpgc.rpg130579.model.world.Mechanism;
 import it.unicam.cs.mpgc.rpg130579.model.world.PuzzleUnlockCondition;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,10 +46,14 @@ public class ForestLevelBuilder implements LevelBuilder {
      */
     @Override
     public Level build(ItemCatalog catalog) {
+        Quest quest = new Quest("quest1", "Segui le tracce di Elara",
+                "Raggiungi la grotta e raccogli la pagina del diario e la vecchia chiave.",
+                new AllOfCondition(List.of(
+                        new HasItemCondition(StoryIds.DIARY_PAGE),
+                        new HasItemCondition(StoryIds.ARDAN_KEY))));
         Level level = new Level("livello1", "La Foresta dei Sussurri",
-                "Il medaglione si è aperto: inizia la ricerca di Elara.",
-                new Quest("quest1", "Segui le tracce di Elara", "Scopri dove è andata tua madre",
-                        new HasItemCondition(StoryIds.ARDAN_KEY)));
+                "Il medaglione si è aperto: inizia la ricerca di Elara.", quest);
+
         addLocations(level);
         addPuzzlesAndMechanisms(level);
         connectLocations(level);

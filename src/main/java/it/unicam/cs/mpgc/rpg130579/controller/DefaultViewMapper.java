@@ -79,7 +79,7 @@ public class DefaultViewMapper implements ViewMapper {
     // ---------- Elementi interni ----------
 
     private ItemView itemView(Item item) {
-        return new ItemView(item.getId(), item.getName(), item.getDescription(), item.examine());
+        return new ItemView(item.getId(), item.getName(), item.getDescription(), item.examine(), item.isPortable());
     }
 
     private ExitView exitView(Exit exit) {

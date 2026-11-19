@@ -14,7 +14,7 @@ import java.util.List;
  * sommando i bonus forniti dagli oggetti {@link AttributeModifier} trasportati.
  */
 public class Player extends GameCharacter {
-    private static final int DEFAULT_MAX_CAPACITY = 20;
+    public static final int MAX_CAPACITY = 20;
     private final List<Item> inventory;
     private final CharacterStats stats = new CharacterStats();
 
@@ -58,6 +58,10 @@ public class Player extends GameCharacter {
         return inventory.stream().anyMatch(item -> item.getId().equalsIgnoreCase(itemId));
     }
 
+    public boolean isInventoryFull() {
+        return inventory.size() >= MAX_CAPACITY;
+    }
+
     /**
      * Aggiunge un oggetto all'inventario se non è già presente e se non è stata raggiunta la capienza massima.
      *
@@ -66,7 +70,7 @@ public class Player extends GameCharacter {
      */
     public boolean addItem(Item item) {
         if (item == null) throw new IllegalArgumentException("L'oggetto non può essere null");
-        if (inventory.size() >= DEFAULT_MAX_CAPACITY) return false;
+        if (isInventoryFull()) return false;
         if (hasItem(item.getId())) return false;
         return inventory.add(item);
     }

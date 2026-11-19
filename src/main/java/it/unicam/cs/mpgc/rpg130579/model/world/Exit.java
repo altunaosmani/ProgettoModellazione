@@ -42,4 +42,8 @@ public class Exit {
     public boolean isPassable() {
         return barrier.isUnlocked();
     }
+
+    public Lockable getBarrier() {
+        return barrier;
+    }
 }

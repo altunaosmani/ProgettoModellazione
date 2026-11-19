@@ -20,10 +20,23 @@ import java.util.*;
  */
 public class SaveService implements GamePersistence {
     private final SaveRepository repository;
+    private final List<SaveContributor> contributors;
 
     public SaveService(SaveRepository repository) {
         if (repository == null) throw new IllegalArgumentException("Il repository non può essere nullo");
+        this(repository, List.of());
+    }
+
+    public SaveService(SaveRepository repository, List<SaveContributor> contributors) {
+        if (repository == null) throw new IllegalArgumentException("Il repository non può essere nullo");
+        if (contributors == null) throw new IllegalArgumentException("I contributori non possono essere nulli");
+        Set<String> keys = new HashSet<>();
+        for (SaveContributor contributor : contributors) {
+            if (!keys.add(contributor.key()))
+                throw new IllegalArgumentException("Contributore duplicato: " + contributor.key());
+        }
         this.repository = repository;
+        this.contributors = List.copyOf(contributors);
     }
 
     private static Mechanism findMechanism(LevelManager levels, String id) {
@@ -87,6 +100,11 @@ public class SaveService implements GamePersistence {
             attributes.put(attribute.name(), player.getStats().get(attribute));
         }
 
+        Map<String, Map<String, String>> extensions = new LinkedHashMap<>();
+        for (SaveContributor contributor : contributors) {
+            extensions.put(contributor.key(), contributor.capture(state));
+        }
+
         return new SaveData(
                 state.getCurrentLevel().getId(),
                 player.getCurrentLocation().getId(),
@@ -97,7 +115,8 @@ public class SaveService implements GamePersistence {
                 progress.getFlags(),
                 state.isGameEnd(),
                 state.isWin(),
-                attributes);
+                attributes,
+                extensions);
     }
 
     void restore(GameState state, SaveData data, ItemCatalog catalog) {
@@ -143,6 +162,14 @@ public class SaveService implements GamePersistence {
             }
         }
 
+        // fase 1: le estensioni validano i propri dati senza modificare lo stato
+        List<Runnable> extensionRestores = new ArrayList<>();
+        for (SaveContributor contributor : contributors) {
+            Map<String, String> saved = data.getExtensions().get(contributor.key());
+            if (saved != null) extensionRestores.add(contributor.prepareRestore(state, catalog, saved));
+        }
+
+        // fase 2: da qui in poi si applica tutto
         levels.setCurrentLevelById(currentLevel.getId());
         for (Level level : completedLevels) {
             level.getQuest().complete();
@@ -160,5 +187,6 @@ public class SaveService implements GamePersistence {
 
         state.getProgress().restore(data.getSolvedPuzzleIds(), data.getFlags());
         if (data.isGameEnded()) state.restoreEnded(data.isWon());
+        extensionRestores.forEach(Runnable::run);
     }
 }

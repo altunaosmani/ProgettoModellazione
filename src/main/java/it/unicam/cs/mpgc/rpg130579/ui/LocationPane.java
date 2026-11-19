@@ -72,7 +72,7 @@ public class LocationPane extends VBox {
             TilePane tiles = new TilePane(10, 10);
             for (ItemView item : location.items()) {
                 tiles.getChildren().add(new ItemCard(item, images.imageFor(ImageKind.ITEM, item.id()),
-                        "Raccogli", onTake, onExamine));
+                        item.portable() ? "Raccogli" : null, onTake, onExamine));
             }
             getChildren().add(tiles);
         }

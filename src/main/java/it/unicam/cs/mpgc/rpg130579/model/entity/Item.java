@@ -60,4 +60,9 @@ public abstract class Item {
     public String examine() {
         return this.description;
     }
+
+    /** Vero se il giocatore può portare l'oggetto con sé; altrimenti si può solo esaminare. */
+    public boolean isPortable() {
+        return true;
+    }
 }

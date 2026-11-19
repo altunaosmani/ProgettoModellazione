@@ -22,6 +22,7 @@ public class SaveData {
     private boolean gameEnded;
     private boolean won;
     private Map<String, Integer> attributes = new LinkedHashMap<>();
+    private Map<String, Map<String, String>> extensions = new LinkedHashMap<>();
 
     /**
      * Richiesto da Gson.
@@ -52,6 +53,21 @@ public class SaveData {
                     boolean gameEnded,
                     boolean won,
                     Map<String, Integer> attributes) {
+        this(currentLevelId, currentLocationId, completedLevelIds, inventoryItemIds, solvedPuzzleIds,
+                unlockedMechanismIds, flags, gameEnded, won, attributes, Map.of());
+    }
+
+    public SaveData(String currentLevelId,
+                    String currentLocationId,
+                    Collection<String> completedLevelIds,
+                    Collection<String> inventoryItemIds,
+                    Collection<String> solvedPuzzleIds,
+                    Collection<String> unlockedMechanismIds,
+                    Map<String, String> flags,
+                    boolean gameEnded,
+                    boolean won,
+                    Map<String, Integer> attributes,
+                    Map<String, Map<String, String>> extensions) {
         if (currentLevelId == null || currentLevelId.isBlank())
             throw new IllegalArgumentException("L'ID del livello non può essere vuoto");
         if (currentLocationId == null || currentLocationId.isBlank())
@@ -66,6 +82,7 @@ public class SaveData {
         this.gameEnded = gameEnded;
         this.won = won;
         this.attributes = attributes == null ? new LinkedHashMap<>() : new LinkedHashMap<>(attributes);
+        this.extensions = copyExtensions(extensions);
     }
 
     private static List<String> copy(Collection<String> source) {
@@ -75,6 +92,12 @@ public class SaveData {
     // Gson lascia null i campi assenti nel file: le viste li trattano come vuoti.
     private static List<String> view(List<String> list) {
         return list == null ? List.of() : Collections.unmodifiableList(list);
+    }
+
+    private static Map<String, Map<String, String>> copyExtensions(Map<String, Map<String, String>> source) {
+        Map<String, Map<String, String>> copy = new LinkedHashMap<>();
+        if (source != null) source.forEach((key, section) -> copy.put(key, new LinkedHashMap<>(section)));
+        return copy;
     }
 
     public int getVersion() {
@@ -111,6 +134,10 @@ public class SaveData {
 
     public Map<String, Integer> getAttributes() {
         return attributes == null ? Map.of() : Collections.unmodifiableMap(attributes);
+    }
+
+    public Map<String, Map<String, String>> getExtensions() {
+        return extensions == null ? Map.of() : Collections.unmodifiableMap(extensions);
     }
 
     public boolean isGameEnded() {

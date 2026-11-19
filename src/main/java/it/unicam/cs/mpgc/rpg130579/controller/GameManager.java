@@ -106,6 +106,9 @@ public class GameManager {
         Location location = player.getCurrentLocation();
         Item item = location.getItemById(itemId);
         if (item == null) throw new IllegalArgumentException("Oggetto non trovato: " + itemId);
+        if (!item.isPortable())
+            throw new IllegalArgumentException("Non puoi portare con te questo oggetto: puoi solo esaminarlo.");
+        if (player.isInventoryFull()) throw new IllegalStateException("Il tuo inventario è pieno.");
         if (!player.addItem(item)) return false;
         location.removeItem(itemId);
         return true;
