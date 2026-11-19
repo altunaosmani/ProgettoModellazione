@@ -23,7 +23,6 @@ public class SaveService implements GamePersistence {
     private final List<SaveContributor> contributors;
 
     public SaveService(SaveRepository repository) {
-        if (repository == null) throw new IllegalArgumentException("Il repository non può essere nullo");
         this(repository, List.of());
     }
 
