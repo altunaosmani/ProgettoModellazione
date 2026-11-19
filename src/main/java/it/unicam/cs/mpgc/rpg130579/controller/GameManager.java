@@ -34,22 +34,41 @@ public class GameManager {
         this.state = state;
     }
 
+    /**
+     * @return stato corrente della partita gestita
+     */
     public GameState getCurrentState() {
         return state;
     }
 
+    /**
+     * @return livello attualmente attivo nella partita
+     */
     public Level getCurrentLevel() {
         return state.getCurrentLevel();
     }
 
+    /**
+     * @return {@code true} se la partita è terminata
+     */
     public boolean isGameOver() {
         return state.isGameEnd();
     }
 
+    /**
+     * @return {@code true} se la partita si è conclusa con la vittoria
+     */
     public boolean hasWon() {
         return state.isWin();
     }
 
+    /**
+     * Recupera un luogo del livello corrente tramite il suo identificativo.
+     *
+     * @param locationId identificativo del luogo da cercare
+     * @return istanza di {@link Location} corrispondente
+     * @throws IllegalArgumentException se l'ID è vuoto o il luogo non esiste nel livello corrente
+     */
     public Location getLocation(String locationId) {
         if (locationId == null || locationId.isBlank())
             throw new IllegalArgumentException("L'ID del luogo non può essere vuoto");
@@ -77,6 +96,12 @@ public class GameManager {
         return new DialogueSession(npc.interact(player, state.getProgress()), context);
     }
 
+    /**
+     * Avanza al livello successivo della sequenza oppure conclude la partita se l'ultimo
+     * livello è stato completato.
+     *
+     * @throws IllegalStateException se la partita è terminata o il livello corrente non è completato
+     */
     public void advanceToNextLevel() {
         ensureRunning();
         state.nextLevel();
@@ -100,6 +125,14 @@ public class GameManager {
         return true;
     }
 
+    /**
+     * Raccoglie un oggetto presente nel luogo corrente e lo trasferisce nell'inventario del giocatore.
+     *
+     * @param itemId identificativo dell'oggetto da raccogliere
+     * @return {@code true} se l'oggetto è stato raccolto, {@code false} se già presente nell'inventario
+     * @throws IllegalStateException se la partita è terminata o l'inventario è pieno
+     * @throws IllegalArgumentException se l'oggetto non esiste nel luogo corrente o non è trasportabile
+     */
     public boolean takeItem(String itemId) {
         ensureRunning();
         Player player = state.getPlayer();

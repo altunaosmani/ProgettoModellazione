@@ -41,6 +41,15 @@ public class DefaultGameController implements GameController {
         this(newGameSource, new SaveService(repository), new DefaultViewMapper(), new StatsChangeReporter());
     }
 
+    /**
+     * Crea un controller configurando esplicitamente tutte le sue dipendenze.
+     *
+     * @param newGameSource fornitore di nuove configurazioni di partita
+     * @param persistence componente per il salvataggio e caricamento dello stato
+     * @param mapper convertitore dalle entità di dominio ai DTO della vista
+     * @param statsReporter componente per il calcolo e la formattazione dei guadagni negli attributi
+     * @throws IllegalArgumentException se uno qualsiasi dei parametri è {@code null}
+     */
     public DefaultGameController(Supplier<GameSetup> newGameSource, GamePersistence persistence,
                                  ViewMapper mapper, StatsChangeReporter statsReporter) {
         if (newGameSource == null) throw new IllegalArgumentException("La sorgente di partite non può essere nulla");

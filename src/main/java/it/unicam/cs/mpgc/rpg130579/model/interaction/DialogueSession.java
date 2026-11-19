@@ -14,6 +14,13 @@ public class DialogueSession {
     private int lineIndex;
     private boolean closed;
 
+    /**
+     * Crea una nuova sessione di dialogo partendo dal nodo iniziale.
+     *
+     * @param dialogue grafo del dialogo da eseguire
+     * @param context contesto contenente giocatore e progressi narrativi
+     * @throws IllegalArgumentException se {@code dialogue} o {@code context} sono {@code null}
+     */
     public DialogueSession(Dialogue dialogue, DialogueContext context) {
         if (dialogue == null) throw new IllegalArgumentException("Il dialogo non può essere nullo");
         if (context == null) throw new IllegalArgumentException("Il contesto del dialogo non può essere nullo");
@@ -24,14 +31,26 @@ public class DialogueSession {
         this.closed = false;
     }
 
+    /**
+     * @return titolo o nome dell'interlocutore del dialogo
+     */
     public String getTitle() {
         return dialogue.getTitle();
     }
 
+    /**
+     * @return {@code true} se nel nodo corrente ci sono ancora battute da leggere
+     */
     public boolean hasNextLine() {
         return !closed && lineIndex < currentNode.getLines().size();
     }
 
+    /**
+     * Restituisce la prossima battuta del nodo corrente e avanza il cursore.
+     *
+     * @return testo della battuta successiva
+     * @throws IllegalStateException se non ci sono più battute disponibili nel nodo corrente
+     */
     public String nextLine() {
         if (!hasNextLine()) throw new IllegalStateException("Non ci sono altre battute");
         return currentNode.getLines().get(lineIndex++);
@@ -52,6 +71,14 @@ public class DialogueSession {
         return availableChoices();
     }
 
+    /**
+     * Seleziona una delle opzioni visibili, applica l'eventuale effetto e avanza al nodo successivo
+     * oppure chiude la conversazione.
+     *
+     * @param index indice a base zero nella lista restituita da {@link #getChoices()}
+     * @throws IllegalStateException se la sessione non è in attesa di una scelta
+     * @throws IllegalArgumentException se l'indice non è valido
+     */
     public void choose(int index) {
         List<DialogueChoice> choices = getChoices();
         if (index < 0 || index >= choices.size()) throw new IllegalArgumentException("Indice della scelta non valido");
@@ -65,6 +92,9 @@ public class DialogueSession {
         }
     }
 
+    /**
+     * @return {@code true} se il dialogo è stato chiuso o non ha più battute né scelte disponibili
+     */
     public boolean isFinished() {
         return closed || (!hasNextLine() && availableChoices().isEmpty());
     }

@@ -18,11 +18,22 @@ public class Player extends GameCharacter {
     private final List<Item> inventory;
     private final CharacterStats stats = new CharacterStats();
 
+    /**
+     * Crea un nuovo protagonista posizionato nel luogo iniziale indicato.
+     *
+     * @param id identificativo univoco del giocatore
+     * @param name nome del protagonista
+     * @param description descrizione del personaggio
+     * @param currentLocation luogo di partenza
+     */
     public Player(String id, String name, String description, Location currentLocation) {
         super(id, name, description, currentLocation);
         this.inventory = new ArrayList<>();
     }
 
+    /**
+     * @return gestore delle statistiche base del protagonista
+     */
     public CharacterStats getStats() {
         return stats;
     }
@@ -52,12 +63,22 @@ public class Player extends GameCharacter {
         return stats.get(attribute) + getAttributeBonus(attribute);
     }
 
+    /**
+     * Verifica se nell'inventario è presente un oggetto con l'ID specificato (case-insensitive).
+     *
+     * @param itemId identificativo dell'oggetto da cercare
+     * @return {@code true} se l'oggetto è nell'inventario
+     * @throws IllegalArgumentException se {@code itemId} è {@code null} o vuoto
+     */
     public boolean hasItem(String itemId) {
         if (itemId == null || itemId.isBlank())
             throw new IllegalArgumentException("L'ID dell'oggetto non deve essere vuoto");
         return inventory.stream().anyMatch(item -> item.getId().equalsIgnoreCase(itemId));
     }
 
+    /**
+     * @return {@code true} se l'inventario ha raggiunto la capienza massima ({@value #MAX_CAPACITY})
+     */
     public boolean isInventoryFull() {
         return inventory.size() >= MAX_CAPACITY;
     }
@@ -75,15 +96,31 @@ public class Player extends GameCharacter {
         return inventory.add(item);
     }
 
+    /**
+     * Restituisce l'oggetto presente alla posizione indicata nell'inventario.
+     *
+     * @param index indice a base zero nell'inventario
+     * @return oggetto alla posizione specificata
+     * @throws IllegalArgumentException se l'indice è fuori dai limiti
+     */
     public Item getItemAt(int index) {
         if (index < 0 || index >= inventory.size()) throw new IllegalArgumentException("Indice non valido");
         return inventory.get(index);
     }
 
+    /**
+     * Rimuove l'oggetto specificato dall'inventario.
+     *
+     * @param item oggetto da rimuovere
+     * @return {@code true} se l'oggetto era presente ed è stato rimosso
+     */
     public boolean removeItem(Item item) {
         return this.inventory.remove(item);
     }
 
+    /**
+     * @return vista non modificabile degli oggetti attualmente nell'inventario
+     */
     public List<Item> getInventory() {
         return Collections.unmodifiableList(inventory);
     }
