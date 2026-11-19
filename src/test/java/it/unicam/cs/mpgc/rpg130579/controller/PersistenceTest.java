@@ -38,7 +38,6 @@ class PersistenceTest {
         SaveData original = new SaveData("livello2", "cortile", List.of("livello1"),
                 List.of("medaglione", "chiave_ardan"), List.of("puzzle_alberi"),
                 List.of("sentiero_occhio"), Map.of("rowan_aiuto", "si"), false, false);
-
         repository.save(original);
         SaveData loaded = repository.load().orElseThrow();
 
