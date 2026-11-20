@@ -7,6 +7,12 @@ plugins {
 group = 'it.unicam.cs.mpgc'
 version = '1.0'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -16,7 +22,7 @@ application {
 }
 
 javafx {
-    version = '21'
+    version = '25'
     modules = ['javafx.controls']
 }
 
