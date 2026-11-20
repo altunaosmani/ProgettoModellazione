@@ -56,7 +56,7 @@ La descrizione completa dell'architettura è nella **Wiki** del repository.
   - bozza di README/Wiki
   - realizzazione di classi test
 
-  - Gemini utilizzato per:
+- Gemini utilizzato per:
    - suggerimenti sulla struttura dei package
    - stesura di javadoc
    
