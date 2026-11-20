@@ -1,7 +1,7 @@
 package it.unicam.cs.mpgc.rpg130579.model.state;
 
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.QuestCondition;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.Condition;
 import it.unicam.cs.mpgc.rpg130579.model.world.Location;
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +29,8 @@ class EndingCatalogTest {
     void firstMatchingVariantWins() {
         EndingCatalog catalog = new EndingCatalog(ending("base"), List.of(
                 new EndingCatalog.Variant((p, s) -> false, ending("no")),
-                new EndingCatalog.Variant(QuestCondition.ALWAYS, ending("primo")),
-                new EndingCatalog.Variant(QuestCondition.ALWAYS, ending("secondo"))));
+                new EndingCatalog.Variant(Condition.ALWAYS, ending("primo")),
+                new EndingCatalog.Variant(Condition.ALWAYS, ending("secondo"))));
         assertEquals("primo", catalog.select(player, progress).subtitle());
     }
 
@@ -43,6 +43,6 @@ class EndingCatalogTest {
     void invalidArgumentsAreRejected() {
         assertThrows(IllegalArgumentException.class, () -> new EndingCatalog(null));
         assertThrows(IllegalArgumentException.class, () -> new EndingCatalog.Variant(null, ending("x")));
-        assertThrows(IllegalArgumentException.class, () -> new EndingCatalog.Variant(QuestCondition.ALWAYS, null));
+        assertThrows(IllegalArgumentException.class, () -> new EndingCatalog.Variant(Condition.ALWAYS, null));
     }
 }
