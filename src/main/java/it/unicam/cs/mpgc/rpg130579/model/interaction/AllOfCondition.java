@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Condizione composta soddisfatta solo se tutte le condizioni interne sono verificate (AND logico).
  */
-public record AllOfCondition(List<QuestCondition> conditions) implements QuestCondition {
+public record AllOfCondition(List<Condition> conditions) implements Condition {
     public AllOfCondition {
         if (conditions == null || conditions.isEmpty())
             throw new IllegalArgumentException("Serve almeno una condizione");

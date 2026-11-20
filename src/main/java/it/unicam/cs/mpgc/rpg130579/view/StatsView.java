@@ -5,8 +5,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * values: valore effettivo di ogni attributo (nome da mostrare -> valore).
- * bonuses: la parte del valore che viene dagli oggetti nell'inventario.
+ * Dati di presentazione delle statistiche del protagonista (valori effettivi e bonus da inventario).
+ *
+ * @param values  valore effettivo di ogni attributo (nome da mostrare -> valore)
+ * @param bonuses la parte del valore che viene dagli oggetti nell'inventario
  */
 public record StatsView(Map<String, Integer> values, Map<String, Integer> bonuses) {
     public StatsView {

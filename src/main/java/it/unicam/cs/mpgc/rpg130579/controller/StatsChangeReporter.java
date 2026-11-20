@@ -11,7 +11,7 @@ import java.util.Map;
  * Componente di supporto che rileva gli incrementi negli attributi effettivi del giocatore
  * prima e dopo un'azione, formattando una nota testuale per il feedback all'utente.
  */
-public class StatsChangeReporter {
+public class StatsChangeReporter implements StatsTracker{
 
     /**
      * Acquisisce un'istantanea immodificabile dei valori effettivi attuali degli attributi.

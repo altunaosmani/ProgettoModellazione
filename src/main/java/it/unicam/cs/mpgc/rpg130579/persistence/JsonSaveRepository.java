@@ -3,7 +3,6 @@ package it.unicam.cs.mpgc.rpg130579.persistence;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
-
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
@@ -15,16 +14,16 @@ import java.util.Optional;
 
 /**
  * Implementazione di {@link SaveRepository} su file JSON tramite libreria Gson.
- * Esegue scritture atomiche tramite file temporaneo per prevenire corruzioni in caso di errore.
  */
 public class JsonSaveRepository implements SaveRepository {
-    private static final String DEFAULT_FILE = "savegame.json";
+    private static final Path DEFAULT_PATH = Path.of(
+            System.getProperty("user.home"), ".the-lost-elf", "savegame.json");
 
     private final Path path;
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public JsonSaveRepository() {
-        this(Path.of(DEFAULT_FILE));
+        this(DEFAULT_PATH);
     }
 
     public JsonSaveRepository(Path path) {
@@ -33,10 +32,18 @@ public class JsonSaveRepository implements SaveRepository {
     }
 
     @Override
+    public boolean exists() {
+        return Files.isRegularFile(path);
+    }
+
+    @Override
     public void save(SaveData data) {
         if (data == null) throw new IllegalArgumentException("Il salvataggio non può essere nullo");
-        Path tmp = path.resolveSibling(path.getFileName() + ".tmp");
         try {
+            Path parent = path.getParent();
+            if (parent != null) Files.createDirectories(parent);
+
+            Path tmp = path.resolveSibling(path.getFileName() + ".tmp");
             Files.writeString(tmp, gson.toJson(data), StandardCharsets.UTF_8);
             try {
                 Files.move(tmp, path, StandardCopyOption.ATOMIC_MOVE);
@@ -50,7 +57,7 @@ public class JsonSaveRepository implements SaveRepository {
 
     @Override
     public Optional<SaveData> load() {
-        if (!Files.exists(path)) return Optional.empty();
+        if (!exists()) return Optional.empty();
         try {
             String json = Files.readString(path, StandardCharsets.UTF_8);
             SaveData data = gson.fromJson(json, SaveData.class);

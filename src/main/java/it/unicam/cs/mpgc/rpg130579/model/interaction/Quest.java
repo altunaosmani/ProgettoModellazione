@@ -4,17 +4,17 @@ import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 
 /**
- * Rappresenta l'obiettivo principale di un livello, dotato di una {@link QuestCondition}
+ * Rappresenta l'obiettivo principale di un livello, dotato di una {@link Condition}
  * che ne determina la completabilità.
  */
 public class Quest {
     private final String id;
     private final String name;
     private final String description;
-    private final QuestCondition condition;
+    private final Condition condition;
     private boolean completed;
 
-    public Quest(String id, String name, String description, QuestCondition condition) {
+    public Quest(String id, String name, String description, Condition condition) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID della missione non può essere vuoto");
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("Il nome della missione non può essere vuoto");

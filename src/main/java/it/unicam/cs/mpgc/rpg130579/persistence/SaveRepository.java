@@ -19,4 +19,8 @@ public interface SaveRepository {
      * @return {@link Optional} contenente i dati caricati, oppure vuoto se non esiste alcun salvataggio
      */
     Optional<SaveData> load();
+
+    default boolean exists() {
+        return load().isPresent();
+    }
 }

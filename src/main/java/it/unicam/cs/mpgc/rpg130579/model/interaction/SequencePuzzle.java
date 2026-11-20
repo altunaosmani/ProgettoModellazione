@@ -3,7 +3,6 @@ package it.unicam.cs.mpgc.rpg130579.model.interaction;
 import it.unicam.cs.mpgc.rpg130579.model.entity.EnigmaPieceItem;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
-
 import java.util.*;
 
 /**
@@ -16,12 +15,17 @@ public class SequencePuzzle extends AbstractPuzzle {
 
     public SequencePuzzle(String id, String description, Collection<EnigmaPieceItem> pieces) {
         super(id, description);
-        if (pieces == null || pieces.size() < 2) throw new IllegalArgumentException("Servono almeno due frammenti");
+        if (pieces == null || pieces.size() < 2) {
+            throw new IllegalArgumentException("Servono almeno due frammenti");
+        }
         Set<Integer> positions = new HashSet<>();
         for (EnigmaPieceItem piece : pieces) {
-            if (piece == null) throw new IllegalArgumentException("Il frammento non può essere nullo");
-            if (!positions.add(piece.getOrderPosition()))
+            if (piece == null) {
+                throw new IllegalArgumentException("Il frammento non può essere nullo");
+            }
+            if (!positions.add(piece.getOrderPosition())) {
                 throw new IllegalArgumentException("Due frammenti hanno la stessa posizione: " + piece.getOrderPosition());
+            }
         }
         List<EnigmaPieceItem> sorted = new ArrayList<>(pieces);
         sorted.sort(Comparator.comparingInt(EnigmaPieceItem::getOrderPosition));
@@ -59,18 +63,20 @@ public class SequencePuzzle extends AbstractPuzzle {
      */
     @Override
     public Map<String, String> choices(Player player) {
+        if (player == null) return Map.of();
+
         Map<String, EnigmaPieceItem> piecesById = new HashMap<>();
         for (EnigmaPieceItem piece : orderedPieces) {
             piecesById.put(key(piece.getId()), piece);
         }
-
         List<EnigmaPieceItem> owned = new ArrayList<>();
         for (Item item : player.getInventory()) {
             EnigmaPieceItem piece = piecesById.get(key(item.getId()));
             if (piece != null) owned.add(piece);
         }
-        if (owned.size() == orderedPieces.size()) owned = scrambled(owned);
-
+        if (owned.size() == orderedPieces.size()) {
+            owned = scrambled(owned);
+        }
         Map<String, String> result = new LinkedHashMap<>();
         for (EnigmaPieceItem piece : owned) {
             result.put(piece.getId(), piece.getPhraseFragment());
@@ -78,11 +84,6 @@ public class SequencePuzzle extends AbstractPuzzle {
         return result;
     }
 
-    /**
-     * Mescolamento stabile (seme legato all'id dell'enigma): l'ordine non cambia a ogni
-     * aggiornamento della schermata, ma non è mai quello della soluzione.
-     * Termina sempre: i frammenti sono almeno due, quindi esiste una permutazione diversa dall'identità.
-     */
     private List<EnigmaPieceItem> scrambled(List<EnigmaPieceItem> pieces) {
         List<EnigmaPieceItem> result = new ArrayList<>(pieces);
         Random random = new Random(getId().hashCode());

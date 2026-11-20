@@ -6,7 +6,7 @@ import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 /**
  * Condizione verificata se il giocatore possiede l'oggetto specificato nell'inventario.
  */
-public record HasItemCondition(String itemId) implements QuestCondition {
+public record HasItemCondition(String itemId) implements Condition {
     public HasItemCondition {
         if (itemId == null || itemId.isBlank())
             throw new IllegalArgumentException("L'ID dell'oggetto non può essere vuoto");

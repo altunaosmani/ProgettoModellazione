@@ -1,40 +1,37 @@
 package it.unicam.cs.mpgc.rpg130579.model.world;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Gestisce la sequenza ordinata dei livelli di una partita e tiene traccia del livello attivo.
  */
 public class LevelManager {
-    private final List<Level> levels = new ArrayList<>();
+    private final Map<String, Level> levelsById = new LinkedHashMap<>();
+    private final List<Level> orderedLevels = new ArrayList<>();
     private int indexCurrentLevel = 0;
 
+    private static String key(String id) {
+        return id.trim().toLowerCase(Locale.ROOT);
+    }
+
     public int getLevelsSize() {
-        return levels.size();
+        return orderedLevels.size();
     }
 
     public Level getCurrentLevel() {
-        if (levels.isEmpty()) throw new IllegalStateException("Non ci sono livelli");
-        return levels.get(indexCurrentLevel);
+        if (orderedLevels.isEmpty()) throw new IllegalStateException("Non ci sono livelli");
+        return orderedLevels.get(indexCurrentLevel);
     }
 
     public int getIndexCurrentLevel() {
         return this.indexCurrentLevel;
     }
 
-    /**
-     * Il livello con questo id, se esiste (senza distinzione tra maiuscole e minuscole).
-     */
     public Optional<Level> findLevelById(String id) {
         if (id == null || id.isBlank()) return Optional.empty();
-        return levels.stream().filter(level -> level.getId().equalsIgnoreCase(id)).findFirst();
+        return Optional.ofNullable(levelsById.get(key(id)));
     }
 
-    /**
-     * @throws IllegalArgumentException se l'id è vuoto o il livello non esiste
-     */
     public Level getLevelById(String id) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("L'ID del livello non può essere vuoto");
         return findLevelById(id).orElseThrow(() -> new IllegalArgumentException("Livello non trovato: " + id));
@@ -42,41 +39,39 @@ public class LevelManager {
 
     public void addLevel(Level level) {
         if (level == null) throw new IllegalArgumentException("Il livello non può essere nullo");
-        if (findLevelById(level.getId()).isPresent())
+        if (levelsById.putIfAbsent(key(level.getId()), level) != null) {
             throw new IllegalArgumentException("Esiste già un livello con questo id: " + level.getId());
-        levels.add(level);
+        }
+        orderedLevels.add(level);
     }
 
     public Level getLevelAt(int index) {
-        if (index < 0 || index >= levels.size()) throw new IllegalArgumentException("Indice del livello non valido");
-        return levels.get(index);
+        if (index < 0 || index >= orderedLevels.size()) {
+            throw new IllegalArgumentException("Indice del livello non valido");
+        }
+        return orderedLevels.get(index);
     }
 
-    /**
-     * Passa al livello successivo solo se quello corrente è completato e ne esiste uno dopo.
-     */
     public boolean nextLevel() {
-        if (levels.isEmpty() || !getCurrentLevel().isCompleted()) return false;
+        if (orderedLevels.isEmpty() || !getCurrentLevel().isCompleted()) return false;
         if (isLastLevel()) return false;
         indexCurrentLevel++;
         return true;
     }
 
     public boolean isLastLevel() {
-        return !levels.isEmpty() && indexCurrentLevel == levels.size() - 1;
+        return !orderedLevels.isEmpty() && indexCurrentLevel == orderedLevels.size() - 1;
     }
 
     public boolean setCurrentLevelById(String id) {
-        for (int i = 0; i < levels.size(); i++) {
-            if (levels.get(i).getId().equalsIgnoreCase(id)) {
-                indexCurrentLevel = i;
-                return true;
-            }
-        }
-        return false;
+        if (id == null || id.isBlank()) return false;
+        Level target = levelsById.get(key(id));
+        if (target == null) return false;
+        indexCurrentLevel = orderedLevels.indexOf(target);
+        return true;
     }
 
     public List<Level> getLevels() {
-        return List.copyOf(levels);
+        return Collections.unmodifiableList(orderedLevels);
     }
 }

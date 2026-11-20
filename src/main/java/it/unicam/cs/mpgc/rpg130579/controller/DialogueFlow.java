@@ -6,7 +6,6 @@ import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueChoice;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.DialogueSession;
 import it.unicam.cs.mpgc.rpg130579.view.ActionResult;
 import it.unicam.cs.mpgc.rpg130579.view.DialogueView;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,23 +16,22 @@ import java.util.Objects;
  * e completamento della missione durante il dialogo.
  */
 final class DialogueFlow implements DialogueController {
-    private final GameManager manager;
-    private final StatsChangeReporter statsReporter;
-
+    private final GameSessionService sessionService;
+    private final StatsTracker statsTracker;
     private DialogueSession session;
     private Map<Attribute, Integer> statsAtStart;
     private boolean questCompleted;
 
-    DialogueFlow(GameManager manager, StatsChangeReporter statsReporter) {
-        this.manager = Objects.requireNonNull(manager, "Il manager non può essere nullo");
-        this.statsReporter = Objects.requireNonNull(statsReporter, "Il reporter non può essere nullo");
+    DialogueFlow(GameSessionService sessionService, StatsTracker statsTracker) {
+        this.sessionService = Objects.requireNonNull(sessionService, "Il servizio di sessione non può essere nullo");
+        this.statsTracker = Objects.requireNonNull(statsTracker, "Il tracker non può essere nullo");
     }
 
     @Override
     public DialogueView talkTo(String npcId) {
         try {
-            session = manager.interactWithNPC(npcId);
-            statsAtStart = statsReporter.capture(player());
+            session = sessionService.interactWithNPC(npcId);
+            statsAtStart = statsTracker.capture(player());
             questCompleted = false;
             return snapshot();
         } catch (IllegalArgumentException | IllegalStateException e) {
@@ -55,14 +53,11 @@ final class DialogueFlow implements DialogueController {
 
     @Override
     public ActionResult endDialogue() {
-        // se il dialogo è chiuso a metà, gli effetti già applicati potrebbero aver completato la missione
-        if (manager.completeCurrentQuest()) questCompleted = true;
-
+        if (sessionService.completeCurrentQuest()) questCompleted = true;
         String note = statsAtStart == null
                 ? ""
-                : statsReporter.describeGains(player(), statsAtStart).trim();
+                : statsTracker.describeGains(player(), statsAtStart).trim();
         if (questCompleted) note = (note.isEmpty() ? "" : note + " ") + "Missione completata!";
-
         reset();
         return ActionResult.ok(note);
     }
@@ -76,13 +71,13 @@ final class DialogueFlow implements DialogueController {
         DialogueView view = new DialogueView(session.getTitle(), lines, choices, session.isFinished());
         if (view.finished()) {
             session = null;
-            if (manager.completeCurrentQuest()) questCompleted = true;
+            if (sessionService.completeCurrentQuest()) questCompleted = true;
         }
         return view;
     }
 
     private Player player() {
-        return manager.getCurrentState().getPlayer();
+        return sessionService.getCurrentState().getPlayer();
     }
 
     private void reset() {

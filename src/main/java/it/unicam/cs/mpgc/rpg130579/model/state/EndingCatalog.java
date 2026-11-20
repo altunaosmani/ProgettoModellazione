@@ -1,7 +1,7 @@
 package it.unicam.cs.mpgc.rpg130579.model.state;
 
 import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.QuestCondition;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.Condition;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class EndingCatalog {
     /**
      * Un finale alternativo con la condizione che lo attiva.
      */
-    public record Variant(QuestCondition condition, EndingScreen ending) {
+    public record Variant(Condition condition, EndingScreen ending) {
         public Variant {
             if (condition == null) throw new IllegalArgumentException("La condizione non può essere nulla");
             if (ending == null) throw new IllegalArgumentException("Il finale non può essere nullo");

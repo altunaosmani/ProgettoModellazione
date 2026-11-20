@@ -6,7 +6,7 @@ import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 /**
  * Condizione verificata se l'enigma specificato risulta risolto nello {@link StoryProgress}.
  */
-public record PuzzleSolvedCondition(String puzzleId) implements QuestCondition {
+public record PuzzleSolvedCondition(String puzzleId) implements Condition {
     public PuzzleSolvedCondition {
         if (puzzleId == null || puzzleId.isBlank())
             throw new IllegalArgumentException("L'ID dell'enigma non può essere vuoto");

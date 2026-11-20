@@ -5,12 +5,12 @@ import it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress;
 
 /**
  * Testo narrativo (dettaglio di un luogo o indizio di un meccanismo) visibile solo
- * quando la {@link QuestCondition} associata è soddisfatta.
+ * quando la {@link Condition} associata è soddisfatta.
  */
-public record ConditionalText(QuestCondition requirement, String text) {
+public record ConditionalText(Condition requirement, String text) {
     public ConditionalText {
         if (text == null || text.isBlank()) throw new IllegalArgumentException("Il testo non può essere vuoto");
-        if (requirement == null) requirement = QuestCondition.ALWAYS;
+        if (requirement == null) requirement = Condition.ALWAYS;
     }
 
     public boolean isVisibleTo(Player player, StoryProgress progress) {

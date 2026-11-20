@@ -5,7 +5,7 @@ import it.unicam.cs.mpgc.rpg130579.model.entity.Player;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.ConditionalText;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.Puzzle;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.PuzzleAnswer;
-import it.unicam.cs.mpgc.rpg130579.model.interaction.QuestCondition;
+import it.unicam.cs.mpgc.rpg130579.model.interaction.Condition;
 
 import java.util.Optional;
 
@@ -71,7 +71,7 @@ public class Mechanism implements Lockable {
      * Imposta un indizio mostrato solo se il requisito è soddisfatto (es. abbastanza Sapienza).
      * L'indizio è una scorciatoia: l'enigma resta risolvibile anche senza.
      */
-    public Mechanism withHint(QuestCondition requirement, String text) {
+    public Mechanism withHint(Condition requirement, String text) {
         this.hint = new ConditionalText(requirement, text);
         return this;
     }
