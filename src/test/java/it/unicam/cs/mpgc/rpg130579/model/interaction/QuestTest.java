@@ -30,7 +30,7 @@ class QuestTest {
 
     @Test
     void completedQuestIsNoLongerCompletable() {
-        Quest quest = new Quest("q", "Quest", "descrizione", QuestCondition.ALWAYS);
+        Quest quest = new Quest("q", "Quest", "descrizione", Condition.ALWAYS);
         assertTrue(quest.isCompletable(player, progress));
 
         quest.complete();
