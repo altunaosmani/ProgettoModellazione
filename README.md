@@ -16,7 +16,7 @@ Progetto per Metodologie di Programmazione – AA 2025/26. Package base: it.unic
 ### Istruzioni
 
 ```bash
-git clone <[ProgettoModellazione](https://github.com/altunaosmani/ProgettoModellazione)>
+git clone <https://github.com/altunaosmani/ProgettoModellazione>
 cd <ProgettoModellazione>
 ```
 
