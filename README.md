@@ -65,3 +65,11 @@ Tutto il codice è stato scritto/rivisto, compreso e adattato da me.
 
 Dettaglio completo nella Wiki, pagina **Uso dell'AI**.
 
+---
+
+## 🖼️ Crediti grafici
+
+Le icone in `src/main/resources/images` provengono da [game-icons.net](https://game-icons.net)
+e sono distribuite con licenza [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+Autori: Lorc, Delapouite, ... (elenco completo nella Wiki, pagina **Crediti**).
+Le icone sono state ridimensionate/convertite in PNG; nessun'altra modifica.
