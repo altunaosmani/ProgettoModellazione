@@ -63,7 +63,7 @@ La descrizione completa dell'architettura, delle classi, della persistenza e dei
    
 Tutto il codice è stato scritto/rivisto, compreso e adattato da me.
 
-Dettaglio completo nella Wiki, pagina **Uso dell'AI**.
+Dettaglio completo nella Wiki, pagina [Uso dell'AI](https://github.com/altunaosmani/ProgettoModellazione/wiki/6-%E2%80%90-Uso-dell'AI).
 
 ---
 
@@ -71,5 +71,5 @@ Dettaglio completo nella Wiki, pagina **Uso dell'AI**.
 
 Le icone in `src/main/resources/images` provengono da [game-icons.net](https://game-icons.net)
 e sono distribuite con licenza [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
-Autori: Lorc, Delapouite, ... (elenco completo nella Wiki, pagina **Crediti**).
+Autori: Lorc, Delapouite, ... (elenco completo nella Wiki, pagina [Crediti](https://github.com/altunaosmani/ProgettoModellazione/wiki/Crediti).
 Le icone sono state ridimensionate/convertite in PNG; nessun'altra modifica.
