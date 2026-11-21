@@ -21,21 +21,21 @@ import java.util.function.Supplier;
  * Implementazione predefinita di {@link GameController}.
  * <p>
  * Coordina {@link GameManager}, {@link DialogueFlow}, {@link GamePersistence},
- * {@link ViewMapper} e {@link StatsChangeReporter}, traducendo le eccezioni di dominio
+ * {@link ViewMapper} e {@link StatsTracker}, traducendo le eccezioni di dominio
  * in {@link ActionResult} di errore e verificando il completamento delle missioni.
  */
 public class DefaultGameController implements GameController {
     private final Supplier<GameSetup> newGameSource;
     private final GamePersistence persistence;
     private final ViewMapper mapper;
-    private final StatsChangeReporter statsReporter;
+    private final StatsTracker statsTracker;
 
     private GameSetup setup;
     private GameManager manager;
     private DialogueFlow dialogues;
 
     /**
-     * Comodo: persistenza su repository, mapper e reporter predefiniti.
+     * Comodo: persistenza su repository, mapper e tracker predefiniti.
      */
     public DefaultGameController(Supplier<GameSetup> newGameSource, SaveRepository repository) {
         this(newGameSource, new SaveService(repository), new DefaultViewMapper(), new StatsChangeReporter());
@@ -45,29 +45,29 @@ public class DefaultGameController implements GameController {
      * Crea un controller configurando esplicitamente tutte le sue dipendenze.
      *
      * @param newGameSource fornitore di nuove configurazioni di partita
-     * @param persistence componente per il salvataggio e caricamento dello stato
-     * @param mapper convertitore dalle entità di dominio ai DTO della vista
-     * @param statsReporter componente per il calcolo e la formattazione dei guadagni negli attributi
+     * @param persistence   componente per il salvataggio e caricamento dello stato
+     * @param mapper        convertitore dalle entità di dominio ai DTO della vista
+     * @param statsTracker  componente per il calcolo e la formattazione dei guadagni negli attributi
      * @throws IllegalArgumentException se uno qualsiasi dei parametri è {@code null}
      */
     public DefaultGameController(Supplier<GameSetup> newGameSource, GamePersistence persistence,
-                                 ViewMapper mapper, StatsChangeReporter statsReporter) {
+                                 ViewMapper mapper, StatsTracker statsTracker) {
         if (newGameSource == null) throw new IllegalArgumentException("La sorgente di partite non può essere nulla");
         if (persistence == null) throw new IllegalArgumentException("La persistenza non può essere nulla");
         if (mapper == null) throw new IllegalArgumentException("Il mapper non può essere nullo");
-        if (statsReporter == null)
-            throw new IllegalArgumentException("Il reporter delle statistiche non può essere nullo");
+        if (statsTracker == null)
+            throw new IllegalArgumentException("Il tracker delle statistiche non può essere nullo");
         this.newGameSource = newGameSource;
         this.persistence = persistence;
         this.mapper = mapper;
-        this.statsReporter = statsReporter;
+        this.statsTracker = statsTracker;
         adopt(newGameSource.get());
     }
 
     private void adopt(GameSetup newSetup) {
         this.setup = newSetup;
         this.manager = new GameManager(newSetup.state());
-        this.dialogues = new DialogueFlow(manager, statsReporter);
+        this.dialogues = new DialogueFlow(manager, statsTracker);
     }
 
     private Player player() {
@@ -109,9 +109,9 @@ public class DefaultGameController implements GameController {
     @Override
     public ActionResult takeItem(String itemId) {
         try {
-            Map<Attribute, Integer> before = statsReporter.capture(player());
+            Map<Attribute, Integer> before = statsTracker.capture(player());
             if (!manager.takeItem(itemId)) return ActionResult.fail("Non puoi raccogliere questo oggetto.");
-            return ActionResult.ok("Oggetto raccolto." + statsReporter.describeGains(player(), before) + questNote());
+            return ActionResult.ok("Oggetto raccolto." + statsTracker.describeGains(player(), before) + questNote());
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ActionResult.fail(ErrorMessages.of(e));
         }
@@ -120,12 +120,12 @@ public class DefaultGameController implements GameController {
     @Override
     public ActionResult unlock(String mechanismId, List<String> answer) {
         try {
-            Map<Attribute, Integer> before = statsReporter.capture(player());
+            Map<Attribute, Integer> before = statsTracker.capture(player());
             PuzzleAnswer given = (answer == null || answer.isEmpty()) ? PuzzleAnswer.empty() : new PuzzleAnswer(answer);
             if (!manager.unlockMechanism(mechanismId, given)) {
                 return ActionResult.fail("Non succede nulla. Forse ti manca qualcosa, o la scelta non è quella giusta.");
             }
-            return ActionResult.ok("Si è sbloccato qualcosa!" + statsReporter.describeGains(player(), before) + questNote());
+            return ActionResult.ok("Si è sbloccato qualcosa!" + statsTracker.describeGains(player(), before) + questNote());
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ActionResult.fail(ErrorMessages.of(e));
         }

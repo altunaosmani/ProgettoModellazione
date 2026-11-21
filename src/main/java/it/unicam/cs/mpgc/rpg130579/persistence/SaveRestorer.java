@@ -13,7 +13,7 @@ import java.util.*;
 
 /**
  * Valida la coerenza di un {@link SaveData} rispetto al mondo di gioco e ne applica
- * il ripristino in modo atomico sullo stato attivo.
+ * il ripristino solo se l'intero salvataggio è valido: in caso di errore lo stato non viene toccato.
  */
 final class SaveRestorer {
     private final List<SaveContributor> contributors;
@@ -34,6 +34,7 @@ final class SaveRestorer {
         List<Mechanism> unlockedMechanisms = resolveUnlockedMechanisms(levels, data);
         List<Item> inventory = resolveInventory(catalog, data);
         Map<Attribute, Integer> attributes = resolveAttributes(data);
+        validateProgress(data);
 
         List<Runnable> extensionRestores = new ArrayList<>();
         for (SaveContributor contributor : contributors) {
@@ -80,12 +81,24 @@ final class SaveRestorer {
         return result;
     }
 
+    /**
+     * Risolve gli oggetti salvati rifiutando id vuoti, duplicati e inventari oltre la capienza,
+     * così l'applicazione del ripristino non può fallire a metà.
+     */
     private List<Item> resolveInventory(ItemCatalog catalog, SaveData data) {
         List<Item> result = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
         for (String id : data.getInventoryItemIds()) {
-            result.add(catalog.findById(id)
-                    .orElseThrow(() -> new IllegalStateException("Oggetto salvato inesistente: " + id)));
+            if (id == null || id.isBlank())
+                throw new IllegalStateException("Il salvataggio contiene un oggetto senza id");
+            Item item = catalog.findById(id)
+                    .orElseThrow(() -> new IllegalStateException("Oggetto salvato inesistente: " + id));
+            if (!seen.add(item.getId().toLowerCase(Locale.ROOT)))
+                throw new IllegalStateException("Oggetto duplicato nel salvataggio: " + id);
+            result.add(item);
         }
+        if (result.size() > Player.MAX_CAPACITY)
+            throw new IllegalStateException("L'inventario salvato supera la capienza massima");
         return result;
     }
 
@@ -103,6 +116,22 @@ final class SaveRestorer {
             }
         }
         return result;
+    }
+
+    /**
+     * Controlla enigmi risolti e flag prima di toccare lo stato: {@code StoryProgress.restore}
+     * rifiuta valori vuoti e lo farebbe a ripristino già iniziato.
+     */
+    private void validateProgress(SaveData data) {
+        for (String id : data.getSolvedPuzzleIds()) {
+            if (id == null || id.isBlank())
+                throw new IllegalStateException("Il salvataggio contiene un enigma senza id");
+        }
+        for (Map.Entry<String, String> flag : data.getFlags().entrySet()) {
+            if (flag.getKey() == null || flag.getKey().isBlank()
+                    || flag.getValue() == null || flag.getValue().isBlank())
+                throw new IllegalStateException("Flag di salvataggio non valido: " + flag.getKey());
+        }
     }
 
     private void apply(GameState state, SaveData data, LevelManager levels, Level currentLevel,

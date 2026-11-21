@@ -4,7 +4,7 @@ import it.unicam.cs.mpgc.rpg130579.model.entity.Attribute;
 import it.unicam.cs.mpgc.rpg130579.model.entity.DocumentItem;
 import it.unicam.cs.mpgc.rpg130579.model.entity.Item;
 import it.unicam.cs.mpgc.rpg130579.model.entity.ItemCatalog;
-import it.unicam.cs.mpgc.rpg130579.model.entity.NPC;
+import it.unicam.cs.mpgc.rpg130579.model.entity.QuestNPC;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.AttributeCondition;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.ChoicePuzzle;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.FlagCondition;
@@ -118,11 +118,16 @@ public class LakeLevelBuilder implements LevelBuilder {
                 "\"Dove la luna incontra l'acqua, lì finisce la ricerca.\""));
     }
 
-    /** Inserisce Elara nella radura; il suo dialogo finale completa la missione. */
+    /**
+     * Inserisce Elara nella radura. Chi a Tanusha aveva creduto ad Aldren trova una battuta in più
+     * ({@link LakeDialogues#elaraAfterDoubt()}); il dialogo finale completa la missione.
+     */
     private void placeNpcs(Level level) {
         Location clearing = level.getPlaceById(CLEARING);
-        clearing.addNPC(new NPC("elara", "Elara", "Tua madre, finalmente ritrovata.",
-                clearing, LakeDialogues.elara()));
+        clearing.addNPC(new QuestNPC("elara", "Elara", "Tua madre, finalmente ritrovata.", clearing,
+                LakeDialogues.elara(),
+                new FlagCondition(ForestDialogues.BELIEF_FLAG, ForestDialogues.BELIEF_ALDREN),
+                LakeDialogues.elaraAfterDoubt()));
     }
 
     /** Registra l'oggetto nel catalogo e lo colloca nel luogo indicato. */

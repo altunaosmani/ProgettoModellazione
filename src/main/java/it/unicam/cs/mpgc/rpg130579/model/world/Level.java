@@ -1,12 +1,11 @@
 package it.unicam.cs.mpgc.rpg130579.model.world;
 
-import it.unicam.cs.mpgc.rpg130579.model.interaction.Puzzle;
 import it.unicam.cs.mpgc.rpg130579.model.interaction.Quest;
 import java.util.*;
 
 /**
  * Rappresenta un singolo capitolo/livello di gioco, contenente i luoghi ({@link Location}),
- * gli enigmi ({@link Puzzle}), i meccanismi ({@link Mechanism}), il punto di partenza
+ * i meccanismi ({@link Mechanism}, con i relativi enigmi), il punto di partenza
  * e la {@link Quest} da completare.
  */
 public class Level {
@@ -15,7 +14,6 @@ public class Level {
     private final String description;
     private final Quest quest;
     private final Map<String, Location> places = new LinkedHashMap<>();
-    private final Map<String, Puzzle> puzzles = new LinkedHashMap<>();
     private final Map<String, Mechanism> mechanisms = new LinkedHashMap<>();
     private String startLocationId;
 
@@ -94,23 +92,6 @@ public class Level {
         }
     }
 
-    public Optional<Puzzle> findPuzzleById(String puzzleId) {
-        if (puzzleId == null || puzzleId.isBlank()) return Optional.empty();
-        return Optional.ofNullable(puzzles.get(key(puzzleId)));
-    }
-
-    public Puzzle getPuzzleById(String puzzleId) {
-        if (puzzleId == null || puzzleId.isBlank()) throw new IllegalArgumentException("L'ID dell'enigma non può essere vuoto");
-        return findPuzzleById(puzzleId).orElseThrow(() -> new IllegalArgumentException("Enigma non trovato: " + puzzleId));
-    }
-
-    public void addPuzzle(Puzzle puzzle) {
-        if (puzzle == null) throw new IllegalArgumentException("L'enigma non può essere nullo");
-        if (puzzles.putIfAbsent(key(puzzle.getId()), puzzle) != null) {
-            throw new IllegalArgumentException("Esiste già un enigma con questo id: " + puzzle.getId());
-        }
-    }
-
     public Optional<Mechanism> findMechanismById(String mechanismId) {
         if (mechanismId == null || mechanismId.isBlank()) return Optional.empty();
         return Optional.ofNullable(mechanisms.get(key(mechanismId)));
@@ -121,13 +102,15 @@ public class Level {
         return findMechanismById(mechanismId).orElseThrow(() -> new IllegalArgumentException("Meccanismo non trovato: " + mechanismId));
     }
 
+    /**
+     * Registra il meccanismo nel livello e lo colloca nel luogo indicato (unico punto di registrazione).
+     */
     public void addMechanism(String locationId, Mechanism mechanism) {
         if (mechanism == null) throw new IllegalArgumentException("Il meccanismo non può essere nullo");
         Location place = getPlaceById(locationId);
         if (mechanisms.putIfAbsent(key(mechanism.getId()), mechanism) != null) {
             throw new IllegalArgumentException("Esiste già un meccanismo con questo id: " + mechanism.getId());
         }
-        mechanism.getRequiredPuzzle().ifPresent(p -> puzzles.putIfAbsent(key(p.getId()), p));
         place.addMechanism(mechanism);
     }
 }

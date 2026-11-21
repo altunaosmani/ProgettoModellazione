@@ -21,9 +21,9 @@ public class Player extends GameCharacter {
     /**
      * Crea un nuovo protagonista posizionato nel luogo iniziale indicato.
      *
-     * @param id identificativo univoco del giocatore
-     * @param name nome del protagonista
-     * @param description descrizione del personaggio
+     * @param id              identificativo univoco del giocatore
+     * @param name            nome del protagonista
+     * @param description     descrizione del personaggio
      * @param currentLocation luogo di partenza
      */
     public Player(String id, String name, String description, Location currentLocation) {
@@ -94,18 +94,6 @@ public class Player extends GameCharacter {
         if (isInventoryFull()) return false;
         if (hasItem(item.getId())) return false;
         return inventory.add(item);
-    }
-
-    /**
-     * Restituisce l'oggetto presente alla posizione indicata nell'inventario.
-     *
-     * @param index indice a base zero nell'inventario
-     * @return oggetto alla posizione specificata
-     * @throws IllegalArgumentException se l'indice è fuori dai limiti
-     */
-    public Item getItemAt(int index) {
-        if (index < 0 || index >= inventory.size()) throw new IllegalArgumentException("Indice non valido");
-        return inventory.get(index);
     }
 
     /**

@@ -1,7 +1,8 @@
 package it.unicam.cs.mpgc.rpg130579.model.interaction;
 
 /**
- * Effetto che imposta una coppia chiave-valore nei flag narrativi di {@link StoryProgress}.
+ * Effetto che imposta una coppia chiave-valore nei flag narrativi di
+ * {@link it.unicam.cs.mpgc.rpg130579.model.state.StoryProgress}.
  */
 public record SetFlagEffect(String key, String value) implements DialogueEffect {
     public SetFlagEffect {
