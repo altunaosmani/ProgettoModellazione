@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ChoiceAndItemPuzzleTest {
+class ChoiceAndItemPuzzleTest {
     private final Player player = new Player("p", "P", "giocatore", new Location("l", "L", "luogo"));
 
     private ChoicePuzzle choice() {
