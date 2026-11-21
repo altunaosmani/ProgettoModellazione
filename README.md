@@ -1,6 +1,7 @@
 # The Lost Elf
 
-Gioco di ruolo testuale-grafico in Java/JavaFX. Eren, giovane elfo del villaggio di Tanusha, segue le tracce della madre Elara attraverso tre livelli (Foresta dei Sussurri, Castello di Ardan, Lago degli Specchi), risolvendo enigmi, parlando con i personaggi e facendo scelte che influenzano attributi e finale.
+Gioco di ruolo testuale-grafico in Java/JavaFX. 
+Eren, giovane elfo del villaggio di Tanusha, segue le tracce della madre Elara attraverso tre livelli (Foresta dei Sussurri, Castello di Ardan, Lago degli Specchi), risolvendo enigmi, parlando con i personaggi e facendo scelte che influenzano attributi e finale.
 
 Progetto per Metodologie di Programmazione – AA 2025/26. Package base: it.unicam.cs.mpgc.rpg130579.
 
@@ -31,7 +32,7 @@ cd <nome-cartella>
 
 Su Windows usare `gradlew.bat` al posto di `./gradlew`.
 
-Il salvataggio viene scritto in `savegame.json` nella cartella da cui si avvia il gioco.
+La partita viene salvata in `~/.the-lost-elf/savegame.json` (cartella home dell'utente).
 
 ---
 
@@ -43,7 +44,7 @@ Il salvataggio viene scritto in `savegame.json` nella cartella da cui si avvia i
 - Attributi (Sapienza, Persuasione, Percezione), bonus da oggetti, finali multipli
 - Salvataggio/caricamento in JSON
 
-La descrizione completa dell'architettura è nella **Wiki** del repository.
+La descrizione completa dell'architettura, delle classi, della persistenza e dei punti di estensione  è nella **Wiki** del repository.
 
 ---
 
